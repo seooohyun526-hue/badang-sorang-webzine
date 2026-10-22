@@ -1,0 +1,46 @@
+{
+  "name": "바당소랑_웹진_1",
+  "title": "사라지는 해녀들을 만나다",
+  "lead": "바다와 함께 살아온 사람들, 우리가 미처 몰랐던 해녀의 이야기",
+  "image": "media/card-main-16x9.webp",
+  "image45": "media/card-main-4x5.webp",
+  "alt": "해녀 그림 속 색이 빠져나가는 모습은 줄어드는 해녀의 수를 빗댄 표현이에요.",
+  "href": "index.html",
+  "articles": [
+    {
+      "title": "바다에서 만난 사람들",
+      "kicker": "해녀 이야기",
+      "href": "index.html#stories",
+      "image": "media/card-stories.webp",
+      "alt": "바다에서 만난 사람들"
+    },
+    {
+      "title": "유네스코 인류무형문화유산",
+      "kicker": "목적",
+      "href": "index.html#purpose",
+      "image": "media/card-purpose.webp",
+      "alt": "유네스코 인류무형문화유산"
+    },
+    {
+      "title": "해녀는 바다를 캐는 사람인 동시에, 바다를 돌보는 사람입니다.",
+      "kicker": "해양정화 · OCEAN CARE",
+      "href": "index.html#ocean",
+      "image": "media/card-ocean.webp",
+      "alt": "해녀는 바다를 캐는 사람인 동시에, 바다를 돌보는 사람입니다."
+    },
+    {
+      "title": "해녀의 바당길",
+      "kicker": "물질의 세계 · MINI GAME",
+      "href": "index.html#badatgil",
+      "image": "media/card-badatgil.webp",
+      "alt": "해녀의 바당길"
+    },
+    {
+      "title": "바당은 바다, 소랑은 사랑.",
+      "kicker": "바당소랑",
+      "href": "index.html#about",
+      "image": "media/card-about.webp",
+      "alt": "바당은 바다, 소랑은 사랑."
+    }
+  ]
+}

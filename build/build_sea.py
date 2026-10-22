@@ -415,7 +415,7 @@ if os.environ.get('BS_PURPOSE') == 'v2':
     one("ENDING: ENDING };", "ENDING: ENDING, SEA: (typeof SEA !== 'undefined' ? SEA : {}) };")
     # 해녀문화 팝업 사진: 웹진 폴더의 media/popup/ 에 파일이 있으면 가로 1280px 로 줄여 이 파일 안에 담아요 (없으면 '사진 준비 중')
     import re as _re, json as _json, io as _io, base64 as _bp
-    _pdir = os.path.join(os.path.dirname(os.path.abspath(out)), 'media', 'popup')
+    _pdir = os.path.join(os.path.dirname(os.path.abspath(hnsvg)), 'popup')                 # 원본 그림 폴더(저장소 맨 위 media/)
     _lists = [_json.loads(x) for x in _re.findall(r'photos: (\[\[.*?\]\])', open(sp + '/explore_data.js', encoding='utf-8').read())]
     _emb, _got = '', 0
     for _k, _ph in enumerate(_lists):
@@ -610,7 +610,7 @@ if True:
 #     · 모양: float.css · 후원 팝업 동작: float.js
 if True:
     import base64 as _b64f, os
-    _fl = lambda n: 'data:image/webp;base64,' + _b64f.b64encode(open(os.path.join(os.path.dirname(os.path.abspath(out)), 'media', n), 'rb').read()).decode()
+    _fl = lambda n: 'data:image/webp;base64,' + _b64f.b64encode(open(os.path.join(os.path.dirname(os.path.abspath(hnsvg)), n), 'rb').read()).decode()
     one('MEDIA.gameHead = "data:', '/* 오른쪽 미니 팝업 캐릭터 (media/float-game.webp · float-support.webp 를 이 파일 안에 담음) */' + nl +
         'MEDIA.floatGame = "' + _fl('float-game.webp') + '";' + nl + 'MEDIA.floatSupport = "' + _fl('float-support.webp') + '";' + nl + 'MEDIA.gameHead = "data:')
     one('var ABOUT = {', N(open(sp + '/float_data.js', encoding='utf-8').read()) + 'var ABOUT = {')
@@ -662,7 +662,7 @@ if True:
 #     · 그림: media/cheer-thermo.webp — 사용자가 만든 '사랑의 온도' 해녀 장면에서 관 속 빨간 눈금만 지운 것 (scratchpad 의 make_thermo.py)
 if os.environ.get('BS_OCEAN') == 'v2':
     import base64 as _b64o, os as _os
-    _op = 'data:image/webp;base64,' + _b64o.b64encode(open(_os.path.join(_os.path.dirname(_os.path.abspath(out)), 'media', 'cheer-thermo.webp'), 'rb').read()).decode()
+    _op = 'data:image/webp;base64,' + _b64o.b64encode(open(_os.path.join(_os.path.dirname(_os.path.abspath(hnsvg)), 'cheer-thermo.webp'), 'rb').read()).decode()
     one('MEDIA.gameHead = "data:', '/* 해양정화 응원 온도 창의 온도계 그림 (media/cheer-thermo.webp 를 이 파일 안에 담음) */' + nl + 'MEDIA.cheerThermo = "' + _op + '";' + nl + 'MEDIA.gameHead = "data:')
     one(N("  var Game = (function () {\n"), N(open(sp + '/ocean_pop.js', encoding='utf-8').read() + "  var Game = (function () {\n"))
     one('</head>', N(open(sp + '/ocean_pop.css', encoding='utf-8').read()) + '</head>')
@@ -687,6 +687,16 @@ if True:
         ".ld.is-out{opacity:0; pointer-events:none; cursor:auto; transition:opacity .45s cubic-bezier(.4,0,.2,1)}")
     one(".ld.is-out .ld__box{transform:translateY(-10px) scale(.96); transition:transform .75s cubic-bezier(.4,0,.2,1)}",
         ".ld.is-out .ld__box{transform:translateY(-10px) scale(.96); transition:transform .45s cubic-bezier(.4,0,.2,1)}")
+
+# 23) (글씨체 시안) BS_FONT=gumi 이면 제목 = 낭만있구미체 · 본문 = 학교안심 보드마카 (게임 칸은 그대로)
+#     · 글꼴 파일: build/fonts/ (눈누 웹폰트 · 파일을 자르지 않고 그대로 담아요) · 모양: build/font_gumi.css
+#     · 결과 파일 이름 예: 바당소랑_웹진_글씨체_낭만있구미.html (여러 시안을 만들어 비교해요)
+if os.environ.get('BS_FONT') == 'gumi':
+    import base64 as _b64g
+    _gf = lambda n: _b64g.b64encode(open(sp + '/fonts/' + n, 'rb').read()).decode()
+    _fc = open(sp + '/font_gumi.css', encoding='utf-8').read()
+    _fc = _fc.replace('__GUMI__', _gf('GumiRomanceTTF.woff2')).replace('__BOARD__', _gf('HakgyoansimBoadmarkerR.woff2'))
+    one('</head>', N(_fc) + '</head>')
 
 # 18) (배경 추가 시안) BS_SEABG=v2 이면 바다색 칸들(해녀 이야기 · 목적 · 바다 지키기 · 해녀의 바당길) 뒤에 실제 제주 바다 사진을 깔아요
 #     사진은 첫 화면 영상의 포스터(드론으로 찍은 제주 바다)에서 해녀 · 테왁을 지운 한 장(media/sea-bg.webp, 약 70KB)이에요
@@ -744,5 +754,90 @@ if os.environ.get('BS_ORDER') == 'purpose-first':
     one("    var storiesEnd = SECTIONS[0].offsetTop + SECTIONS[0].offsetHeight;",
         "    var stEl = document.getElementById('stories'), storiesEnd = stEl ? stEl.offsetTop + stEl.offsetHeight : 0;   // 목적 → 인터뷰 순서")
     one('<title>바당소랑 — 사라지는 해녀들을 만나다</title>', '<title>바당소랑 — 사라지는 해녀들을 만나다 (목적 먼저)</title>')
+# 24) (사이트로 내보내기) 사진 · 영상 · 소리 · 글꼴을 HTML 안에 담지 않고, 결과 파일 옆 media/ · fonts/ 에 따로 두고 상대 경로로 불러와요
+#     · 서버(한경닷컴 lxwebzine)는 저장소의 site/ 폴더만 올리고 첫 화면은 site/index.html → 결과를 site/index.html 로 내보내요
+#     · 사진은 webp · 한 장 500KB 이하 (jpg · png 도 webp 로 바꿔요) · 2KB 이하의 아주 작은 그림은 그대로 둬요
+#     · 탭 제목은 웹진 이름 '바당소랑_웹진_1'(BS_SITE_NAME 으로 바꿀 수 있어요) · 공유 미리보기(og · twitter) · canonical 을 넣어요 (og:image = site/og.jpg, make_cards.py 가 만들어요)
+#     · BS_SPLIT=0 이면 예전처럼 한 파일에 모두 담아요
+if os.environ.get('BS_SPLIT', '1') != '0':
+    import hashlib as _hl, io as _io
+    from PIL import Image as _Img
+    _site = os.path.dirname(os.path.abspath(out))
+    _md, _fd = os.path.join(_site, 'media'), os.path.join(_site, 'fonts')
+    # 지난 빌드가 만든 파일은 지우고 다시 만들어요 (웹진메인 카드 사진 card-* 는 make_cards.py 가 만들어서 남겨 둬요)
+    for _d in (_md, _fd):
+        os.makedirs(_d, exist_ok=True)
+        for _f in os.listdir(_d):
+            if not _f.startswith('card-'): os.remove(os.path.join(_d, _f))
+    _made = {}
+    def _slug(ctx):
+        for _p in (r'([A-Za-z_]\w*)(?:\[(\d+)\])?(?:\.([A-Za-z_]\w*))?\s*=\s*"$', r'"([\w-]+)":\s*\{"src":\s*"$', r'"([\w-]+)":\s*"$',
+                   r"--([\w-]+):url\('?$", r"font-family:'([^']+)';(?:\s*font-weight:(\d+);)?[^{}]*src:url\($", r'class="([\w-]+)"[^<>]*src="$'):
+            _m = re.search(_p, ctx)
+            if _m: return '-'.join(g for g in _m.groups() if g)
+        return 'asset'
+    def _save(mime, raw, ctx):
+        key = _hl.sha1(raw).hexdigest()[:8]
+        if key in _made: return _made[key]
+        slug = re.sub(r'[^a-z0-9-]+', '-', _slug(ctx).lower().replace('media-', '').replace('window-', '')).strip('-')[:40] or 'asset'
+        if 'font' in mime:
+            d, rel, data = _fd, 'fonts', raw
+            ext = {'font/woff2': 'woff2', 'font/woff': 'woff', 'font/ttf': 'ttf', 'font/otf': 'otf'}.get(mime, 'woff2')
+        elif mime.startswith('image/') and mime != 'image/svg+xml':
+            d, rel, ext = _md, 'media', 'webp'
+            if mime == 'image/webp' and len(raw) <= 500 * 1024: data = raw
+            else:
+                im = _Img.open(_io.BytesIO(raw)); im = im.convert('RGBA' if ('A' in im.mode or im.mode == 'P') else 'RGB')
+                q = 88
+                while True:
+                    _b = _io.BytesIO(); im.save(_b, 'WEBP', quality=q, method=6); data = _b.getvalue()
+                    if len(data) <= 500 * 1024 or q <= 56: break
+                    q -= 8
+                while len(data) > 500 * 1024:          # 그래도 크면 조금씩 줄여요
+                    im = im.resize((int(im.width * .85), int(im.height * .85)), _Img.LANCZOS)
+                    _b = _io.BytesIO(); im.save(_b, 'WEBP', quality=q, method=6); data = _b.getvalue()
+        elif mime == 'image/svg+xml': d, rel, ext, data = _md, 'media', 'svg', raw
+        else:
+            d, rel, data = _md, 'media', raw
+            ext = {'video/mp4': 'mp4', 'audio/mp4': 'm4a', 'audio/mpeg': 'mp3', 'audio/ogg': 'ogg', 'video/webm': 'webm'}.get(mime, mime.split('/')[-1])
+        name = '%s-%s.%s' % (slug, key, ext)
+        open(os.path.join(d, name), 'wb').write(data)
+        _made[key] = rel + '/' + name
+        return _made[key]
+    # (1) 첫 화면 배경 영상: 글자(base64)로 담아 두고 화면에서 풀어 쓰던 것을 파일로
+    _vm = re.search(r'\(function \(\) \{ var s = "([A-Za-z0-9+/=]{1000,})";\s*try \{ var bin = atob\(s\).*?\}\)\(\);', s, re.S)
+    if _vm:
+        _vp = _save('video/mp4', base64.b64decode(_vm.group(1)), 'MEDIA.introVideo = "')
+        s = s[:_vm.start()] + 'MEDIA.introVideo = "' + _vp + '";   /* 첫 화면 배경 영상 (site/media 에 파일로 따로 둬요) */' + s[_vm.end():]
+    # (2) data:…;base64,… 로 담긴 사진 · 소리 · 글꼴
+    _src = s
+    def _rep(m):
+        if len(m.group(2)) < 2800: return m.group(0)
+        return _save(m.group(1), base64.b64decode(m.group(2)), _src[max(0, m.start() - 120):m.start()])
+    s = re.sub(r'data:([\w/+.-]+);base64,([A-Za-z0-9+/=]+)', _rep, _src)
+    # (3) 제목 · 공유 미리보기
+    _SITE = 'https://lxwebzine.hankyung.com/2026-1/team6/'
+    _t = os.environ.get('BS_SITE_NAME', '바당소랑_웹진_1')             # 브라우저 탭 · 공유 미리보기에 보이는 웹진 이름 (사용자가 정함)
+    s = re.sub(r'<title>.*?</title>', lambda m: '<title>' + _t + '</title>', s, count=1)
+    _dm = re.search(r'<meta name="description" content="([^"]*)">', s)
+    _de = _dm.group(1)
+    _meta = nl.join([
+        '<link rel="canonical" href="%s">' % _SITE,
+        '<meta property="og:type" content="website">',
+        '<meta property="og:site_name" content="%s">' % _t,
+        '<meta property="og:title" content="%s">' % _t,
+        '<meta property="og:description" content="%s">' % _de,
+        '<meta property="og:url" content="%s">' % _SITE,
+        '<meta property="og:image" content="%sog.jpg">' % _SITE,
+        '<meta property="og:image:width" content="1200">',
+        '<meta property="og:image:height" content="630">',
+        '<meta property="og:locale" content="ko_KR">',
+        '<meta name="twitter:card" content="summary_large_image">',
+        '<meta name="twitter:title" content="%s">' % _t,
+        '<meta name="twitter:description" content="%s">' % _de,
+        '<meta name="twitter:image" content="%sog.jpg">' % _SITE])
+    s = s[:_dm.end()] + nl + _meta + s[_dm.end():]
+
+os.makedirs(os.path.dirname(os.path.abspath(out)), exist_ok=True)
 open(out, 'w', encoding='utf-8', newline='').write(s)
 print('ok', len(s))

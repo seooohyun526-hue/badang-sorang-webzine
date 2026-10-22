@@ -1,6 +1,7 @@
 # 화면 확인용 캡처 · 테스트 결과
 미리보기_*.png
 *.json
+!site/webzine.json
 
 # 빌드 확인용 임시 파일
 _*.html
@@ -11,3 +12,11 @@ Thumbs.db
 .DS_Store
 __pycache__/
 *.pyc
+
+# 글씨체 시안 등 내 컴퓨터에서 비교만 하는 파일 (서버에는 site/ 만 올라가요)
+바당소랑_웹진_*.html
+바당소랑 웹진_*.html
+
+# 낭만있구미체 글꼴 파일: 웹진에 담는 건 되지만 파일 배포는 금지라 저장소에 올리지 않아요
+# (글씨체 시안 BS_FONT=gumi 를 만들 때 https://cdn.jsdelivr.net/gh/projectnoonnu/2410-1@1.0/GumiRomanceTTF.woff2 를 build/fonts/ 에 받아 두세요)
+build/fonts/GumiRomanceTTF.woff2

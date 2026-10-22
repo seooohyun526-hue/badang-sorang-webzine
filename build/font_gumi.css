@@ -1,0 +1,36 @@
+<style id="font-gumi-style">
+/* =========================================================
+   ★ 글씨체 시안 '낭만있구미' (빌드 23단계, BS_FONT=gumi)
+   · 제목 = 낭만있구미체 (구미시 · 상업용 무료 · 웹 임베딩 가능 · 글꼴 판매와 왜곡·변형 금지 → 파일을 자르지 않고 그대로 담아요)
+   · 본문 = 학교안심 보드마카 (한국교육학술정보원 KERIS · OFL)
+   · 게임 칸('해녀의 바당길')과 게임 상세 화면은 원래 글꼴 그대로예요
+   · 영어 장식 글씨(badang · sorang 기울임) · 큰 숫자(2,371 · 01)는 원래 글꼴 그대로예요
+   ========================================================= */
+@font-face{font-family:'RomanticGumi'; src:url(data:font/woff2;base64,__GUMI__) format('woff2'); font-weight:400; font-style:normal; font-display:block}
+@font-face{font-family:'SchoolSafeBoardMarker'; src:url(data:font/woff2;base64,__BOARD__) format('woff2'); font-weight:400; font-style:normal; font-display:block}
+
+/* 본문: 웹진 전체의 기본 글꼴(고딕 --sans · 명조 --serif)을 보드마카로 */
+:root{
+  --sans:'SchoolSafeBoardMarker','Pretendard','Pretendard Variable','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕','Noto Sans KR',system-ui,sans-serif;
+  --serif:'SchoolSafeBoardMarker','Gowun Batang','Nanum Myeongjo','Noto Serif KR','AppleMyungjo','Batang','바탕',serif;
+}
+body{font-family:var(--sans)}
+
+/* 제목: 각 칸의 큰 제목 · 문구 */
+:is(.gate__title, .stories__title, .st-end h3, .sp-title, .sxc-title,
+    .sx__big, .sx-pp__title,
+    .oc__title, .oc-intro__title, .oc-card__title, .oc-closing__line, .ocp__title,
+    #abTitle, .why__title, #marquee, .ending__copy),
+:is(.gate__title, .stories__title, .st-end h3, .sp-title, .sxc-title,
+    .sx__big, .sx-pp__title,
+    .oc__title, .oc-intro__title, .oc-card__title, .oc-closing__line, .ocp__title,
+    #abTitle, .why__title, #marquee, .ending__copy) *{
+  font-family:'RomanticGumi', var(--sans) !important; font-weight:400 !important; font-synthesis:none}
+#abTitle em{font-family:var(--latin) !important}          /* 'badang' · 'sorang' 기울임 영어는 그대로 */
+
+/* 게임 칸 · 게임 상세 화면: 원래 글꼴로 되돌려요 */
+:is(#badatgil, #subView:has(.game__title)){
+  --sans:'Pretendard','Pretendard Variable','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕','Noto Sans KR',system-ui,sans-serif;
+  --serif:'Gowun Batang','Nanum Myeongjo','Noto Serif KR','AppleMyungjo','Batang','바탕',serif;
+  font-family:var(--sans)}
+</style>
