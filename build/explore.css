@@ -1,0 +1,200 @@
+<style id="explore-style">
+/* =========================================================
+   ★ 목적 (버전2) — '테왁 위의 바다'
+   왼쪽 약 60%: 거대한 분홍 글자 위로, 망사리에서 쏟아져 나오는 털실 인형 콜라주 (흰 스티커 테두리)
+   오른쪽 약 40%: '바다 속 이야기' — 모든 항목이 처음부터 한눈에 보이는 목록, 누르면 바로 이동
+   ========================================================= */
+.purpose.sx{position:relative; overflow:hidden; min-height:100svh; display:flex; align-items:center;
+  padding:calc(var(--hd) + clamp(8px,2vh,24px)) var(--gutter) clamp(16px,3vh,36px); color:var(--cream);
+  background:
+    radial-gradient(55% 45% at 30% 42%, rgba(141,224,208,.22) 0%, rgba(141,224,208,0) 70%),
+    radial-gradient(50% 40% at 80% 55%, rgba(214,242,238,.14) 0%, rgba(214,242,238,0) 70%),
+    linear-gradient(180deg, #246F6C 0%, #2B807C 38%, #2A7B77 70%, #1F5553 100%)}   /* 위: 해녀 이야기 칸의 끝 색 · 아래: 게임 칸의 시작 색 */
+.sx__inner{position:relative; width:100%; max-width:1440px; margin:0 auto; display:grid; grid-template-columns:minmax(0,60fr) minmax(0,40fr); gap:clamp(20px,3vw,56px); align-items:center}
+
+/* ── 왼쪽: 콜라주 무대 (망사리 아랫부분은 무대 끝에서 잘려요 — 레퍼런스의 얼굴처럼) ── */
+.sx__stage{position:relative; width:min(100%, calc(100svh - var(--hd) - 44px)); min-width:min(100%, 420px); aspect-ratio:1; margin:0 auto; container-type:inline-size; isolation:isolate; overflow:hidden}
+.sx__big{position:absolute; left:3.5%; top:3%; z-index:0; margin:0; font-family:'Hahmlet',var(--serif); font-weight:800; font-size:13.4cqw; line-height:1.02; letter-spacing:-.04em; color:#A6DAFF; text-shadow:0 6px 24px rgba(20,50,70,.18); white-space:nowrap; pointer-events:none}
+.sx__big-line{display:block}
+.sx__big-line + .sx__big-line{margin-top:.22em; font-size:.6em; font-weight:700; letter-spacing:-.01em; color:#F3EBDD}
+/* 레퍼런스의 'Watch & Listen' 같은 손으로 뜯어 붙인 스티커 */
+.sx__ask,.sx__tip{position:absolute; z-index:8; margin:0; pointer-events:none; font-weight:800; line-height:1.25; white-space:nowrap}
+.sx__ask{left:60%; top:33%; padding:.7em 1.1em; font-size:max(.8rem, 2.5cqw); color:#1A2643; background:#FBF6EC;
+  border-radius:18px 26px 14px 22px / 22px 14px 26px 16px; transform:rotate(-6deg); box-shadow:0 10px 20px -10px rgba(0,0,0,.55)}
+.sx__tip{right:3%; bottom:4%; padding:.5em .95em; font-size:max(.74rem, 2cqw); color:#26201c; background:var(--coral); border-radius:999px; transform:rotate(-3deg);
+  display:flex; align-items:center; gap:.4em; box-shadow:0 8px 16px -8px rgba(0,0,0,.5)}
+.sx__tip::before{content:'☝'; font-size:1.1em}
+
+/* 오브젝트 (실제로 눌리는 곳은 그림의 윤곽 안쪽: .sx-obj__hit 의 clip-path) */
+.sx-obj{position:absolute; left:calc(var(--x) * 1%); top:calc(var(--y) * 1%); z-index:var(--z, 3); width:calc(var(--w) * 1%); aspect-ratio:var(--ar, 1);
+  padding:0; border:0; background:none; color:inherit; text-decoration:none; cursor:pointer; pointer-events:none; -webkit-tap-highlight-color:transparent;
+  transform:translate(-50%,-50%) rotate(calc(var(--r, 0) * 1deg)); transition:transform .35s cubic-bezier(.34,1.5,.64,1)}
+.sx-obj img,.sx-base img,.sx-netfront img{display:block; width:100%; height:100%; pointer-events:none; user-select:none; -webkit-user-drag:none}
+.sx-obj img{filter:drop-shadow(3px 0 0 #F7F1E6) drop-shadow(-3px 0 0 #F7F1E6) drop-shadow(0 3px 0 #F7F1E6) drop-shadow(0 -3px 0 #F7F1E6) drop-shadow(0 14px 14px rgba(6,16,34,.45))}
+.sx-obj__hit{position:absolute; inset:0; pointer-events:auto; cursor:pointer}
+/* 마우스를 올리거나(PC) 한 번 누르면(휴대폰) 살짝 커지며 떠올라요 — 과한 회전 · 흔들림 없이 */
+.sx-obj:hover,.sx-obj:focus-visible,.sx-obj.is-open{transform:translate(-50%,-52%) rotate(calc(var(--r, 0) * 1deg)) scale(1.04)}
+.sx-obj:active img{scale:.97}
+.sx-obj:focus-visible{outline:none}
+.sx-obj::before{content:''; position:absolute; inset:-5%; border-radius:50%; border:2px dashed transparent; pointer-events:none}
+.sx-obj:focus-visible::before{border-color:#F7F1E6}
+/* 망사리: 뒤쪽(.sx-base, 뒷벽 · 테왁) → 해산물 → 앞쪽(.sx-netfront, 낮은 앞 테두리 · 반쯤 비치는 그물). 둘 다 그림만, 눌리지 않아요 */
+.sx-base,.sx-netfront{position:absolute; left:calc(var(--x) * 1%); top:calc(var(--y) * 1%); width:calc(var(--w) * 1%); aspect-ratio:var(--ar, 1); transform:translate(-50%,-50%); pointer-events:none}
+.sx-base{z-index:var(--z, 1)}
+.sx-base img{position:relative; filter:drop-shadow(3px 0 0 #F7F1E6) drop-shadow(-3px 0 0 #F7F1E6) drop-shadow(0 3px 0 #F7F1E6) drop-shadow(0 -3px 0 #F7F1E6) drop-shadow(0 14px 14px rgba(6,16,34,.35))}
+/* 입구 안쪽 그늘: 해산물 뒤 · 망사리 속 깊이 */
+.sx-base::after{content:''; position:absolute; left:10%; top:23%; width:71%; height:34%; border-radius:46% 46% 40% 40%;
+  background:radial-gradient(closest-side, rgba(8,30,34,.78) 0%, rgba(8,30,34,.62) 55%, rgba(8,30,34,0) 100%); filter:blur(9px)}
+.sx-netfront{z-index:6}
+/* 앞 테두리가 안에 담긴 해산물에 드리우는 그늘 */
+.sx-netfront img{filter:drop-shadow(0 -6px 7px rgba(8,30,34,.55))}   /* 해산물 아랫부분이 망사리 안으로 들어가는 곳의 접촉 그늘 */
+/* 오브젝트가 망사리에 닿는 곳의 접촉 그림자 (오브젝트 바로 아래) */
+.sx-obj.has-sh::after{content:''; position:absolute; z-index:-1; pointer-events:none; border-radius:50%;
+  left:calc((var(--shx) - var(--shw) / 2) * 1%); top:calc((var(--shy) - var(--shh) / 2) * 1%); width:calc(var(--shw) * 1%); height:calc(var(--shh) * 1%);
+  background:radial-gradient(closest-side, rgba(8,30,34,var(--sho)), rgba(8,30,34,0)); filter:blur(5px)}
+.sx-obj img{position:relative}
+/* 미리보기 창 (PC: 마우스를 올리거나 키보드 초점) */
+.sx-pop{position:absolute; z-index:12; width:min(48cqw, 300px); padding:14px 16px 13px; border-radius:16px; background:#FBF6EC; color:#1A2643;
+  box-shadow:0 22px 44px -18px rgba(6,16,34,.6); opacity:0; visibility:hidden; transform:translateY(6px); transition:opacity .18s, transform .22s, visibility 0s .22s; pointer-events:none}
+.sx-pop.is-measure{visibility:hidden; transition:none}
+.sx-pop.is-on{opacity:1; visibility:visible; transform:none; transition:opacity .18s, transform .22s}
+.sx-pop p{margin:0}
+.sx-pop__kicker{font-size:.72rem; font-weight:700; letter-spacing:.06em; color:#C85A28}
+.sx-pop__kicker b{font-weight:900}
+.sx-pop__title{margin-top:3px!important; font-size:1.2rem; font-weight:900; letter-spacing:-.02em; line-height:1.25}
+.sx-pop__intro{margin-top:6px!important; font-size:.86rem; line-height:1.55; color:#33424F}
+.sx-pop__tags{margin:9px 0 0; padding:0; list-style:none; display:flex; flex-wrap:wrap; gap:5px}
+.sx-pop__tags li{padding:3px 9px; border-radius:99px; background:#DCEBE5; color:#1F4A48; font-size:.74rem; font-weight:800}
+.sx-pop__list{margin:9px 0 0; padding:9px 0 0; border-top:1px solid rgba(26,38,67,.12); list-style:none; display:grid; gap:4px}
+.sx-pop__list li{position:relative; padding-left:13px; font-size:.78rem; line-height:1.45; color:#33424F}
+.sx-pop__list li::before{content:''; position:absolute; left:2px; top:.6em; width:5px; height:5px; border-radius:50%; background:#E97842}
+.sx-pop__hint{margin-top:9px!important; font-size:.74rem; font-weight:800; color:#287F7B}
+.sx-pop__hint::after{content:' →'}
+/* 상세 팝업: 이 페이지 위에 떠요 (휴대폰에서는 아래에서 올라오는 시트) */
+html.sx-lock, html.sx-lock body{overflow:hidden}
+.sx-dlg{position:fixed; inset:0; z-index:150; display:grid; place-items:center; padding:16px}
+.sx-dlg[hidden]{display:none}
+.sx-dlg__bg{position:absolute; inset:0; background:rgba(10,30,36,.55); opacity:0; transition:opacity .22s}
+.sx-dlg__card{position:relative; width:min(640px, 100%); max-height:min(86vh, 780px); overflow:auto; overscroll-behavior:contain; border-radius:24px; background:#FBF6EC; color:var(--ink);
+  box-shadow:0 40px 80px -30px rgba(0,0,0,.6); opacity:0; transform:translateY(16px) scale(.98); transition:opacity .22s, transform .26s var(--ease)}
+.sx-dlg.is-on .sx-dlg__bg{opacity:1}
+.sx-dlg.is-on .sx-dlg__card{opacity:1; transform:none}
+.sx-dlg__card:focus{outline:none}
+.sx-dlg__x{position:absolute; z-index:4; top:14px; right:14px; width:42px; height:42px; border:0; border-radius:50%; background:rgba(255,255,255,.92); box-shadow:0 4px 12px -4px rgba(0,0,0,.4); color:var(--deep); font-size:1.5rem; line-height:1; cursor:pointer}
+.sx-dlg__x:hover{background:#fff}
+.sx-dlg__x:focus-visible,.sx-dlg__step:focus-visible{outline:3px solid var(--coral); outline-offset:2px}
+@media (max-width:640px){
+  .sx-dlg{place-items:end center; padding:0}
+  .sx-dlg__card{width:100%; max-height:90vh; border-radius:22px 22px 0 0; transform:translateY(40px)}
+  .sx-dlg__card::before{content:''; position:absolute; z-index:4; left:50%; top:8px; width:44px; height:4px; margin-left:-22px; border-radius:4px; background:rgba(255,255,255,.85)}
+}
+/* 처음 보일 때: 망사리 안에서 하나씩 튀어나와요 → 그 뒤엔 둥실둥실 */
+.sx.is-ready .sx-obj img{transform:translateY(34%) scale(.6); opacity:0; transition:transform .7s cubic-bezier(.34,1.56,.64,1), opacity .3s, filter .3s}
+.sx.is-in .sx-obj img{transform:none; opacity:1; animation:sxBob 5.6s ease-in-out infinite}
+.sx.is-in .sx-obj[data-id="miyeok"] img{transition-delay:.05s,.05s,0s; animation-delay:-1.2s}
+.sx.is-in .sx-obj[data-id="muneo"] img{transition-delay:.18s,.18s,0s; animation-delay:-3.1s}
+.sx.is-in .sx-obj[data-id="seongge"] img{transition-delay:.3s,.3s,0s; animation-delay:-.4s}
+.sx.is-in .sx-obj[data-id="sora"] img{transition-delay:.4s,.4s,0s; animation-delay:-2.2s}
+.sx.is-ready .sx-obj.has-sh::after{opacity:0; transition:opacity .5s}
+.sx.is-in .sx-obj.has-sh::after{opacity:1; transition-delay:.55s}
+@keyframes sxBob{0%,100%{translate:0 0} 50%{translate:0 -.9%}}   /* 기대어 있으니 아주 살짝만 */
+
+/* ── 오른쪽: 프로젝트 목적 (처음부터 보이고, 왼쪽 그림과 따로) ── */
+.sx__purpose{min-width:0; max-width:600px}
+.sx-pp__label{margin:0; font-size:.78rem; font-weight:800; letter-spacing:.3em; color:#A6DAFF}
+.sx-pp__title{margin:clamp(12px,2vh,20px) 0 0; font-family:'Hahmlet',var(--serif); font-size:clamp(1.75rem,2.75vw,2.75rem); font-weight:700; line-height:1.38; letter-spacing:-.03em; color:#FBF6EC; word-break:keep-all}
+.sx-pp__line{display:block}
+/* 숫자 대비: 예전 14,000명은 크고 밝게, 지금 2,300여 명은 분홍으로 짚어 줘요 */
+.sx-pp__num{font-style:normal; font-variant-numeric:tabular-nums; white-space:nowrap}
+.sx-pp__num--was{font-size:1.42em; font-weight:800; letter-spacing:-.045em; color:#A6DAFF}
+.sx-pp__keep{white-space:nowrap}   /* '14,000명의 숨,' · '2,300여 명만' 이 줄바꿈으로 갈라지지 않게 */
+/* 2,300여 명: 굵은 밑줄로 강조 (칸이 화면에 들어오면 왼쪽에서부터 그어져요) */
+.sx-pp__num--now{position:relative; font-weight:800; color:#A6DAFF}
+.sx-pp__num--now::after{content:''; position:absolute; left:-.04em; right:-.04em; bottom:-.1em; height:.12em; border-radius:.06em; background:#A6DAFF;
+  transform:scaleX(0); transform-origin:0 50%; transition:transform .9s cubic-bezier(.65,0,.35,1) .5s}
+.sx.is-in .sx-pp__num--now::after,.sx:not(.is-ready) .sx-pp__num--now::after{transform:scaleX(1)}
+@media (prefers-reduced-motion:reduce){ .sx-pp__num--now::after{transform:scaleX(1); transition:none} }
+.sx-pp__body{margin-top:clamp(20px,3.4vh,34px); padding-top:clamp(18px,2.8vh,28px); border-top:1px solid rgba(226,246,241,.3); display:grid; gap:clamp(10px,1.6vh,16px); max-width:33em}
+.sx-pp__body p{margin:0; font-size:clamp(.95rem,1.08vw,1.06rem); line-height:1.85; color:#E2F2EE; word-break:keep-all}
+.sx-pp__body p.is-key{font-weight:700; color:#FBF6EC}
+
+/* ── 해녀문화 카드 (팝업 · 상세 화면 공통) — 디자이너 전달용 v3: 큰 사진 갤러리 + 짧은 글 ── */
+.sxc{position:relative; color:#2C3B3A}
+.sxc-gal{position:relative; border-radius:inherit; overflow:hidden; background:#1F4A48}
+.sxc-track{display:flex; overflow-x:auto; overflow-y:hidden; scroll-snap-type:x mandatory; overscroll-behavior-x:contain; scrollbar-width:none; outline:none; -webkit-overflow-scrolling:touch}
+.sxc-track::-webkit-scrollbar{display:none}
+.sxc-track:focus-visible{box-shadow:inset 0 0 0 3px var(--coral)}
+.sxc-slide{position:relative; flex:0 0 100%; margin:0; aspect-ratio:16/10; scroll-snap-align:start; background:linear-gradient(160deg, var(--tint), #9CCFC4)}
+.sxc-photo{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; user-select:none; -webkit-user-drag:none}
+.sxc-slide figcaption{position:absolute; left:0; right:0; bottom:0; padding:34px 92px 16px 20px; font-size:.86rem; font-weight:800; color:#fff; text-shadow:0 1px 6px rgba(0,0,0,.45);
+  background:linear-gradient(180deg, rgba(10,30,36,0), rgba(10,30,36,.62))}
+/* 사진 파일이 아직 없을 때 */
+.sxc-miss{position:absolute; inset:0; display:none; flex-direction:column; align-items:center; justify-content:center; gap:10px; color:#1F4A48}
+.sxc-miss img{width:30%; max-width:150px; opacity:.55; filter:saturate(.7)}
+.sxc-miss b{font-size:.8rem; font-weight:800; letter-spacing:.06em; padding:4px 10px; border-radius:99px; background:rgba(255,255,255,.65)}
+.sxc-slide.is-missing .sxc-photo{display:none}
+.sxc-slide.is-missing .sxc-miss{display:flex}
+.sxc-count{position:absolute; left:16px; top:16px; z-index:2; padding:4px 10px; border-radius:99px; background:rgba(10,30,36,.6); color:#fff; font-size:.78rem; font-weight:800; pointer-events:none}
+.sxc-arrow{position:absolute; top:calc(50% - 22px); z-index:2; width:44px; height:44px; border:0; border-radius:50%; background:rgba(255,255,255,.92); color:#1F4A48; font-size:1.5rem; line-height:1;
+  box-shadow:0 6px 14px -6px rgba(0,0,0,.45); cursor:pointer; transition:transform .2s}
+.sxc-arrow:hover{transform:scale(1.06)}
+.sxc-arrow:focus-visible{outline:3px solid var(--coral); outline-offset:2px}
+.sxc-arrow--prev{left:16px}
+.sxc-arrow--next{right:16px}
+.sxc-hint{display:none; position:absolute; left:50%; top:50%; z-index:2; transform:translate(-50%,-50%); padding:7px 14px; border-radius:99px; background:rgba(10,30,36,.62); color:#fff;
+  font-size:.78rem; font-weight:800; white-space:nowrap; pointer-events:none; transition:opacity .4s}
+.sxc-gal.is-swiped .sxc-hint{opacity:0}
+@media (hover:none){ .sxc-arrow{display:none} .sxc-hint{display:block} }
+/* 캐릭터: 사진 오른쪽 아래에 걸친 작은 원 */
+.sxc-char{position:absolute; right:22px; bottom:-34px; z-index:3; width:76px; height:76px; border-radius:50%; background:#F3EBDD; display:grid; place-items:center;
+  box-shadow:0 0 0 4px #FBF6EC, 0 8px 18px -8px rgba(0,0,0,.45)}
+.sxc-gal{overflow:visible}
+.sxc-track{border-radius:inherit}
+.sxc-char img{width:74%; height:74%; object-fit:contain}
+.sxc-dots{display:flex; justify-content:center; gap:6px; padding:14px 0 0}
+.sxc-dot{width:8px; height:8px; padding:0; border:0; border-radius:99px; background:#C9D6D2; cursor:pointer; transition:width .25s, background .25s}
+.sxc-dot[aria-current="true"]{width:22px; background:#1F4A48}
+.sxc-dot:focus-visible{outline:2px solid var(--coral); outline-offset:3px}
+/* 글 */
+.sxc-body{padding:14px clamp(20px,5vw,34px) clamp(20px,4vw,30px)}
+.sxc-kicker{margin:0; font-size:.78rem; font-weight:800; letter-spacing:.04em; color:#3E6664}
+.sxc-title{margin:6px 0 0; font-family:var(--serif); font-weight:700; font-size:clamp(1.9rem,4.4vw,2.5rem); line-height:1.2; letter-spacing:-.02em; color:#1F3B3A; word-break:keep-all}
+.sxc-sub{margin:6px 0 0; font-family:var(--serif); font-size:clamp(1rem,2vw,1.15rem); line-height:1.55; color:#7E8C8A; word-break:keep-all}
+.sxc-text{margin:16px 0 0; font-size:clamp(.93rem,1.6vw,1rem); line-height:1.85; color:#2C3B3A; word-break:keep-all}
+.sxc-values{margin-top:18px; padding:14px 16px 15px; border-radius:14px; background:#fff; border:1px solid rgba(31,74,72,.12)}
+.sxc-values__label{margin:0; font-size:.76rem; font-weight:800; letter-spacing:.04em; color:#3E6664}
+.sxc-tags{margin:10px 0 0; padding:0; list-style:none; display:flex; flex-wrap:wrap; gap:6px}
+.sxc-tags li{padding:6px 12px; border-radius:99px; background:#DCEBE5; color:#1F4A48; font-size:.84rem; font-weight:800}
+.sxc-values__text{margin:10px 0 0; font-size:.92rem; line-height:1.65; color:#2C3B3A; word-break:keep-all}
+.sxc-nav{display:flex; justify-content:space-between; gap:12px; margin-top:16px}
+.sxc-step{padding:6px 0; border:0; background:none; color:#1F3B3A; font:inherit; font-size:.9rem; font-weight:800; text-decoration:none; cursor:pointer}
+.sxc-step:hover{color:#C85A28}
+.sxc-step:focus-visible{outline:2px solid var(--coral); outline-offset:3px}
+.sxc-credit{margin:12px 0 0; font-size:.7rem; line-height:1.55; color:#8A9694; word-break:keep-all}
+/* 팝업 안에서: 사진이 카드 위쪽 끝까지 */
+.sx-dlg__card .sxc-gal{border-radius:24px 24px 0 0}
+@media (max-width:640px){ .sx-dlg__card .sxc-gal{border-radius:22px 22px 0 0} .sxc-char{width:62px; height:62px; bottom:-28px; right:16px} .sxc-slide figcaption{padding-right:84px; font-size:.8rem} }
+/* ── 상세 화면 (#sea-…): 같은 카드를 화면 가운데에 ── */
+.sxd{padding:clamp(18px,4vw,48px) var(--gutter) 10px; background:linear-gradient(180deg, #246F6C 0, #2B807C 340px, var(--cream) 340px)}
+.sxd-card{max-width:720px; margin:0 auto; border-radius:26px; overflow:visible; background:#FBF6EC; box-shadow:0 30px 60px -30px rgba(10,30,36,.55)}
+.sxd-card .sxc-gal{border-radius:26px 26px 0 0}
+.sxd .sp-more{text-align:center}
+
+/* ── 태블릿 · 휴대폰: 위에 콜라주, 아래에 프로젝트 목적 ── */
+@media (max-width:980px){
+  .purpose.sx{display:block; min-height:0}
+  .sx__inner{grid-template-columns:minmax(0,1fr); gap:22px}
+  .sx__stage{width:min(100%, 620px); min-width:0}
+  .sx__purpose{width:100%; max-width:640px; margin:0 auto}
+}
+@media (max-width:520px){
+  .purpose.sx{padding-left:12px; padding-right:12px}
+  .sx__ask{display:none}
+  .sx-obj img{filter:drop-shadow(2px 0 0 #F7F1E6) drop-shadow(-2px 0 0 #F7F1E6) drop-shadow(0 2px 0 #F7F1E6) drop-shadow(0 -2px 0 #F7F1E6) drop-shadow(0 8px 8px rgba(6,16,34,.45))}
+}
+@media (prefers-reduced-motion:reduce){
+  .sx-obj,.sx-pop,.sx-dlg__card,.sx-dlg__bg{transition:none}
+  .sx.is-ready .sx-obj img{transform:none; opacity:1; transition:none}
+  .sx.is-in .sx-obj img{animation:none}
+}
+</style>

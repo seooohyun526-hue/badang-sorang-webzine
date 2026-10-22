@@ -1,0 +1,163 @@
+<style id="game-v2-style">
+/* =========================================================
+   ★ 해녀의 바당길 (게임 칸 리뉴얼)
+   왼쪽: 소개 · 조작 방법 · '물질하러 출발' 버튼 하나 / 오른쪽: 실제 게임 시작 화면(눌리지 않는 그림) + 픽셀 장식
+   아래: 바당 소랑 HIGH SCORE (레트로 아케이드 랭킹을 바다색으로)
+   ========================================================= */
+/* 제목 '해녀의 바당길' — 게임과 같은 픽셀 글꼴 (모나S12 Bold, Monad ABXY, SIL Open Font License 1.1 — 제목 글자 6자만 담았어요)
+   픽셀이 또렷하게 보이도록 글자 크기는 12px 의 배수로 맞춰요 */
+@font-face{font-family:'BS Pixel Title'; src:url(data:font/woff2;base64,__PIXEL_TITLE_WOFF2__) format('woff2'); font-display:block}
+.game .game__title,.gp .game__title{font-family:'BS Pixel Title',var(--sans); font-weight:400; font-size:72px; line-height:1.12; letter-spacing:0; font-synthesis:none}
+.game__kicker{letter-spacing:.14em}
+.game__lead{max-width:470px}
+/* 조작 방법: 동작(픽셀 칸) + 설명 */
+.game__howt{margin-top:24px; font-family:'Press Start 2P',ui-monospace,monospace; font-size:.62rem; letter-spacing:.08em; color:var(--g-mint)}
+.game__how{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; margin-top:10px; max-width:470px}
+.game__how li{display:flex; align-items:center; gap:10px; padding:9px 12px; text-align:left; font-weight:600; font-size:.86rem; line-height:1.35; color:#dff7f2}
+.game__how li b{flex:none; min-width:3.6em; padding:3px 7px; border-radius:3px; background:#0f3f55; border:1px solid #2a7f99; color:var(--g-mint); font-size:.78rem; font-weight:900; text-align:center}
+.game__how li:last-child b{color:var(--g-sun); border-color:var(--g-sun)}
+.game__btns{flex-direction:column; align-items:flex-start; gap:12px}
+.game__note{margin:0; font-size:.8rem; color:#9fc6cf}
+/* 오른쪽: 실제 게임 시작 화면 그림 (그림 속 '물질하러 출발' 칸만 눌려요) */
+.game__device{width:clamp(250px,24vw,320px)}
+.game__screen{aspect-ratio:1/2}
+.game__shot{position:absolute; inset:0; display:block; width:100%; height:100%; object-fit:cover; pointer-events:none; user-select:none; -webkit-user-drag:none}
+/* 그림 속 '물질하러 출발' 칸 (game-start.webp 540×1080 기준 x 68~472 · y 864~968) — 살짝 반짝여 누를 수 있다는 걸 알려요 */
+.game__shotplay{position:absolute; z-index:3; left:12.6%; top:80%; width:74.8%; height:9.6%; border-radius:3px; cursor:pointer;
+  box-shadow:0 0 0 0 rgba(255,236,120,0); transition:background-color .18s, box-shadow .18s, transform .12s; animation:gsPulse 2.8s ease-in-out infinite}
+.game__shotplay:hover,.game__shotplay:focus-visible{background:rgba(255,255,255,.2); box-shadow:0 0 0 3px #FFE27A, 0 0 22px 4px rgba(255,226,122,.55); animation:none}
+.game__shotplay:focus-visible{outline:none}
+.game__shotplay:active{transform:translateY(2px); background:rgba(5,27,43,.12)}
+@keyframes gsPulse{0%,60%,100%{box-shadow:0 0 0 0 rgba(255,236,120,0)} 30%{box-shadow:0 0 0 3px rgba(255,236,120,.85), 0 0 18px 2px rgba(255,236,120,.4)}}
+@media (prefers-reduced-motion:reduce){.game__shotplay{animation:none}}
+.game__notch{position:absolute; left:50%; top:20px; z-index:2; width:70px; height:6px; margin-left:-35px; border-radius:6px; background:rgba(5,27,43,.55); pointer-events:none}
+/* 픽셀 장식: 물고기 · 기포 · 해초 */
+.game__deco{position:absolute; inset:-60px -90px; pointer-events:none; z-index:-1}
+.game__deco svg{position:absolute; display:block; image-rendering:pixelated}
+.gd-fish--a{width:58px; left:-6px; top:16%; animation:gdSwim 7s ease-in-out infinite}
+.gd-fish--b{width:42px; right:6px; top:58%; transform:scaleX(-1); animation:gdSwimB 8.5s ease-in-out infinite}
+.gd-fish--c{width:30px; right:34px; top:9%; transform:scaleX(-1); animation:gdSwimB 6s ease-in-out -2s infinite}
+.gd-kelp--a{width:46px; left:4px; bottom:-4px}
+.gd-kelp--b{width:34px; right:0; bottom:-4px}
+.gd-bub{position:absolute; width:10px; height:10px; border:2px solid rgba(207,250,255,.75); background:rgba(207,250,255,.12); animation:gdBub 6s linear infinite}
+.gd-bub--a{right:40px; bottom:22%}
+.gd-bub--b{right:22px; bottom:30%; width:7px; height:7px; animation-delay:-2s}
+.gd-bub--c{left:30px; bottom:40%; width:8px; height:8px; animation-delay:-4s}
+.gd-bub--d{left:14px; bottom:24%; width:6px; height:6px; animation-delay:-1s}
+@keyframes gdSwim{50%{transform:translate(14px,-6px)}}
+@keyframes gdSwimB{0%,100%{transform:scaleX(-1) translate(0,0)}50%{transform:scaleX(-1) translate(16px,6px)}}
+@keyframes gdBub{0%{transform:translateY(0); opacity:0} 15%{opacity:1} 100%{transform:translateY(-180px); opacity:0}}
+
+/* ── 한 화면에 세 칸: 소개 · 게임 미리보기 · 랭킹 ── */
+.purpose ~ .game, .game{min-height:100svh}
+.game{display:flex; align-items:center; padding-top:calc(var(--hd) + clamp(18px,3vh,40px)); padding-bottom:clamp(24px,4vh,48px)}
+.game .game__inner{width:100%; max-width:1400px; grid-template-columns:minmax(0,1fr) auto minmax(0,1.08fr); gap:clamp(24px,3.4vw,56px)}
+.game .game__title{margin-top:10px}
+.game .game__sub{margin-top:10px; font-size:clamp(1.05rem,1.5vw,1.3rem)}
+.game .game__lead{margin-top:12px; font-size:.95rem}
+.game .game__howt{margin-top:18px}
+.game .game__how{grid-template-columns:1fr; gap:6px}
+.game .game__how li{padding:7px 10px; font-size:.82rem}
+.game .game__btns{margin-top:20px}
+.game .game__device{width:clamp(200px,17vw,250px); max-height:calc(100svh - var(--hd) - 70px); padding:10px; border-radius:32px}
+.game .game__screen{border-radius:24px}
+.game__deco{inset:-50px -70px}
+.game .game__kelp--a,.game .game__kelp--b{display:none}   /* 세 칸이 되면서 버튼 · 안내와 겹쳐서 숨겨요 (픽셀 해초는 미리보기 옆에) */
+/* 키가 낮은 화면(노트북)에서도 한 화면에: 조작 방법은 두 줄 두 칸, 제목은 조금 작게 */
+@media (min-width:1101px) and (max-height:820px){
+  .game .game__title{font-size:60px}
+  .game{padding-top:calc(var(--hd) + 10px); padding-bottom:16px}
+  .game .game__how{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .game .game__how li{font-size:.78rem}
+  .game .game__lead{font-size:.9rem}
+  .game .game__btns{margin-top:14px}
+}
+/* ── 바당 소랑 HIGH SCORE ── */
+.grank{position:relative; z-index:2; min-width:0}
+.grank__kicker{margin:0; font-family:'Press Start 2P',ui-monospace,monospace; font-size:.66rem; letter-spacing:.12em; color:var(--g-mint)}
+.grank__title{margin:8px 0 0; font-weight:900; font-size:clamp(1.35rem,1.9vw,1.8rem); line-height:1.15; letter-spacing:-.01em; color:#f4fffd; word-break:keep-all;
+  text-shadow:2px 0 0 var(--g-deep),-2px 0 0 var(--g-deep),0 2px 0 var(--g-deep),0 -2px 0 var(--g-deep),0 6px 0 rgba(5,27,43,.5)}
+.grank__sub{margin:6px 0 0; color:#b5d7dd; line-height:1.5; font-size:.9rem}
+.grank__badge{display:inline-flex; align-items:center; gap:8px; margin-top:10px; padding:5px 10px; font-size:.74rem; font-weight:800; border-radius:4px}
+.grank.is-sample .grank__badge{border:2px dashed var(--g-sun); color:var(--g-sun); background:rgba(255,210,90,.08)}
+.grank.is-live .grank__badge{border:2px solid var(--g-mint); color:var(--g-mint); background:rgba(117,242,201,.08)}
+.grank.is-live .grank__badge::before{content:''; width:8px; height:8px; background:#ff6b6b; animation:gdBlink 1.2s steps(2) infinite}
+@keyframes gdBlink{50%{opacity:0}}
+.grank__note{margin:8px 0 12px; font-size:.74rem; line-height:1.5; color:#9fc6cf}
+/* 아케이드 화면 같은 판 (픽셀 모서리 · 주사선) */
+.grank__board{position:relative; min-height:250px; padding:14px 14px 12px; background:linear-gradient(180deg,#0b3c51 0%,#062a3a 100%); color:#5cd6f2;
+  clip-path:polygon(0 12px,12px 12px,12px 0,calc(100% - 12px) 0,calc(100% - 12px) 12px,100% 12px,100% calc(100% - 12px),calc(100% - 12px) calc(100% - 12px),calc(100% - 12px) 100%,12px 100%,12px calc(100% - 12px),0 calc(100% - 12px));
+  box-shadow:inset 0 0 0 3px #1f7f99, inset 0 0 0 6px #062a3a, inset 0 0 60px rgba(92,214,242,.12)}
+.grank__board::before{content:''; position:absolute; inset:0; pointer-events:none; background:repeating-linear-gradient(0deg, rgba(255,255,255,.035) 0 1px, transparent 1px 4px)}
+.grank.is-sample .grank__board::after{content:'SAMPLE'; position:absolute; left:50%; top:54%; transform:translate(-50%,-50%) rotate(-8deg); font-family:'Press Start 2P',ui-monospace,monospace; font-size:clamp(1.8rem,3.4vw,3rem); color:rgba(255,210,90,.07); pointer-events:none; white-space:nowrap}
+.grank__table{position:relative; width:100%; border-collapse:separate; border-spacing:0 2px; table-layout:fixed; text-align:left}
+.grank__table th{padding:2px 6px 6px; font-family:'Press Start 2P',ui-monospace,monospace; font-size:.5rem; font-weight:400; letter-spacing:.04em; white-space:nowrap; color:#75f2c9; text-align:left}
+.grank__table th:nth-child(1){width:66px}
+.grank__table th.grank__num{width:80px}
+.grank__table th.grank__date{width:92px}   /* 픽셀 글꼴(Press Start 2P)은 글자가 넓어서 px 로 칸 너비를 정해요 */
+.grank__table td{vertical-align:middle; padding:clamp(4px,.75vh,7px) 6px; font-family:'Press Start 2P',ui-monospace,monospace; font-size:.56rem; line-height:1.4; white-space:nowrap}
+.grank__num{text-align:right}
+.grank__table th.grank__num{text-align:right}
+.grank__rk{display:inline-flex; align-items:center; gap:7px}
+.grank__ico{width:16px; height:auto; flex:none}
+.grank__rk > span{min-width:2ch}
+.grank__name{overflow:hidden}
+.grank__nm{display:block; overflow:hidden; text-overflow:ellipsis; font-family:var(--sans); font-weight:900; font-size:.86rem; letter-spacing:.02em}
+.grank__d-m{display:none}
+.grank__date{color:rgba(181,215,221,.75); font-size:.44rem!important; letter-spacing:-.02em}
+.grank__row--n td{color:#5cd6f2}
+.grank__row--1 td,.grank__row--2 td,.grank__row--3 td{background:rgba(255,255,255,.045)}
+.grank__row--1 td:first-child,.grank__row--2 td:first-child,.grank__row--3 td:first-child{border-radius:4px 0 0 4px}
+.grank__row--1 td:last-child,.grank__row--2 td:last-child,.grank__row--3 td:last-child{border-radius:0 4px 4px 0}
+.grank__row--1 td{color:#ffd25a; font-size:.62rem}
+.grank__row--1 .grank__nm{font-size:.98rem}
+.grank__row--2 td{color:#dbeef5}
+.grank__row--3 td{color:#f0a46b}
+.grank__row--1 td.grank__date,.grank__row--2 td.grank__date,.grank__row--3 td.grank__date{color:rgba(219,238,245,.7)}
+/* 불러오는 중 · 기록 없음 · 실패 */
+.grank__state{position:relative; display:grid; place-items:center; align-content:center; gap:12px; min-height:250px; text-align:center}
+.grank__state b{font-family:'Press Start 2P',ui-monospace,monospace; font-weight:400; font-size:.9rem; letter-spacing:.08em; color:#75f2c9}
+.grank__state--error b{color:#ff8a6b}
+.grank__state--empty b{color:var(--g-sun)}
+.grank__state p{margin:0; max-width:24em; color:#b5d7dd; font-size:.92rem; line-height:1.6}
+.grank__state--loading b{animation:gdBlink 1s steps(2) infinite}
+.grank__dots{display:flex; gap:8px}
+.grank__dots i{width:10px; height:10px; background:#75f2c9; animation:gdHop .9s steps(3) infinite}
+.grank__dots i:nth-child(2){animation-delay:.15s}
+.grank__dots i:nth-child(3){animation-delay:.3s}
+@keyframes gdHop{50%{transform:translateY(-8px)}}
+.grank__retry{margin-top:6px; padding:10px 18px; border:0; border-radius:6px; background:var(--g-mint); color:#092c40; font-weight:900; font-size:.9rem; box-shadow:0 4px 0 #0a5a4a; cursor:pointer}
+.grank__retry:active{transform:translateY(3px); box-shadow:0 1px 0 #0a5a4a}
+
+@media (max-width:1100px){
+  .game{min-height:0; display:block}
+  .game .game__inner{grid-template-columns:minmax(0,1fr) auto}
+  .game .grank{grid-column:1 / -1}
+}
+@media (max-width:860px){
+  .game .game__title,.gp .game__title{font-size:60px}
+  .game__how{text-align:left}
+  .game__btns{align-items:center}
+  .game__deco{inset:-40px -56px}
+  .game .game__inner{grid-template-columns:1fr}
+  .game .game__device{width:min(230px,60vw)}
+  .game .game__how{max-width:420px}
+  .grank{text-align:center; width:100%; max-width:560px}
+  .grank__note{margin-left:auto; margin-right:auto}
+}
+@media (max-width:640px){
+  .game .game__title,.gp .game__title{font-size:48px}
+  .game__how{grid-template-columns:1fr}
+  .grank__table th.grank__date,.grank__table td.grank__date{display:none}
+  .grank__table th:nth-child(1){width:60px}
+  .grank__table th.grank__num{width:78px}
+  .grank__table td{padding:8px 6px; font-size:.56rem}
+  .grank__nm{font-size:.92rem}
+  .grank__row--1 .grank__nm{font-size:1rem}
+  .grank__d-m{display:block; margin-top:3px; font-family:'Press Start 2P',ui-monospace,monospace; font-size:.5rem; color:rgba(181,215,221,.7)}
+  .grank__ico{width:16px}
+}
+@media (prefers-reduced-motion:reduce){
+  .gd-fish--a,.gd-fish--b,.gd-fish--c,.gd-bub,.grank__dots i,.grank__state--loading b,.grank.is-live .grank__badge::before{animation:none}
+}
+</style>

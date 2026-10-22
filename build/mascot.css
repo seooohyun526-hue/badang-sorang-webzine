@@ -1,0 +1,18 @@
+<style id="mascot-style">
+/* ★ 해녀 캐릭터 통일: 웹진 곳곳의 해녀를 바당소랑 3D 캐릭터(media/haenyeo-cutout.webp)로 보여 줘요 */
+.mascot{display:block; width:100%; height:auto; aspect-ratio:462/633; object-fit:contain; -webkit-user-drag:none; user-select:none; pointer-events:none; filter:drop-shadow(0 8px 12px rgba(6,42,51,.18))}
+.mascot--flip{transform:scaleX(-1)}
+.pill--char .mascot{width:100%; height:100%; aspect-ratio:auto; filter:none; animation:wobble 4s ease-in-out infinite; transform-origin:50% 90%}
+.gfab__art .mascot{width:100%; height:100%; aspect-ratio:auto; filter:none; animation:gbob 2.8s ease-in-out infinite; transform-origin:50% 85%}
+.gfab__go:hover .gfab__art .mascot{animation-duration:1.2s}
+/* 오른쪽 아래 게임 배너: 해녀 얼굴(배경 없는 3D)이 카드 위로 빼꼼 나와 살랑 흔들려요 */
+.gfab__art .gfab__head{display:block; width:100%; height:100%; object-fit:contain; object-position:50% 100%; animation:gbob 2.8s ease-in-out infinite; transform-origin:50% 90%; -webkit-user-drag:none; user-select:none}
+.gfab__go:hover .gfab__art .gfab__head{animation-duration:1.2s}
+@media (prefers-reduced-motion:reduce){ .pill--char .mascot,.gfab__art .mascot,.gfab__art .gfab__head{animation:none} }
+/* ★ 화면 전환: 첫 진입 때와 같은 로딩 화면(방방 뛰는 해녀)이 잠깐 나왔다가 사라져요 */
+.ld--pt{animation:none; opacity:0; transition:opacity .3s ease}
+.ld--pt.is-show{opacity:1}
+.ld--pt.is-show.is-out{opacity:0; transition:opacity .4s cubic-bezier(.4,0,.2,1)}
+/* 게임 배너는 상세 화면에서도 보여요 */
+body.in-sub .gfab{display:block}
+</style>

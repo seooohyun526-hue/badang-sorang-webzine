@@ -1,0 +1,83 @@
+<style id="ocean-style">
+/* =========================================================
+   ★ 해녀들의 해양정화 이야기 (#ocean) — grail-app.com Chapter 3 처럼 한 장의 큰 종이가 아래에서 올라와요
+   종이 안: 큰 제목 → 01 바다를 돌보는 해녀(가운데) → 세 가지 일 카드(BEFORE / AFTER) → 마무리 문장 → 후원 · 박물관 버튼
+   ========================================================= */
+.oc{position:relative; z-index:3; background:#1F5553; padding:0 clamp(10px,2.2vw,32px); margin-bottom:-14svh; overflow-x:clip}   /* 기울어진 종이 모서리가 화면 옆으로 삐져나가 휴대폰 화면이 넓어지지 않게 */
+body.in-ocean .gfab{transform:translateY(140%); opacity:0; pointer-events:none}
+/* 종이 (기울기 · 크기는 스크립트가 스크롤 위치대로 바꿔요) */
+.oc-paper{position:relative; max-width:1400px; margin:0 auto; border-radius:24px; color:#2C3B3A; will-change:transform;
+  transform:rotate(6deg) scale(.86); transform-origin:50% 620px;
+  box-shadow:0 -10px 40px -10px rgba(6,30,32,.35), 0 40px 80px -30px rgba(6,30,32,.55);
+  background-color:#F2EBDD;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .42 0 0 0 0 .36 0 0 0 0 .26 0 0 0 .08 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.oc-paper__in{padding:clamp(22px,3vw,40px) clamp(18px,3.6vw,56px) clamp(36px,5vw,72px)}
+/* 맨 위: 작은 머리글 · 큰 제목 · 짧은 소개 */
+.oc__bar{display:flex; justify-content:space-between; gap:12px; font-size:.84rem; color:#5A6B69}
+.oc__kicker,.oc__side{margin:0; font-weight:700; letter-spacing:.04em}
+.oc__title{margin:clamp(26px,5vw,64px) 0 0; font-family:var(--serif); font-weight:700; font-size:clamp(2rem,4.6vw,4.4rem); line-height:1.2; letter-spacing:-.03em; color:#1F4A48; word-break:keep-all}
+.oc__sub{margin:clamp(14px,2vw,22px) 0 0; max-width:32em; font-size:clamp(.96rem,1.2vw,1.1rem); line-height:1.75; color:#4B5A58; word-break:keep-all}
+.oc-paper__rows{margin-top:clamp(30px,5vw,60px); padding-top:clamp(30px,5vw,60px); border-top:1px solid rgba(31,74,72,.14)}
+/* 01 바다를 돌보는 해녀 (가운데 정렬 소개) */
+.oc-intro{display:flex; flex-direction:column; align-items:center; text-align:center; margin:clamp(10px,2vw,24px) auto 0; max-width:46em}
+.oc-intro__no{margin:0; font-size:.86rem; font-weight:800; letter-spacing:.06em; color:#D9643A}
+/* 굵은 명조 함렛 (목적 칸과 같은 글꼴, 필요한 글자만 담아 넣었어요 → scratchpad 의 hahmlet_subset.py) */
+.oc-intro__title{margin:clamp(12px,1.6vw,20px) 0 0; font-family:'Hahmlet',var(--serif); font-weight:700; font-size:clamp(1.9rem,3.5vw,3.2rem); line-height:1.3; letter-spacing:-.025em; color:#1F4A48; word-break:keep-all}
+.oc-intro__body{margin:clamp(18px,2.4vw,30px) 0 0; font-size:clamp(1rem,1.3vw,1.18rem); line-height:1.8; word-break:keep-all}
+.oc-intro__body b,.oc-intro__body em{display:block; font-style:normal; font-weight:800}
+.oc-intro__body b{color:#2C3B3A}
+.oc-intro__body em{margin-top:4px; color:#D9643A}
+.oc-hint{display:inline-flex; align-items:center; gap:8px; margin:clamp(18px,2.2vw,26px) 0 0; padding:7px 16px; border-radius:99px; background:#DCEBE5; color:#1F4A48; font-size:.84rem; font-weight:800}
+.oc-hint svg{width:16px; height:16px}
+/* 세 가지 일 카드 */
+.oc-cards{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:clamp(14px,1.8vw,26px); margin-top:clamp(26px,4vw,44px)}
+.oc-card{display:flex; flex-direction:column; border-radius:20px; overflow:hidden; background:#F8F3EA; box-shadow:0 1px 0 rgba(31,74,72,.06), 0 18px 34px -24px rgba(31,74,72,.45)}
+/* BEFORE / AFTER 비교 (가운데 손잡이를 끌면 오른쪽 AFTER 가 넓어지거나 좁아져요) */
+.oc-cmp{--p:50%; position:relative; aspect-ratio:400/240; overflow:hidden; cursor:ew-resize; touch-action:pan-y; user-select:none; -webkit-user-select:none}
+.oc-cmp__img{position:absolute; inset:0}
+.oc-cmp__img svg,.oc-cmp__img img{display:block; width:100%; height:100%; object-fit:cover; pointer-events:none; -webkit-user-drag:none}
+.oc-cmp__after{clip-path:inset(0 0 0 var(--p))}
+.oc-cmp__line{position:absolute; top:0; bottom:0; left:var(--p); width:3px; margin-left:-1.5px; background:#fff; box-shadow:0 0 6px rgba(0,0,0,.18); pointer-events:none}
+.oc-cmp__knob{position:absolute; left:var(--p); top:50%; width:44px; height:44px; margin:-22px 0 0 -22px; padding:0; border:0; border-radius:50%; background:#fff; color:#D9643A;
+  display:grid; place-items:center; box-shadow:0 6px 16px -6px rgba(0,0,0,.45); cursor:ew-resize; transition:transform .15s}
+.oc-cmp__knob svg{width:20px; height:20px}
+.oc-cmp.is-drag .oc-cmp__knob,.oc-cmp__knob:hover{transform:scale(1.08)}
+.oc-cmp__knob:focus-visible{outline:3px solid var(--coral); outline-offset:3px}
+.oc-cmp__tag{position:absolute; left:12px; top:12px; padding:4px 11px; border-radius:99px; background:rgba(255,255,255,.92); color:#3B4A49; font-size:.7rem; font-weight:800; letter-spacing:.14em; pointer-events:none}
+.oc-cmp__tag--after{left:auto; right:12px; background:#2B6F64; color:#fff}
+.oc-card__body{display:flex; flex-direction:column; padding:clamp(18px,2vw,26px) clamp(18px,2vw,28px) clamp(22px,2.4vw,32px)}
+.oc-card__label{margin:0; font-size:.9rem; font-weight:800; color:#2C3B3A}
+.oc-card__label b{margin-right:8px; color:#D9643A}
+.oc-card__title{margin:10px 0 0; font-weight:800; font-size:clamp(1.18rem,1.55vw,1.42rem); line-height:1.4; letter-spacing:-.02em; color:#1F4A48; word-break:keep-all}
+.oc-card__text{margin:10px 0 0; font-size:.95rem; line-height:1.75; color:#4B5A58; word-break:keep-all}
+/* 마무리 문장 */
+.oc-closing{margin:clamp(40px,6vw,72px) auto 0; text-align:center}
+.oc-closing__line{margin:0; font-family:'Hahmlet',var(--serif); font-weight:700; font-size:clamp(1.35rem,2.4vw,2rem); line-height:1.5; color:#1F4A48; word-break:keep-all}
+.oc-closing__line em{font-style:normal; color:#D9643A}
+.oc-source{margin:12px auto 0; max-width:60em; font-size:.74rem; line-height:1.6; color:#7A8584; word-break:keep-all}
+/* 후원 · 박물관 버튼 */
+.oc-cta{display:flex; flex-direction:column; align-items:center; margin-top:clamp(26px,3.6vw,44px); text-align:center}
+.oc-cta__row{display:flex; flex-wrap:wrap; justify-content:center; gap:14px}
+.oc-cta__btn{display:inline-flex; align-items:center; justify-content:center; min-height:52px; padding:0 30px; border:2px solid #D9643A; border-radius:99px; background:#D9643A; color:#fff;
+  font:inherit; font-weight:800; font-size:clamp(.92rem,1.1vw,1.02rem); text-decoration:none; cursor:pointer; transition:transform .2s, box-shadow .2s}
+.oc-cta__btn--line{border-color:#E2DACB; background:#FFFDF8; color:#1F4A48}
+.oc-cta__btn:hover{transform:translateY(-2px); box-shadow:0 10px 20px -12px rgba(31,74,72,.5)}
+.oc-cta__btn:focus-visible{outline:3px solid #1F4A48; outline-offset:3px}
+.oc-cta__msg{min-height:1.4em; margin:12px 0 0; font-size:.86rem; font-weight:700; color:#2B6F64}
+.oc-cta__note{margin:6px 0 0; padding:6px 10px; border-radius:8px; border:1px dashed #E6A57E; background:#FFF6EE; color:#B4521F; font-size:.76rem; line-height:1.5}
+/* 글 · 그림이 화면 아래에서 올라오는 만큼 드러나요 (--r: 스크롤 진행도 · --at: 차례) — 거꾸로 스크롤하면 다시 감춰져요 */
+.oc-r{--k:clamp(0, calc((var(--r, 1) - var(--at, 0)) / .3), 1); opacity:calc(.08 + var(--k) * .92); transform:translate3d(0, calc((1 - var(--k)) * 26px), 0)}
+@media (max-width:1100px){
+  .oc-cards{grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))}
+}
+@media (max-width:760px){
+  .oc{padding:0 8px}
+  .oc-paper{border-radius:18px}
+  .oc-cta__row{flex-direction:column; align-items:stretch; width:100%; max-width:360px}
+}
+@media (prefers-reduced-motion:reduce){
+  .oc-paper{transform:none!important}
+  .oc-r{opacity:1!important; transform:none!important}
+}
+</style>

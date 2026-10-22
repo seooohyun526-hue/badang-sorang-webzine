@@ -1,0 +1,65 @@
+<style id="sea-style">
+/* =========================================================
+   ★ 해녀 수 감소 — 3D 해녀 그림 속 색이 위에서부터 빠져나가요 (첫 화면 오른쪽 · 이 섹션 전용)
+   색이 가득 찬 해녀(1970년)에서, 실제 기록에 맞춰 색이 빠지고 선만 남아요 (2025년).
+   색이 빠지는 모습은 줄어드는 해녀 수를 빗댄 그림이에요.
+   ========================================================= */
+.gate__viz{align-items:center; justify-content:center}
+.sea{position:relative; width:min(100%, 46vh, 420px); margin:0 auto; text-align:center;
+  opacity:0; transform:translateY(18px); transition:opacity 1s .2s var(--ease), transform 1.2s .2s var(--ease-out)}
+.gate.is-viz .sea{opacity:1; transform:none}
+.drain{position:relative; width:100%; aspect-ratio:462/633}
+.drain img{position:absolute; inset:0; display:block; width:100%; height:100%; max-width:none; object-fit:contain; -webkit-user-drag:none; user-select:none; pointer-events:none}
+/* 비어 가는 자리에 남는 얇은 선 */
+.drain__line{opacity:.62}
+/* 색이 찬 해녀: 위에서부터 잘려 나가요 (--drain = 위에서 비운 만큼) */
+.drain__fill{clip-path:inset(var(--drain, 0%) 0 0 0);
+  filter:drop-shadow(0 0 1.5px rgba(255,248,235,.7)) drop-shadow(0 18px 30px rgba(3,24,30,.4))}
+.sea__cap{margin:16px auto 0; max-width:30em; font-size:.8rem; line-height:1.6; opacity:.78}
+.gate__viz .gate__src{text-align:center; max-width:48em; margin:0 auto}
+
+/* 숫자는 실제 기록이 바뀔 때만 살짝 떠올라요 */
+.gate__num b.is-tick{animation:gTick .35s var(--ease-out)}
+@keyframes gTick{from{opacity:.3} to{opacity:1}}
+.gate__end{display:block; font-weight:700; margin-bottom:6px}
+
+/* 휴대폰 · 태블릿: 첫 화면을 화면 높이에 딱 맞춰요.
+   글자와 '시작하기'는 제 크기대로, 해녀 그림은 남는 자리만큼만 커져요 (화면이 낮으면 그림이 저절로 작아져요) */
+.sea__cap-s{display:none}
+@media (max-width:900px){
+  .gate__content{display:flex; flex-direction:column; height:100vh; height:100svh; min-height:0}
+  .gate__brand,.gate__text,.gate__actions{flex:none}
+  .gate__viz{flex:1 1 0; min-height:0; min-width:0; align-self:stretch; margin-top:6px; display:flex; flex-direction:column; align-items:center; gap:4px}
+  .sea{flex:1 1 0; min-height:96px; width:100%; display:flex; flex-direction:column; align-items:center}
+  .drain{flex:1 1 0; min-height:0; width:auto; max-width:100%; aspect-ratio:462/633}
+  .gate__note{min-height:6.6em}   /* 마지막 문장이 나타날 때 그림이 밀리지 않게 자리를 미리 잡아요 */
+  .sea__cap{flex:none; margin-top:4px; font-size:.7rem; line-height:1.4}
+  .sea__cap-l{display:none} .sea__cap-s{display:inline}
+  /* 자료 출처: 한 줄로 줄여 두고, 누르면 전체가 보여요 */
+  .gate__viz .gate__src{flex:none; width:100%; min-width:0; max-width:100%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; cursor:pointer}
+  .gate__viz .gate__src.is-open{white-space:normal}
+  /* 맨 아래 줄: 왼쪽 '시작하기' · 오른쪽 게임 배너가 함께 들어갈 만큼 자리를 잡아요 (그림이 배너에 가리지 않게) */
+  .gate__actions{margin-top:6px; min-height:140px; align-items:flex-end}
+  /* 첫 화면의 게임 배너는 얼굴과 버튼만 작게 */
+  body.is-gate .gfab__kicker,body.is-gate .gfab__title,body.is-gate .gfab__bubble{display:none}
+  body.is-gate .gfab__go{padding-bottom:10px}
+  /* 애니메이션이 도는 동안엔 (아직 안 보이는) '시작하기'가 자리를 차지하지 않게 해서,
+     '애니메이션 건너뛰기'가 왼쪽에 보여요 (오른쪽 게임 배너에 가리지 않게) */
+  .gate:not(.is-done) .btn-start{position:absolute; visibility:hidden}
+  .gate__skip{position:relative; z-index:6; align-self:flex-end; margin-bottom:10px}
+}
+@media (max-width:520px){
+  .gate__title{font-size:clamp(1.5rem,6.6vw,1.9rem)}
+  .gate__sub{font-size:.82rem}
+  .gate__num b{font-size:2rem}
+  .gate__care{font-size:.62rem}
+}
+/* 키가 작은 휴대폰: 글자 간격을 조금 더 줄여요 */
+@media (max-width:900px) and (max-height:700px){
+  .gate__brand{margin-bottom:4px}
+  .gate__sub{margin-top:4px; line-height:1.45}
+  .gate__count{margin-top:4px}
+  .gate__note{min-height:6.2em; line-height:1.4}
+}
+@media (prefers-reduced-motion:reduce){ .sea{transition:none} }
+</style>

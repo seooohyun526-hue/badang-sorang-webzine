@@ -1,0 +1,29 @@
+<style id="swim-style">
+/* =========================================================
+   ★ 헤엄치는 해녀 — '바당소랑' 소개 칸(#about) 안에서만 자유롭게 유영해요 (leoparpeix.com 의 꿀벌처럼)
+   · 그림 한 장(media/haenyeo-swim.webp)을 몸 · 위쪽 다리 · 아래쪽 다리로 나눠, 다리가 번갈아 물장구쳐요
+     (팔은 테왁을 안고 있어 움직이지 않아요. 무릎이 접히는 관절 움직임은 아니에요)
+   · 화면을 누르거나 가리지 않아요(클릭은 그대로 아래로). 글자 · 카드 위에서는 살짝 투명해져요
+   ========================================================= */
+.swim{position:absolute; left:0; top:0; width:100%; height:var(--swim-h, 100%); z-index:2; overflow:hidden; pointer-events:none}
+.swim.is-rest{visibility:hidden}
+.swim__fish{position:absolute; left:0; top:0; width:var(--sw-w, clamp(112px, 11vw, 168px)); aspect-ratio:428/313;
+  will-change:transform, opacity; transform:translate3d(-300px,-300px,0); transition:opacity .6s ease}
+.swim__inner{position:absolute; inset:0; filter:drop-shadow(0 8px 10px rgba(6,42,51,.22))}
+.swim__p{position:absolute; inset:0; background:var(--swim-img) 0 0/100% 100% no-repeat}
+/* 몸: 다리가 시작되는 자리에서 부드럽게 사라져, 그 아래의 다리 조각과 이어져요 */
+.swim__main{-webkit-mask-image:linear-gradient(90deg, transparent 16.5%, #000 19.5%); mask-image:linear-gradient(90deg, transparent 16.5%, #000 19.5%)}
+.swim__leg{-webkit-mask-image:linear-gradient(90deg, #000 19.5%, transparent 21.5%); mask-image:linear-gradient(90deg, #000 19.5%, transparent 21.5%)}
+.swim__leg--a{clip-path:polygon(0 0, 23.4% 0, 23.4% 65.5%, 0 65.5%); transform-origin:20.6% 51%; transform:rotate(var(--ka, 0deg))}
+.swim__leg--b{clip-path:polygon(0 65.5%, 23.4% 65.5%, 23.4% 100%, 0 100%); transform-origin:20.6% 80%; transform:rotate(var(--kb, 0deg))}
+/* 바닥에 비친 그림자 (꿀벌 레퍼런스처럼 살짝 아래 · 옆으로) */
+.swim__shadow{position:absolute; left:0; top:0; width:calc(var(--sw-w, clamp(112px, 11vw, 168px)) * .62); aspect-ratio:3/1; border-radius:50%;
+  background:radial-gradient(closest-side, rgba(6,42,51,.22), rgba(6,42,51,0)); will-change:transform, opacity; transform:translate3d(-300px,-300px,0)}
+/* 은은한 기포 */
+.swim__bub{position:absolute; left:0; top:0; width:var(--s, 8px); aspect-ratio:1; border-radius:50%; margin:calc(var(--s, 8px) / -2) 0 0 calc(var(--s, 8px) / -2);
+  border:1.5px solid rgba(255,255,255,.85); background:radial-gradient(circle at 32% 30%, rgba(255,255,255,.9) 0 18%, rgba(190,232,244,.25) 45%, rgba(255,255,255,0) 70%);
+  box-shadow:0 0 0 1px rgba(20,163,160,.12); animation:swimBub var(--t, 2.6s) ease-out forwards}
+@keyframes swimBub{0%{opacity:0; transform:translate(0,0) scale(.5)} 15%{opacity:1} 100%{opacity:0; transform:translate(var(--dx, 0px), -120px) scale(1)}}
+@media (max-width:600px){ .swim{--sw-w:94px} }
+@media (prefers-reduced-motion:reduce){ .swim{display:none} }
+</style>

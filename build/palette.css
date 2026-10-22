@@ -1,0 +1,43 @@
+<style id="palette-style">
+/* =========================================================
+   ★ 밝은 바다 팔레트 — 웹진 전체를 조금 더 밝게
+   딥 민트 #5FBFAE(버튼 · 그래픽) · 딥 틸 #287F7B(제목 · 강조 · 파도) · 샌드 크림 #F3EBDD(바탕)
+   번트 오렌지 #E97842(테왁 · CTA · 게임 안내) · 더스티 코랄 #D88991(물안경 분홍 포인트) · 딥 씨 그린 #244A49(글자)
+   (원래 색 이름에 새 값을 넣어서, 웹진 곳곳이 함께 바뀌어요)
+   ========================================================= */
+:root{
+  --sea:#287F7B; --sea-l:#5FBFAE; --sea-xl:#DCEFE9; --sky:#DCEEEE; --blue:#3E8FB0;
+  --deep:#244A49; --abyss:#1F5553;
+  --cream:#F3EBDD; --paper:#EEE3D0; --sand:#E5D4B7; --sand-d:#CDB084;
+  --coral:#E97842; --coral-d:#CF5F2C; --pink:#D88991;
+  --ink:#244A49; --muted:#5B7472;
+  --dusk:#2C5755; --dusk-2:#36706C; --mist:#E3ECEA;
+}
+/* 머리 메뉴 (밝은 칸 위) */
+.hd.is-light{background:rgba(243,235,221,.9)}
+/* 첫 화면: 바다 영상 위 그늘을 옅게 (글자는 그대로 읽히게) */
+.gate__bg{background:var(--poster, none) center/cover no-repeat, linear-gradient(170deg,#7FCFC2 0%,#3E9E96 55%,#287F7B 100%)}
+.gate__shade{background:
+    radial-gradient(120% 90% at 78% 40%, rgba(30,82,79,.12) 0%, rgba(30,82,79,.45) 100%),
+    linear-gradient(180deg, rgba(30,82,79,.25) 0%, rgba(30,82,79,.08) 40%, rgba(30,82,79,.55) 100%)}
+.gate.is-viz .gate__shade{background:
+    radial-gradient(120% 90% at 78% 40%, rgba(30,82,79,.34) 0%, rgba(30,82,79,.62) 100%),
+    linear-gradient(180deg, rgba(30,82,79,.36) 0%, rgba(30,82,79,.2) 40%, rgba(30,82,79,.7) 100%)}
+/* 로딩 화면도 같은 밝은 바다색 */
+.ld{background:radial-gradient(55% 45% at 50% 46%, rgba(255,255,255,.22) 0%, rgba(255,255,255,0) 70%), linear-gradient(170deg,#7FCFC2 0%,#3E9E96 55%,#287F7B 100%)}
+/* 해녀 이야기: 깊은 남색 → 맑은 청록 */
+.stories{background:radial-gradient(120% 70% at 50% 0%, #4EAEA3 0%, #2F8B85 45%, #246F6C 100%)}
+/* 밝아진 청록 바탕 위의 작은 글씨는 연한 민트로 (읽기 쉽게) */
+.stories__head .kicker,.st-cap small{color:#D2F3EA}
+.stories__hint i{background:linear-gradient(90deg,transparent,#D2F3EA)}
+/* 해녀의 바닷길(게임 칸 · 게임 화면 · 게임 배너): 남색을 밝은 청록으로 */
+.game,.page--game{--g-deep:#1F5F63; --g-navy:#26737A; --g-teal:#3C9E9C}
+.page--game{background:radial-gradient(ellipse 90% 70% at 70% 0%, #3C9E9C 0%, #26737A 45%, #1F5F63 100%)}
+.gfab__go{background:linear-gradient(180deg,#3E9E96 0%,#287F7B 55%,#22696A 100%)}
+.gfab__btn{background:var(--coral); color:#26201c; box-shadow:0 4px 0 #B4521F}
+.gfab__title{text-shadow:2px 2px 0 rgba(20,62,60,.55)}
+.gfab__bubble{background:var(--cream); color:var(--deep)}
+.gfab__bubble::after{border-top-color:var(--cream)}
+/* 맨 아래 */
+.foot{background:#287F7B}
+</style>

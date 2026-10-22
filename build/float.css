@@ -1,0 +1,67 @@
+<style id="float-style">
+/* =========================================================
+   ★ 오른쪽 미니 팝업 2개 — 위: 게임(해녀의 바당길) · 아래: 후원(바당 소랑 응원하기)
+   · 데스크톱: 화면 오른쪽 가운데에 캐릭터 두 명이 세로로 떠 있어요 (흰 상자 없이 캐릭터 + 작은 버튼 글 · 마우스를 올리면 왼쪽에 짧은 말풍선)
+   · 휴대폰(760px 이하): 오른쪽 아래(아래 버튼 줄보다 조금 위) 캐릭터만 작게 두 개
+   · 웹진의 주요 버튼과 겹치게 되면 그동안만 살짝 사라져 비켜요 (.is-dodge)
+   · 두 팝업은 크기 · 그림자 · 버튼 모양이 같아요 (색만 게임 = 민트 · 후원 = 주황)
+   · 그림은 사용자가 만든 캐릭터 그대로 (비율 유지 · 잘리지 않게 contain)
+   ========================================================= */
+.fdock{position:fixed; right:clamp(10px,1.3vw,22px); top:50%; z-index:84; display:flex; flex-direction:column; gap:12px; transform:translateY(-50%); pointer-events:none}
+.fdock .fcard{position:relative; right:auto; bottom:auto; z-index:auto; opacity:0; visibility:hidden; transform:translateX(18px); pointer-events:none;
+  transition:opacity .35s, transform .45s var(--ease-out), visibility 0s linear .45s}
+.fdock .fcard.is-on{opacity:1; visibility:visible; transform:none; pointer-events:auto; transition-delay:0s}
+/* 메뉴가 열렸을 때 · '바다 지키기' 칸(종이 안에 같은 후원 버튼이 있어요)을 읽는 동안에는 잠깐 숨어요 */
+body.is-locked .fdock .fcard.is-on,body.in-ocean .fdock .fcard.is-on{opacity:0; visibility:hidden; transform:translateX(18px); pointer-events:none;
+  transition:opacity .35s, transform .45s var(--ease-out), visibility 0s linear .45s}
+/* 주요 버튼과 겹칠 때는 잠깐 비켜요 (float.js) */
+.fdock.is-dodge .fcard.is-on{opacity:0; visibility:hidden; pointer-events:none; transition:opacity .25s, visibility 0s linear .25s}
+/* 누르는 곳 전체 — 흰 상자 없이 캐릭터 + 버튼 글만 (캐릭터 아래 부드러운 그림자로 어느 배경에서도 또렷하게) */
+.fdock .fcard .fcard__go{position:relative; display:flex; flex-direction:column; align-items:center; gap:6px; width:118px; margin:0; padding:0;
+  border:0; border-radius:16px; background:none; color:#1F4A48; text-align:center; text-decoration:none; cursor:pointer; box-shadow:none; transition:transform .25s var(--ease)}
+.fdock .fcard .fcard__go:hover{transform:translateY(-2px)}
+.fdock .fcard .fcard__go:focus-visible{outline:3px solid #FFFDF8; outline-offset:3px; box-shadow:0 0 0 6px #1F4A48}
+.fdock .fcard .fcard__art{display:block; width:100%; height:96px; margin:0; filter:drop-shadow(0 8px 10px rgba(10,40,40,.32))}
+.fdock .fcard .fcard__img{display:block; width:100%; height:100%; object-fit:contain; animation:none; -webkit-user-drag:none; user-select:none; transition:transform .25s var(--ease)}
+.fdock .fcard .fcard__go:hover .fcard__img{transform:scale(1.05)}
+.fdock .gfab__kicker,.fdock .gfab__title{display:none}
+/* 버튼 글 (두 카드 같은 모양 · 색만 달라요) */
+.fdock .fcard .fcard__label{display:block; margin:0; padding:5px 10px; border-radius:99px; box-shadow:0 4px 10px -4px rgba(10,40,40,.35); font-size:.76rem; font-weight:800; line-height:1.3; letter-spacing:-.01em; word-break:keep-all}
+.fdock .fcard--game .fcard__label{background:#DCEFE9; color:#1F5E58}
+.fdock .fcard--support .fcard__label{background:#FBE6DA; color:#B4521F}
+/* 닫기 (카드마다 따로 · 왼쪽 위 — 오른쪽 위에는 응원 캐릭터의 사랑의 온도계가 있어요) — 마우스를 올리거나 키보드로 오면 보여요 · 터치 화면은 늘 보여요 */
+.fdock .fcard .fcard__close{position:absolute; top:-6px; left:-4px; right:auto; z-index:2; display:grid; place-items:center; width:24px; height:24px; padding:0;
+  border:1px solid rgba(31,74,72,.16); border-radius:50%; background:#FFFDF8; color:#1F4A48; font-size:.9rem; line-height:1; cursor:pointer;
+  box-shadow:0 2px 8px rgba(20,62,60,.25); opacity:0; transition:opacity .2s}
+.fdock .fcard:hover .fcard__close,.fdock .fcard:focus-within .fcard__close{opacity:1}
+.fdock .fcard .fcard__close:focus-visible{outline:2px solid #1F4A48; outline-offset:2px}
+@media (hover:none){ .fdock .fcard .fcard__close{opacity:1} }
+/* 말풍선 (카드 왼쪽) — 게임: '바닷속 탐험하러 갈래?' · 후원: 두 줄 */
+.fdock .fcard .fcard__bubble{position:absolute; left:auto; right:calc(100% + 12px); top:50%; bottom:auto; width:max-content; max-width:220px; white-space:normal;
+  padding:9px 13px; border:1px solid rgba(31,74,72,.14); border-radius:12px; background:#FFFDF8; color:#1F4A48; box-shadow:0 10px 24px -14px rgba(20,62,60,.55);
+  font-size:.8rem; font-weight:800; line-height:1.45; text-align:left; word-break:keep-all; opacity:0; transform:translate(6px,-50%); transition:opacity .25s, transform .25s var(--ease); pointer-events:none}
+.fdock .fcard .fcard__bubble::after{content:''; position:absolute; left:100%; right:auto; top:50%; margin-top:-6px; border:6px solid transparent; border-left-color:#FFFDF8; border-top-color:transparent}
+.fdock .fcard:hover .fcard__bubble,.fdock .fcard:focus-within .fcard__bubble,.fdock .fcard.say-hi .fcard__bubble{opacity:1; transform:translate(0,-50%)}
+.fdock .fcard__bt{display:block}
+.fdock .fcard__bs{display:block; margin-top:2px; font-size:.76rem; font-weight:600; color:#4B5A58}
+/* 화면이 작아지면 카드도 작게 */
+@media (max-width:1100px), (max-height:640px){
+  .fdock{gap:10px}
+  .fdock .fcard .fcard__go{width:100px; gap:5px}
+  .fdock .fcard .fcard__art{height:74px}
+  .fdock .fcard .fcard__label{padding:4px 8px; font-size:.7rem}
+}
+/* 휴대폰: 오른쪽 아래 동그란 아이콘 (글은 화면 읽기 프로그램에만) — 이야기 화살표 · 아래 버튼 줄보다 위에 */
+@media (max-width:760px){
+  .fdock{top:auto; bottom:calc(120px + env(safe-area-inset-bottom, 0px)); right:10px; gap:10px; transform:none}
+  .fdock .fcard .fcard__go{width:60px; height:60px; gap:0; justify-content:center; border-radius:12px}
+  .fdock .fcard .fcard__go:hover{transform:none}
+  .fdock .fcard .fcard__art{height:100%}
+  .fdock .fcard .fcard__label{position:absolute; width:1px; height:1px; padding:0; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+  .fdock .fcard .fcard__bubble{display:none}
+  .fdock .fcard .fcard__close{top:-6px; left:-6px; right:auto; width:22px; height:22px; font-size:.8rem}
+}
+@media (prefers-reduced-motion:reduce){
+  .fdock .fcard,.fdock .fcard .fcard__go,.fdock .fcard .fcard__img{transition:none}
+}
+</style>

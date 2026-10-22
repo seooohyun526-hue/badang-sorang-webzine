@@ -1,0 +1,13 @@
+# 화면 확인용 캡처 · 테스트 결과
+미리보기_*.png
+*.json
+
+# 빌드 확인용 임시 파일
+_*.html
+
+# 운영체제 · 편집기
+desktop.ini
+Thumbs.db
+.DS_Store
+__pycache__/
+*.pyc
