@@ -315,9 +315,15 @@ SWIPE_CSS = """<style id="swipe-style">
   .stories.is-swipe .stories__viewport::-webkit-scrollbar{display:none}
   .stories.is-swipe .stories__track{flex:none; transform:none!important}
   .stories.is-swipe .st-card{scroll-snap-align:center; scroll-snap-stop:always}
+  /* 다음 인터뷰가 오른쪽에 살짝 보이게: 기울기 · 앞뒤 거리 없이 나란히 (손가락으로 넘기는 판에서만) */
+  .stories.is-swipe .stories__track{gap:14px}
+  .stories.is-swipe .st-card{transform:none!important; opacity:1!important}
 }
 </style>"""
 one('</style>' + nl + '<script>document.documentElement', '</style>' + nl + N(SWIPE_CSS) + nl + '<script>document.documentElement')
+# 13-1) 휴대폰 인터뷰 카드 폭: 화면의 72% (양옆에 이전 · 다음 카드가 살짝 보여요) — 두 군데(웹진 · 상세 화면 아래 '다른 영상')
+s = s.replace("cw = W < 700 ? Math.min(W * 0.78, 420, H * 0.46)", "cw = W < 700 ? Math.min(W * 0.72, 420, H * 0.46)")
+
 
 SW_LAYOUT = """      // 휴대폰 · 태블릿: 손가락으로 옆으로 넘기기 (세로 스크롤은 그대로 지나가요)
       var was = swipe; swipe = mqSwipe.matches; sec.classList.toggle('is-swipe', swipe);
@@ -543,8 +549,7 @@ if os.environ.get('BS_OCEAN') == 'v2':
         <div class="oc-paper__in">
           <header class="oc-paper__top">
             <div class="oc__bar"><p class="oc__kicker"></p><p class="oc__side"></p></div>
-            <h2 class="oc__title" id="ocTitle"></h2>
-            <p class="oc__sub"></p>
+            <h2 class="sr-only" id="ocTitle"></h2>
           </header>
           <div class="oc-paper__rows"></div>
         </div>
@@ -724,6 +729,10 @@ html .purpose.sx{background:
     radial-gradient(55% 45% at 30% 42%, rgba(141,224,208,.16) 0%, rgba(141,224,208,0) 70%),
     linear-gradient(180deg, rgba(36,111,108,calc(var(--sea-veil) + .1)) 0%, rgba(43,128,124,var(--sea-veil)) 38%, rgba(42,123,119,var(--sea-veil)) 70%, rgba(31,85,83,calc(var(--sea-veil) + .14)) 100%)}
 html .oc{background:rgba(31,85,83,calc(var(--sea-veil) + .14))}
+/* 상세 화면(인터뷰)도 바다 사진 위라서, 작은 머리글 · 제목을 흰 글씨로 또렷하게 */
+.sp-top .kicker{color:#fff; text-shadow:0 1px 3px rgba(6,40,44,.55), 0 0 14px rgba(6,40,44,.35)}
+.sp-top .kicker::before{background:#fff}
+.sp-title{color:#fff; text-shadow:0 2px 4px rgba(6,40,44,.5), 0 0 22px rgba(6,40,44,.35)}
 html .game{background:
     linear-gradient(180deg, rgba(31,85,83,calc(var(--sea-veil) + .14)) 0, rgba(31,85,83,0) 220px),
     radial-gradient(ellipse 90% 70% at 70% 10%, rgba(60,158,156,calc(var(--sea-veil) - .04)) 0%, rgba(38,115,122,var(--sea-veil)) 45%, rgba(31,95,99,calc(var(--sea-veil) + .1)) 100%)}

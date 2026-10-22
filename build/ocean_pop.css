@@ -10,7 +10,7 @@
 .ocp[hidden]{display:none}
 html.ocp-lock{overflow:hidden; scrollbar-gutter:stable}
 .ocp__dim{position:absolute; inset:0; background:rgba(8,32,34,.56); opacity:0; transition:opacity .25s; touch-action:none}
-.ocp__box{position:relative; width:min(860px, 100%); max-height:calc(100svh - 32px); overflow:auto; overscroll-behavior:contain; border-radius:26px; color:#2C3B3A;
+.ocp__box{position:relative; display:flex; flex-direction:column; width:min(860px, 100%); max-height:calc(100svh - 32px); overflow:hidden; border-radius:26px; color:#2C3B3A;
   background:
     radial-gradient(60% 50% at 0% 0%, rgba(249,190,140,.38), transparent 70%),
     radial-gradient(60% 50% at 100% 0%, rgba(150,214,204,.45), transparent 70%),
@@ -20,7 +20,12 @@ html.ocp-lock{overflow:hidden; scrollbar-gutter:stable}
 .ocp__box:focus{outline:none}
 .ocp.is-on .ocp__dim{opacity:1}
 .ocp.is-on .ocp__box{opacity:1; transform:none}
-.ocp__in{display:grid; grid-template-columns:minmax(0, 380px) minmax(0, 1fr); gap:26px; align-items:start; padding:24px}
+.ocp__in{display:grid; grid-template-columns:minmax(0, 380px) minmax(0, 1fr); gap:26px; align-items:start; padding:24px; min-height:0; overflow:auto; overscroll-behavior:contain}
+/* 닫기 × (오른쪽 위, 창 안을 내려도 늘 그 자리) */
+.ocp__x{position:absolute; top:12px; right:12px; z-index:3; display:grid; place-items:center; width:40px; height:40px; padding:0; border:0; border-radius:50%;
+  background:rgba(255,253,248,.92); color:#1F4A48; font:inherit; font-size:1.6rem; line-height:1; cursor:pointer; box-shadow:0 2px 10px -2px rgba(20,62,60,.35); transition:background-color .2s, transform .15s}
+.ocp__x:hover{background:#fff; transform:scale(1.06)}
+.ocp__x:focus-visible{outline:3px solid #E97842; outline-offset:2px}
 /* 왼쪽: 온도계 그림 + 실제 눈금 */
 .chr-scene{position:relative; aspect-ratio:720 / 614; border-radius:20px; overflow:hidden; background:#CFE6F7; box-shadow:0 12px 28px -18px rgba(20,62,60,.55)}
 .chr-scene__img{display:block; width:100%; height:100%; object-fit:cover; -webkit-user-drag:none; user-select:none}
@@ -31,7 +36,7 @@ html.ocp-lock{overflow:hidden; scrollbar-gutter:stable}
   box-shadow:inset 2px 0 0 rgba(255,255,255,.45); transition:height .9s cubic-bezier(.2,.8,.2,1)}
 /* 오른쪽 */
 .chr-main{min-width:0}
-.ocp__brand{display:flex; align-items:center; justify-content:space-between; margin:2px 0 16px; padding-bottom:12px; border-bottom:1px solid rgba(31,74,72,.12);
+.ocp__brand{display:flex; align-items:center; justify-content:space-between; margin:2px 44px 16px 0; padding-bottom:12px; border-bottom:1px solid rgba(31,74,72,.12);
   font-size:.76rem; font-weight:800; letter-spacing:.16em; color:#2B6F64}
 .ocp__brand svg{width:24px; height:16px; color:#5FBFAE}
 .ocp__title{margin:0; font-size:clamp(1.25rem, 2.4vw, 1.5rem); font-weight:900; line-height:1.38; letter-spacing:-.03em; color:#1F4A48; word-break:keep-all}
@@ -82,25 +87,22 @@ html.ocp-lock{overflow:hidden; scrollbar-gutter:stable}
 .chr-list__ul li.is-empty{justify-content:flex-start; color:#7A8584}
 .chr-note{margin:8px 0 0; font-size:.74rem; color:#8A9593}
 /* 아래 버튼 두 개 (왼쪽 보조 · 오른쪽 주요) */
-.ocp__acts{display:flex; justify-content:flex-end; align-items:center; gap:8px; margin-top:14px}
-.ocp__btn{position:relative; flex:0 0 auto; min-height:40px; margin:0; padding:6px 16px; border-radius:12px; font:inherit; font-weight:800; line-height:1.3; word-break:keep-all; cursor:pointer;
-  transition:transform .15s, box-shadow .15s, background-color .2s, border-color .2s}
-.ocp__btn--sub{border:1.5px solid #CFE1DB; background:#FFFDF8; color:#2B5E58; font-size:.82rem}
-.ocp__btn--sub:hover{border-color:#5FBFAE; background:#F3FAF7}
-.ocp__btn--main{min-width:92px; border:0; background:linear-gradient(180deg, #2C8077 0%, #1F5E58 100%); color:#fff; font-size:.88rem; box-shadow:0 3px 0 #154440, 0 8px 14px -8px rgba(20,62,60,.6)}
-.ocp__btn--main:hover{background:linear-gradient(180deg, #31897F 0%, #226660 100%)}
-.ocp__btn--main:active{transform:translateY(2px); box-shadow:0 1px 0 #154440}
-.ocp__btn:focus-visible{outline:3px solid #E97842; outline-offset:3px}
+.ocp__acts{display:flex; justify-content:flex-end; align-items:center; margin-top:12px}
+/* 오늘 하루 보지 않기: 버튼이 아닌 밑줄 글 */
+.ocp__today{margin:0; padding:6px 2px; border:0; background:none; color:#4B5A58; font:inherit; font-size:.84rem; font-weight:600;
+  text-decoration:underline; text-underline-offset:4px; text-decoration-thickness:1px; cursor:pointer}
+.ocp__today:hover{color:#1F4A48}
+.ocp__today:focus-visible{outline:3px solid #E97842; outline-offset:2px; border-radius:4px}
 @media (max-width:760px){
   .ocp{padding:12px}
   .ocp__box{width:min(460px, 100%); max-height:calc(100svh - 24px)}
+  .ocp__brand{margin-right:0}
   .ocp__in{display:block; padding:18px 18px 20px}
   .chr-scene{width:min(340px, 100%); margin:0 auto 14px}
   .ocp__brand{margin-bottom:12px}
   .chr-temp__v{font-size:2rem}
   .chr-btn{min-height:48px; font-size:.9rem}
-  .ocp__btn{min-height:40px}
-  .ocp__btn--sub{font-size:.8rem; padding:6px 12px}
+  .ocp__x{top:10px; right:10px; width:38px; height:38px}
 }
 @media (prefers-reduced-motion:reduce){ .ocp__dim,.ocp__box,.chr-merc{transition:none} .chr-temp__up.is-on,.chr-btn--like.is-pop svg{animation:none} }
 </style>

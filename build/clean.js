@@ -7,12 +7,11 @@
   var Ocean = (function () {
     var sec = $('#ocean');
     if (!sec || typeof CLEAN === 'undefined') return {};
-    var C = CLEAN, guides = (typeof SITE !== 'undefined' && SITE.showGuides !== false);
+    var C = CLEAN;
     var br = function (s) { return String(s || '').split('\n').map(esc).join('<br>'); };
     $('.oc__kicker', sec).textContent = C.kicker || '';
     $('.oc__side', sec).textContent = C.nav || '';
-    $('#ocTitle').innerHTML = br(C.title);
-    $('.oc__sub', sec).textContent = C.sub || '';
+    $('#ocTitle').textContent = C.nav || '';                        // 큰 제목은 빼고(사용자 요청), 화면 읽기 프로그램용 이름만
 
     // ── 그림: 같은 바다의 BEFORE / AFTER (이해를 돕기 위한 일러스트) ──
     var uid = 0;
@@ -104,29 +103,12 @@
         '</div></article>';
     }).join('') + '</div>';
     var CL = C.closing || {};
-    html += '<div class="oc-closing oc-rv"><p class="oc-closing__line oc-r" style="--at:0">' + esc(CL.line1) + '<br><em>' + esc(CL.em) + '</em>' + esc(CL.rest) + '</p>' +
-      (C.source ? '<p class="oc-source oc-r" style="--at:.1">' + esc(C.source) + '</p>' : '') + '</div>';
-    // 후원 · 박물관 버튼 (계좌 · 주소가 비어 있으면 누를 때 '준비 중' 안내)
+    html += '<div class="oc-closing oc-rv"><p class="oc-closing__line oc-r" style="--at:0">' + esc(CL.line1) + '<br><em>' + esc(CL.em) + '</em>' + esc(CL.rest) + '</p></div>';
+    // 후원 · 박물관 버튼: 누르면 그 페이지가 새 탭으로 열려요 (주소가 없는 버튼은 숨겨요)
     var A = C.cta || {}, S = A.support || {}, M = A.museum || {};
-    var notes = guides ? [has(S.account) ? '' : S.note, has(M.url) ? '' : M.note].filter(Boolean) : [];
-    html += '<div class="oc-cta oc-rv"><div class="oc-cta__row oc-r" style="--at:0">' +
-        '<button type="button" class="oc-cta__btn" id="ocCopy">' + esc(S.button) + '</button>' +
-        (has(M.url) ? '<a class="oc-cta__btn oc-cta__btn--line" href="' + esc(M.url) + '" target="_blank" rel="noopener">' + esc(M.button) + '</a>'
-                    : '<button type="button" class="oc-cta__btn oc-cta__btn--line" id="ocMuseum">' + esc(M.button) + '</button>') +
-      '</div><p class="oc-cta__msg" id="ocMsg" role="status" aria-live="polite"></p>' +
-      notes.map(function (n) { return '<p class="oc-cta__note">' + esc(n) + '</p>'; }).join('') + '</div>';
+    var link = function (o, cls) { return has(o.url) ? '<a class="oc-cta__btn' + cls + '" href="' + esc(o.url) + '" target="_blank" rel="noopener">' + esc(o.button) + '<span class="sr-only"> (새 탭에서 열려요)</span></a>' : ''; };
+    html += '<div class="oc-cta oc-rv"><div class="oc-cta__row oc-r" style="--at:0">' + link(S, '') + link(M, ' oc-cta__btn--line') + '</div></div>';
     $('.oc-paper__rows', sec).innerHTML = html;
-
-    // 계좌번호 복사 · 준비 중 안내
-    var copy = $('#ocCopy'), museum = $('#ocMuseum'), msg = $('#ocMsg'), msgT = 0;
-    function say(t) { msg.textContent = t; clearTimeout(msgT); msgT = setTimeout(function () { msg.textContent = ''; }, 2600); }
-    if (copy) copy.addEventListener('click', function () {
-      if (!has(S.account)) { say(S.soon || '후원처를 준비하고 있어요'); return; }
-      var done = function () { say((S.copied || '복사했어요') + ' · ' + S.account); };
-      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(S.account).then(done, done);
-      else { var t = document.createElement('textarea'); t.value = S.account; document.body.appendChild(t); t.select(); try { document.execCommand('copy'); } catch (e) {} t.remove(); done(); }
-    });
-    if (museum) museum.addEventListener('click', function () { say(M.soon || '박물관 주소를 준비하고 있어요'); });
 
     // ── BEFORE / AFTER 손잡이: 끌기(마우스 · 손가락) · 키보드 ← → ──
     $$('.oc-cmp', sec).forEach(function (box) {

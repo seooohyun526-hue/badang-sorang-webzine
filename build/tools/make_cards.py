@@ -65,7 +65,7 @@ async def main():
         await pg.add_style_tag(content=HIDE_UI); await pg.evaluate("document.documentElement.style.scrollBehavior='auto'")
         d = await pg.evaluate("""(()=>({gt:GATE.title, gs:GATE.sub, cap:(document.querySelector('.sea__cap-l')||{}).textContent,
           st:[STORIES.kicker, STORIES.title], pu:[(document.querySelector('a[href="#purpose"]')||{}).textContent, SEA.title],
-          oc:[CLEAN.kicker, CLEAN.title], ga:[GAME.kicker, GAME.title], ab:[ABOUT.kicker, ABOUT.lineA + ' ' + ABOUT.lineB]}))()""")
+          oc:[CLEAN.kicker, CLEAN.intro.title], ga:[GAME.kicker, GAME.title], ab:[ABOUT.kicker, ABOUT.lineA + ' ' + ABOUT.lineB]}))()""")
         one = lambda t: ' '.join(str(t or '').split())
         arts = []
         for sid, (kicker, title) in (('stories', d['st']), ('purpose', d['pu']), ('ocean', d['oc']), ('badatgil', d['ga']), ('about', d['ab'])):

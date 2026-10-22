@@ -1061,6 +1061,9 @@ a.pu-feature__link:hover .pu-feature__title,a.pu-item__link:hover .pu-item__titl
   .stories.is-swipe .stories__viewport::-webkit-scrollbar{display:none}
   .stories.is-swipe .stories__track{flex:none; transform:none!important}
   .stories.is-swipe .st-card{scroll-snap-align:center; scroll-snap-stop:always}
+  /* 다음 인터뷰가 오른쪽에 살짝 보이게: 기울기 · 앞뒤 거리 없이 나란히 (손가락으로 넘기는 판에서만) */
+  .stories.is-swipe .stories__track{gap:14px}
+  .stories.is-swipe .st-card{transform:none!important; opacity:1!important}
 }
 </style>
 <style id="explore-style">
@@ -1450,7 +1453,7 @@ body.in-ocean .gfab{transform:translateY(140%); opacity:0; pointer-events:none}
 .oc__kicker,.oc__side{margin:0; font-weight:700; letter-spacing:.04em}
 .oc__title{margin:clamp(26px,5vw,64px) 0 0; font-family:var(--serif); font-weight:700; font-size:clamp(2rem,4.6vw,4.4rem); line-height:1.2; letter-spacing:-.03em; color:#1F4A48; word-break:keep-all}
 .oc__sub{margin:clamp(14px,2vw,22px) 0 0; max-width:32em; font-size:clamp(.96rem,1.2vw,1.1rem); line-height:1.75; color:#4B5A58; word-break:keep-all}
-.oc-paper__rows{margin-top:clamp(30px,5vw,60px); padding-top:clamp(30px,5vw,60px); border-top:1px solid rgba(31,74,72,.14)}
+.oc-paper__rows{margin-top:clamp(18px,3vw,36px); padding-top:clamp(26px,4vw,48px); border-top:1px solid rgba(31,74,72,.14)}
 /* 01 바다를 돌보는 해녀 (가운데 정렬 소개) */
 .oc-intro{display:flex; flex-direction:column; align-items:center; text-align:center; margin:clamp(10px,2vw,24px) auto 0; max-width:46em}
 .oc-intro__no{margin:0; font-size:.86rem; font-weight:800; letter-spacing:.06em; color:#D9643A}
@@ -1487,7 +1490,6 @@ body.in-ocean .gfab{transform:translateY(140%); opacity:0; pointer-events:none}
 .oc-closing{margin:clamp(40px,6vw,72px) auto 0; text-align:center}
 .oc-closing__line{margin:0; font-family:'Hahmlet',var(--serif); font-weight:700; font-size:clamp(1.35rem,2.4vw,2rem); line-height:1.5; color:#1F4A48; word-break:keep-all}
 .oc-closing__line em{font-style:normal; color:#D9643A}
-.oc-source{margin:12px auto 0; max-width:60em; font-size:.74rem; line-height:1.6; color:#7A8584; word-break:keep-all}
 /* 후원 · 박물관 버튼 */
 .oc-cta{display:flex; flex-direction:column; align-items:center; margin-top:clamp(26px,3.6vw,44px); text-align:center}
 .oc-cta__row{display:flex; flex-wrap:wrap; justify-content:center; gap:14px}
@@ -1496,8 +1498,6 @@ body.in-ocean .gfab{transform:translateY(140%); opacity:0; pointer-events:none}
 .oc-cta__btn--line{border-color:#E2DACB; background:#FFFDF8; color:#1F4A48}
 .oc-cta__btn:hover{transform:translateY(-2px); box-shadow:0 10px 20px -12px rgba(31,74,72,.5)}
 .oc-cta__btn:focus-visible{outline:3px solid #1F4A48; outline-offset:3px}
-.oc-cta__msg{min-height:1.4em; margin:12px 0 0; font-size:.86rem; font-weight:700; color:#2B6F64}
-.oc-cta__note{margin:6px 0 0; padding:6px 10px; border-radius:8px; border:1px dashed #E6A57E; background:#FFF6EE; color:#B4521F; font-size:.76rem; line-height:1.5}
 /* 글 · 그림이 화면 아래에서 올라오는 만큼 드러나요 (--r: 스크롤 진행도 · --at: 차례) — 거꾸로 스크롤하면 다시 감춰져요 */
 .oc-r{--k:clamp(0, calc((var(--r, 1) - var(--at, 0)) / .3), 1); opacity:calc(.08 + var(--k) * .92); transform:translate3d(0, calc((1 - var(--k)) * 26px), 0)}
 @media (max-width:1100px){
@@ -1532,6 +1532,10 @@ html .purpose.sx{background:
     radial-gradient(55% 45% at 30% 42%, rgba(141,224,208,.16) 0%, rgba(141,224,208,0) 70%),
     linear-gradient(180deg, rgba(36,111,108,calc(var(--sea-veil) + .1)) 0%, rgba(43,128,124,var(--sea-veil)) 38%, rgba(42,123,119,var(--sea-veil)) 70%, rgba(31,85,83,calc(var(--sea-veil) + .14)) 100%)}
 html .oc{background:rgba(31,85,83,calc(var(--sea-veil) + .14))}
+/* 상세 화면(인터뷰)도 바다 사진 위라서, 작은 머리글 · 제목을 흰 글씨로 또렷하게 */
+.sp-top .kicker{color:#fff; text-shadow:0 1px 3px rgba(6,40,44,.55), 0 0 14px rgba(6,40,44,.35)}
+.sp-top .kicker::before{background:#fff}
+.sp-title{color:#fff; text-shadow:0 2px 4px rgba(6,40,44,.5), 0 0 22px rgba(6,40,44,.35)}
 html .game{background:
     linear-gradient(180deg, rgba(31,85,83,calc(var(--sea-veil) + .14)) 0, rgba(31,85,83,0) 220px),
     radial-gradient(ellipse 90% 70% at 70% 10%, rgba(60,158,156,calc(var(--sea-veil) - .04)) 0%, rgba(38,115,122,var(--sea-veil)) 45%, rgba(31,95,99,calc(var(--sea-veil) + .1)) 100%)}
@@ -1549,7 +1553,7 @@ html .game__floor{opacity:.35}
 /* =========================================================
    ★ 오른쪽 미니 팝업 2개 — 위: 게임(해녀의 바당길) · 아래: 후원(바당 소랑 응원하기)
    · 데스크톱: 화면 오른쪽 가운데에 캐릭터 두 명이 세로로 떠 있어요 (흰 상자 없이 캐릭터 + 작은 버튼 글 · 마우스를 올리면 왼쪽에 짧은 말풍선)
-   · 휴대폰(760px 이하): 오른쪽 아래(아래 버튼 줄보다 조금 위) 캐릭터만 작게 두 개
+   · 휴대폰(760px 이하): 오른쪽 아래(아래 버튼 줄보다 조금 위)에 PC 처럼 캐릭터 + 버튼 글을 작게
    · 웹진의 주요 버튼과 겹치게 되면 그동안만 살짝 사라져 비켜요 (.is-dodge)
    · 두 팝업은 크기 · 그림자 · 버튼 모양이 같아요 (색만 게임 = 민트 · 후원 = 주황)
    · 그림은 사용자가 만든 캐릭터 그대로 (비율 유지 · 잘리지 않게 contain)
@@ -1600,11 +1604,11 @@ body.is-locked .fdock .fcard.is-on,body.in-ocean .fdock .fcard.is-on{opacity:0; 
 }
 /* 휴대폰: 오른쪽 아래 동그란 아이콘 (글은 화면 읽기 프로그램에만) — 이야기 화살표 · 아래 버튼 줄보다 위에 */
 @media (max-width:760px){
-  .fdock{top:auto; bottom:calc(120px + env(safe-area-inset-bottom, 0px)); right:10px; gap:10px; transform:none}
-  .fdock .fcard .fcard__go{width:60px; height:60px; gap:0; justify-content:center; border-radius:12px}
+  .fdock{top:auto; bottom:calc(110px + env(safe-area-inset-bottom, 0px)); right:6px; gap:8px; transform:none}
+  .fdock .fcard .fcard__go{width:84px; gap:3px}
   .fdock .fcard .fcard__go:hover{transform:none}
-  .fdock .fcard .fcard__art{height:100%}
-  .fdock .fcard .fcard__label{position:absolute; width:1px; height:1px; padding:0; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+  .fdock .fcard .fcard__art{height:54px}
+  .fdock .fcard .fcard__label{padding:3px 7px; font-size:.62rem; line-height:1.25; letter-spacing:-.02em; white-space:nowrap}
   .fdock .fcard .fcard__bubble{display:none}
   .fdock .fcard .fcard__close{top:-6px; left:-6px; right:auto; width:22px; height:22px; font-size:.8rem}
 }
@@ -1624,7 +1628,7 @@ body.is-locked .fdock .fcard.is-on,body.in-ocean .fdock .fcard.is-on{opacity:0; 
 .ocp[hidden]{display:none}
 html.ocp-lock{overflow:hidden; scrollbar-gutter:stable}
 .ocp__dim{position:absolute; inset:0; background:rgba(8,32,34,.56); opacity:0; transition:opacity .25s; touch-action:none}
-.ocp__box{position:relative; width:min(860px, 100%); max-height:calc(100svh - 32px); overflow:auto; overscroll-behavior:contain; border-radius:26px; color:#2C3B3A;
+.ocp__box{position:relative; display:flex; flex-direction:column; width:min(860px, 100%); max-height:calc(100svh - 32px); overflow:hidden; border-radius:26px; color:#2C3B3A;
   background:
     radial-gradient(60% 50% at 0% 0%, rgba(249,190,140,.38), transparent 70%),
     radial-gradient(60% 50% at 100% 0%, rgba(150,214,204,.45), transparent 70%),
@@ -1634,7 +1638,12 @@ html.ocp-lock{overflow:hidden; scrollbar-gutter:stable}
 .ocp__box:focus{outline:none}
 .ocp.is-on .ocp__dim{opacity:1}
 .ocp.is-on .ocp__box{opacity:1; transform:none}
-.ocp__in{display:grid; grid-template-columns:minmax(0, 380px) minmax(0, 1fr); gap:26px; align-items:start; padding:24px}
+.ocp__in{display:grid; grid-template-columns:minmax(0, 380px) minmax(0, 1fr); gap:26px; align-items:start; padding:24px; min-height:0; overflow:auto; overscroll-behavior:contain}
+/* 닫기 × (오른쪽 위, 창 안을 내려도 늘 그 자리) */
+.ocp__x{position:absolute; top:12px; right:12px; z-index:3; display:grid; place-items:center; width:40px; height:40px; padding:0; border:0; border-radius:50%;
+  background:rgba(255,253,248,.92); color:#1F4A48; font:inherit; font-size:1.6rem; line-height:1; cursor:pointer; box-shadow:0 2px 10px -2px rgba(20,62,60,.35); transition:background-color .2s, transform .15s}
+.ocp__x:hover{background:#fff; transform:scale(1.06)}
+.ocp__x:focus-visible{outline:3px solid #E97842; outline-offset:2px}
 /* 왼쪽: 온도계 그림 + 실제 눈금 */
 .chr-scene{position:relative; aspect-ratio:720 / 614; border-radius:20px; overflow:hidden; background:#CFE6F7; box-shadow:0 12px 28px -18px rgba(20,62,60,.55)}
 .chr-scene__img{display:block; width:100%; height:100%; object-fit:cover; -webkit-user-drag:none; user-select:none}
@@ -1645,7 +1654,7 @@ html.ocp-lock{overflow:hidden; scrollbar-gutter:stable}
   box-shadow:inset 2px 0 0 rgba(255,255,255,.45); transition:height .9s cubic-bezier(.2,.8,.2,1)}
 /* 오른쪽 */
 .chr-main{min-width:0}
-.ocp__brand{display:flex; align-items:center; justify-content:space-between; margin:2px 0 16px; padding-bottom:12px; border-bottom:1px solid rgba(31,74,72,.12);
+.ocp__brand{display:flex; align-items:center; justify-content:space-between; margin:2px 44px 16px 0; padding-bottom:12px; border-bottom:1px solid rgba(31,74,72,.12);
   font-size:.76rem; font-weight:800; letter-spacing:.16em; color:#2B6F64}
 .ocp__brand svg{width:24px; height:16px; color:#5FBFAE}
 .ocp__title{margin:0; font-size:clamp(1.25rem, 2.4vw, 1.5rem); font-weight:900; line-height:1.38; letter-spacing:-.03em; color:#1F4A48; word-break:keep-all}
@@ -1696,25 +1705,22 @@ html.ocp-lock{overflow:hidden; scrollbar-gutter:stable}
 .chr-list__ul li.is-empty{justify-content:flex-start; color:#7A8584}
 .chr-note{margin:8px 0 0; font-size:.74rem; color:#8A9593}
 /* 아래 버튼 두 개 (왼쪽 보조 · 오른쪽 주요) */
-.ocp__acts{display:flex; justify-content:flex-end; align-items:center; gap:8px; margin-top:14px}
-.ocp__btn{position:relative; flex:0 0 auto; min-height:40px; margin:0; padding:6px 16px; border-radius:12px; font:inherit; font-weight:800; line-height:1.3; word-break:keep-all; cursor:pointer;
-  transition:transform .15s, box-shadow .15s, background-color .2s, border-color .2s}
-.ocp__btn--sub{border:1.5px solid #CFE1DB; background:#FFFDF8; color:#2B5E58; font-size:.82rem}
-.ocp__btn--sub:hover{border-color:#5FBFAE; background:#F3FAF7}
-.ocp__btn--main{min-width:92px; border:0; background:linear-gradient(180deg, #2C8077 0%, #1F5E58 100%); color:#fff; font-size:.88rem; box-shadow:0 3px 0 #154440, 0 8px 14px -8px rgba(20,62,60,.6)}
-.ocp__btn--main:hover{background:linear-gradient(180deg, #31897F 0%, #226660 100%)}
-.ocp__btn--main:active{transform:translateY(2px); box-shadow:0 1px 0 #154440}
-.ocp__btn:focus-visible{outline:3px solid #E97842; outline-offset:3px}
+.ocp__acts{display:flex; justify-content:flex-end; align-items:center; margin-top:12px}
+/* 오늘 하루 보지 않기: 버튼이 아닌 밑줄 글 */
+.ocp__today{margin:0; padding:6px 2px; border:0; background:none; color:#4B5A58; font:inherit; font-size:.84rem; font-weight:600;
+  text-decoration:underline; text-underline-offset:4px; text-decoration-thickness:1px; cursor:pointer}
+.ocp__today:hover{color:#1F4A48}
+.ocp__today:focus-visible{outline:3px solid #E97842; outline-offset:2px; border-radius:4px}
 @media (max-width:760px){
   .ocp{padding:12px}
   .ocp__box{width:min(460px, 100%); max-height:calc(100svh - 24px)}
+  .ocp__brand{margin-right:0}
   .ocp__in{display:block; padding:18px 18px 20px}
   .chr-scene{width:min(340px, 100%); margin:0 auto 14px}
   .ocp__brand{margin-bottom:12px}
   .chr-temp__v{font-size:2rem}
   .chr-btn{min-height:48px; font-size:.9rem}
-  .ocp__btn{min-height:40px}
-  .ocp__btn--sub{font-size:.8rem; padding:6px 12px}
+  .ocp__x{top:10px; right:10px; width:38px; height:38px}
 }
 @media (prefers-reduced-motion:reduce){ .ocp__dim,.ocp__box,.chr-merc{transition:none} .chr-temp__up.is-on,.chr-btn--like.is-pop svg{animation:none} }
 </style>
@@ -1931,8 +1937,7 @@ html.ocp-lock{overflow:hidden; scrollbar-gutter:stable}
         <div class="oc-paper__in">
           <header class="oc-paper__top">
             <div class="oc__bar"><p class="oc__kicker"></p><p class="oc__side"></p></div>
-            <h2 class="oc__title" id="ocTitle"></h2>
-            <p class="oc__sub"></p>
+            <h2 class="sr-only" id="ocTitle"></h2>
           </header>
           <div class="oc-paper__rows"></div>
         </div>
@@ -2306,38 +2311,38 @@ var SEA = {
   backLabel: "← 돌아가기",
   wipNote: "이 이야기는 지금 취재하고 정리하는 중이에요. 해녀 인터뷰와 사진이 더해지면 이 자리에서 이어서 볼 수 있어요.",
   // ── 해녀문화 팝업 4장 (디자이너 전달용 v3 · 갤러리형 · 짧은 팝업) — 순서: 01 물질 · 02 잠수굿 · 03 해녀노래 · 04 해녀 공동체와 전승
-  //  · photos: 사진 3장 [파일 이름, 사진 설명]. 사진 파일은 media/popup/ 폴더에 이 이름 그대로 넣어 주세요
+  //  · photos: 사진 한 장 [파일 이름, 사진 설명, (비워 둠), 사진에서 보여 줄 위치(선택, 예: "50% 30%")]. 사진 파일은 media/popup/ 폴더에 이 이름 그대로 넣어 주세요
   //            (폴더에 파일이 있으면 웹진을 만들 때 이 파일 안에 함께 담겨요. 없으면 '사진 준비 중' 자리가 보여요)
   //  · values: 이 문화가 지키는 가치 — 태그 2개 + 한 문장
-  //  · credit: 사진 출처와 라이선스 (빼면 안 돼요)
+  //  · credit: 사진 출처와 라이선스 — 출처를 확인하면 꼭 넣어 주세요 (비어 있으면 화면에 안 보여요)
   items: [
     { id: "seongge", name: "성게", topic: "물질", art: "seongge", tint: "#E7DDEB", pos: [38, 66, 32, -4, 5],
       sub: "숨 한 번에 바다 아래로, 장비 없이 바다를 캐는 기술.",
       body: "해녀는 공기통 같은 호흡 장비 없이 숨을 참고 바다에 들어가요. 한 번에 1분 안팎, 수심 10m 안팎까지 내려가 소라·전복·미역을 캐고, 물 위로 올라오며 ‘숨비소리’를 내요. “물숨을 먹지 마라”, 욕심을 경계하는 말처럼 숨이 허락하는 만큼만 가져와요.",
-      photos: [["01_물질_대표.jpg", "테왁을 띄워 두고 물질하는 해녀"], ["01_물질_작은1.jpg", "해녀복과 물질 도구"], ["01_물질_작은2.jpg", "갓 잡은 해산물을 들어 보이는 해녀"]],
+      photos: [["01_물질_대표.jpg", "문어를 들어 보이는 해녀"]],
       values: { tags: ["친환경 어업", "바다를 읽는 지식"], text: "필요한 만큼만 가져오는 물질이 오랫동안 제주 바다를 지켜 왔어요." },
-      credit: "사진: Korea.net/해외문화홍보원 (CC BY-SA 2.0) · karendotcom127 (CC BY 2.0) · 김형찬 (CC BY 2.0 KR) / 위키미디어 공용" },
+      credit: "" },
     { id: "muneo", name: "문어", topic: "잠수굿", art: "muneo", tint: "#F3DED5", pos: [46, 49.5, 39, -3, 2],
       sub: "바다에 드는 해녀들의 안녕과 풍요를 비는 마을의 굿.",
       body: "음력 1~3월, 마을마다 날을 정해 해녀들이 함께 바다의 신 용왕(요왕)께 한 해의 안전과 풍요를 비는 굿이에요. 굿 끝 무렵에는 바닷가를 돌며 좁씨(조의 씨앗)를 뿌리는 ‘씨드림’으로 해산물이 잘 자라기를 빌어요.",
       // ※ 자유 이용할 수 있는 '잠수굿' 사진이 없어 같은 해녀·어부의 굿인 '제주칠머리당영등굿' 사진으로 대신했어요
-      photos: [["02_잠수굿_대표.jpg", "제주칠머리당영등굿의 초감제 (2007)"], ["02_잠수굿_작은1.jpg", "바닷가에 차려진 영등굿판"], ["02_잠수굿_작은2.jpg", "박물관에 재현된 제주의 굿"]],
+      photos: [["02_잠수굿_대표.jpg", "바닷가에 차려진 굿판"]],
       values: { tags: ["공동체 결속", "제주의 정체성"], text: "같은 바다에 목숨을 맡긴 해녀들을 하나로 묶는 끈이에요." },
-      credit: "사진: 국가유산청 (공공누리 제1유형) · 위키미디어 공용 (CC BY 4.0) · karendotcom127 (CC BY 2.0)" },
+      credit: "" },
     { id: "miyeok", name: "미역", topic: "해녀노래", art: "miyeok", tint: "#E1E8D2", pos: [23, 58, 28, -4, 3],
       sub: "노를 저으며 부르던 바다의 노래, “이어도사나”.",
       body: "물질을 나가는 배 위에서 노를 저으며 부르던 노동요예요. “이어도사나” 후렴이 노 젓는 박자를 맞춰 줬고, 노랫말에는 고된 바다 일과 가족을 향한 마음이 담겼어요. 1971년 제주도 무형문화재 제1호로 지정됐어요.",
       // ※ 노래하는 장면 사진이 없어 물질 나가는 배와 옛 해녀 사진으로 구성했어요 (음원 재생 버튼은 저작권 확인 후 추가)
-      photos: [["03_해녀노래_대표.jpg", "물질을 나가려고 배에 오른 해녀들 (성산)"], ["03_해녀노래_작은1.jpg", "1930년대 제주 바다의 해녀들"], ["03_해녀노래_작은2.jpg", "1958년 제주 해녀들"]],
+      photos: [["03_해녀노래_대표.jpg", "등짐을 지고 바닷가를 오르는 옛 해녀들"]],
       values: { tags: ["제주의 정체성", "예술의 원천"], text: "해녀의 삶이 담긴 노래는 지금도 시·영화·음악으로 다시 태어나요." },
-      credit: "사진: Teemeah (CC BY-SA 4.0) · 平凡社 1932 (퍼블릭 도메인) · 한국정책방송원 KTV (공공누리 제1유형) / 위키미디어 공용" },
+      credit: "" },
     { id: "sora", name: "뿔소라", topic: "해녀 공동체와 전승", art: "sora", tint: "#EFE3CF", pos: [63, 63, 33, 18, 4],
       sub: "어머니에서 딸로, 선배에서 후배로 이어지는 바다.",
       body: "해녀들은 상군·중군·하군으로 나뉘어 선배가 후배를 이끌고, 돌담 쉼터 ‘불턱’에서 바다를 가르쳐요. 나이 든 해녀를 위해 얕은 바다를 남겨 둔 ‘할망바당’처럼 서로를 돌보며, 물질은 어머니에서 딸로 이어져 왔어요.",
       // ※ 첫 사진은 제주해녀박물관에 재현된 '불턱' 전시예요
-      photos: [["04_공동체와전승_대표.jpg", "해녀박물관에 재현된 불턱"], ["04_공동체와전승_작은1.jpg", "물질을 마치고 함께 망사리를 옮기는 해녀들"], ["04_공동체와전승_작은2.jpg", "서로 챙기며 함께 바다에 드는 해녀들"]],
+      photos: [["04_공동체와전승_대표.jpg", "물질 전 서로 해녀복을 챙겨 주는 해녀들", "", "50% 30%"]],
       values: { tags: ["세대 간 전승", "여성의 지위"], text: "직접 번 돈으로 가족과 마을을 지켜 온 여성들의 공동체예요." },
-      credit: "사진: karendotcom127 (CC BY 2.0) · ldobi (CC BY-SA 3.0) / 위키미디어 공용" }
+      credit: "" }
   ]
 };
 /* ───────── 2-1. 해녀들의 해양정화 이야기 ('목적' 다음 · '해녀의 바당길' 앞) ─────────
@@ -2346,13 +2351,10 @@ var SEA = {
    · cards: 해녀가 바다에서 하는 세 가지 일 — 그림 가운데 손잡이를 밀면 BEFORE / AFTER 를 비교할 수 있어요
      ※ 그림은 이해를 돕기 위한 일러스트예요
    · cheer: 이 칸에 들어오면 뜨는 '응원 온도' 창 — 좋아요 · 응원의 한 마디로 온도계가 올라가요 (그림: media/cheer-thermo.webp)
-   · cta: 맨 아래 버튼 두 개 — account(계좌), url(주소)을 비워 두면 누를 때 '준비 중' 안내가 나와요
-     (SITE.showGuides 가 true 면 '※ 여기에 넣어 주세요' 안내가 함께 보여요) */
+   · cta: 맨 아래 버튼 두 개 — 누르면 url 의 후원 · 박물관 페이지가 새 탭으로 열려요 (url 을 비우면 그 버튼은 숨어요) */
 var CLEAN = {
   nav: "바다 지키기",
   kicker: "해양정화 · OCEAN CARE",
-  title: "해녀는 바다를 캐는 사람인 동시에,\n바다를 돌보는 사람입니다.",
-  sub: "바다에 남겨진 쓰레기를 건져 올리고, 다음 세대가 살아갈 바다를 지켜온 해녀들의 이야기.",
   intro: {
     no: "01", label: "바다를 돌보는 해녀",
     title: "해녀가 다녀가면,\n바다가 달라져요",
@@ -2397,17 +2399,16 @@ var CLEAN = {
     reached: "목표 온도에 닿았어요! 응원 고마워요",
     note: "응원은 이 기기(브라우저)에 저장돼요.",
     today: "오늘 하루 보지 않기",    // 누르면 오늘이 끝날 때까지 이 칸에 들어와도 저절로 뜨지 않아요 (이 브라우저)
-    close: "나가기"                  // 누르면 창만 닫히고 이 칸에 그대로 있어요
+    close: "닫기"                    // 오른쪽 위 × (화면 읽기 프로그램이 읽는 이름) — 누르면 창만 닫히고 이 칸에 그대로 있어요
   },
   closing: { line1: "해녀가 줄어드는 만큼,", em: "바다를 돌보던 손길", rest: "도 줄어듭니다." },
-  source: "그림은 이해를 돕기 위한 일러스트입니다 · 출처: 제주대 「제주 해녀공동체의 특성과 지속가능한 마을어장 관리」 · 제이누리 · 세계일보(2025.6.4)",
   cta: {
     support: {
-      account: "",                                        // 예: "○○은행 000-0000-0000 (예금주 ○○○)"
-      note: "※ 후원처 이름과 계좌번호를 account 에 넣어 주세요", button: "해녀 응원 후원 · 계좌 복사", copied: "계좌번호를 복사했어요", soon: "후원처를 준비하고 있어요" },
+      url: "https://www.jejuhaenyeos.com/support",       // (사)제주해녀협회 후원하기 페이지 (새 탭)
+      button: "해녀 응원 후원하기 →" },
     museum: {
-      url: "",                                            // 박물관 홈페이지 주소 (확인된 주소만 넣어 주세요)
-      note: "※ 박물관 홈페이지 주소를 url 에 넣어 주세요", button: "제주해녀박물관 둘러보기 →", soon: "박물관 주소를 준비하고 있어요" }
+      url: "https://www.jeju.go.kr/haenyeo/index.htm",   // 제주해녀박물관 홈페이지 (새 탭)
+      button: "제주해녀박물관 둘러보기 →" }
   }
 };
 
@@ -2521,6 +2522,11 @@ MEDIA.introVideo = "media/introvideo-6c59b1e2.mp4";   /* 첫 화면 배경 영�
     MEDIA.mascot = URL.createObjectURL(new Blob([u], { type: "image/webp" })); } catch (e) { MEDIA.mascot = s; } })();
 /* 테왁 위의 바다: 털실 인형 그림 (투명 배경 · 이 파일 안에 담아 둠) */
 var SEA_ART = {"net": {"src": "media/net-9ca58f60.webp", "ratio": 0.7763, "hit": "polygon(99.2% 10.8%,95.1% 6.1%,89.5% 3.6%,83.4% 3.7%,78.0% 7.3%,75.1% 16.7%,76.2% 22.4%,78.7% 25.7%,79.1% 30.5%,81.3% 32.8%,81.2% 36.8%,79.4% 38.8%,79.3% 36.9%,76.2% 34.5%,75.4% 32.1%,74.6% 32.1%,74.5% 33.8%,71.5% 33.4%,71.0% 31.1%,61.6% 27.2%,57.0% 26.8%,52.9% 24.0%,48.0% 23.8%,42.2% 21.7%,22.1% 23.7%,11.1% 27.8%,11.0% 31.0%,9.2% 30.1%,6.6% 35.7%,5.5% 40.4%,6.0% 43.5%,2.9% 51.5%,2.2% 59.2%,0.7% 63.2%,0.4% 75.5%,3.7% 86.0%,7.3% 91.9%,11.3% 94.9%,29.2% 98.7%,55.8% 99.4%,72.4% 96.4%,80.3% 92.4%,83.9% 88.2%,87.5% 75.3%,86.8% 68.0%,82.7% 53.4%,83.3% 50.5%,81.9% 42.9%,83.8% 39.4%,84.5% 32.2%,85.6% 31.1%,88.9% 32.4%,93.6% 32.1%,98.9% 27.8%,99.9% 25.7%)"}, "netfront": {"src": "media/netfront-8e77b99c.webp", "ratio": 0.7763, "hit": "polygon(7.5% 33.1%,5.5% 40.4%,5.5% 45.5%,2.9% 51.5%,2.2% 59.2%,0.7% 63.2%,0.4% 75.5%,3.7% 86.0%,6.1% 90.4%,10.6% 94.4%,15.2% 96.4%,29.2% 98.7%,55.8% 99.4%,75.3% 95.4%,80.3% 92.4%,83.9% 88.2%,87.5% 75.3%,86.8% 68.0%,82.7% 53.4%,83.3% 50.5%,81.9% 42.9%,83.8% 39.4%,84.3% 34.8%,81.4% 35.0%,75.4% 49.8%,69.3% 51.8%,52.8% 51.8%,52.7% 53.2%,53.7% 53.8%,51.7% 54.6%,51.9% 51.9%,17.5% 51.8%,12.3% 43.7%,9.9% 32.4%)"}, "seongge": {"src": "media/seongge-bbc0244c.webp", "ratio": 0.8953, "hit": "polygon(21.4% 10.5%,20.6% 14.5%,18.4% 15.7%,18.4% 18.0%,21.7% 23.6%,15.0% 19.7%,13.8% 19.7%,11.9% 21.6%,11.9% 23.2%,16.7% 27.9%,15.9% 30.9%,8.6% 29.0%,6.7% 29.1%,5.5% 30.5%,5.6% 32.6%,12.3% 36.8%,11.9% 39.6%,1.7% 38.9%,0.6% 40.1%,0.6% 42.2%,1.7% 43.5%,7.2% 44.9%,9.2% 46.6%,8.9% 47.6%,1.6% 49.6%,1.4% 52.0%,2.5% 53.1%,8.9% 54.5%,4.5% 57.8%,1.7% 57.9%,0.5% 60.6%,1.4% 61.8%,10.3% 61.4%,10.5% 63.9%,3.3% 70.0%,4.5% 72.8%,9.7% 71.6%,7.3% 75.4%,8.1% 77.3%,13.4% 75.9%,9.5% 81.2%,10.3% 84.5%,12.0% 84.6%,14.7% 82.9%,14.2% 87.1%,16.1% 87.6%,17.0% 89.7%,19.8% 89.4%,23.1% 86.2%,21.7% 90.2%,22.0% 93.2%,24.7% 93.5%,27.2% 90.2%,28.1% 90.2%,28.3% 94.8%,30.3% 95.1%,33.6% 98.8%,42.2% 99.5%,45.3% 98.6%,48.0% 95.1%,54.1% 94.9%,57.3% 97.0%,58.3% 94.9%,59.8% 94.9%,60.5% 93.9%,66.1% 98.8%,75.5% 98.8%,79.7% 92.8%,81.7% 86.0%,84.7% 88.3%,87.0% 88.0%,87.2% 85.0%,85.5% 81.0%,90.3% 83.8%,92.8% 83.2%,93.1% 80.3%,88.3% 75.0%,93.4% 76.6%,96.4% 75.7%,96.4% 72.9%,90.9% 68.4%,91.6% 67.7%,98.1% 68.2%,98.9% 65.3%,91.7% 60.9%,92.2% 60.0%,98.8% 59.5%,99.4% 56.2%,91.9% 53.6%,96.7% 51.0%,96.4% 48.7%,91.9% 47.6%,98.1% 45.0%,99.5% 43.5%,98.8% 40.3%,89.2% 40.7%,95.5% 34.9%,95.5% 32.6%,93.4% 31.8%,87.8% 33.5%,93.6% 27.1%,93.6% 25.0%,92.5% 23.9%,89.1% 24.8%,85.2% 28.3%,83.6% 27.6%,83.4% 26.5%,88.0% 19.5%,87.7% 17.3%,85.5% 17.1%,80.9% 20.6%,80.8% 16.6%,81.7% 13.8%,80.3% 11.9%,78.3% 11.9%,73.4% 17.1%,72.0% 16.8%,74.2% 7.9%,73.1% 6.6%,71.1% 6.8%,68.9% 11.3%,69.1% 4.7%,66.2% 4.9%,63.6% 10.3%,60.3% 11.7%,60.3% 2.3%,59.2% 0.9%,56.2% 1.9%,55.0% 7.2%,54.2% 4.5%,51.2% 4.5%,50.3% 9.4%,48.4% 11.2%,47.7% 10.8%,44.5% 0.5%,40.9% 1.4%,41.2% 6.5%,38.8% 7.2%,38.4% 12.7%,36.7% 12.7%,31.9% 5.8%,30.2% 5.8%,28.4% 7.3%,28.4% 9.1%,31.9% 17.5%,30.8% 18.3%,23.9% 10.5%)"}, "sora": {"src": "media/sora-97685123.webp", "ratio": 0.8891, "hit": "polygon(92.7% 1.8%,90.8% 0.2%,88.1% 1.1%,85.8% 0.5%,83.0% 1.4%,79.8% 4.9%,75.2% 6.2%,73.4% 3.7%,70.8% 3.5%,68.4% 6.0%,65.6% 13.5%,63.1% 11.1%,60.5% 11.4%,58.9% 13.5%,57.8% 18.1%,52.0% 22.3%,46.7% 17.2%,42.5% 16.3%,39.4% 18.1%,39.1% 22.3%,30.2% 25.8%,28.3% 25.5%,26.1% 23.0%,22.5% 23.7%,22.2% 31.8%,12.3% 41.5%,12.5% 44.6%,11.4% 46.0%,7.5% 47.3%,6.2% 48.9%,6.2% 52.0%,8.6% 55.2%,5.0% 61.3%,5.0% 64.3%,6.6% 67.1%,0.8% 70.7%,0.6% 75.4%,2.8% 77.0%,5.8% 76.8%,10.8% 72.8%,15.2% 83.1%,16.9% 85.6%,19.8% 86.6%,18.1% 88.9%,18.0% 92.3%,20.8% 95.1%,24.2% 94.7%,29.8% 90.9%,36.9% 96.5%,41.2% 97.0%,42.2% 98.2%,47.3% 98.6%,51.1% 96.3%,57.3% 96.1%,60.8% 98.8%,65.6% 99.6%,72.8% 94.2%,76.1% 95.6%,79.5% 95.3%,80.9% 93.7%,81.7% 90.2%,83.8% 88.6%,88.9% 89.1%,89.8% 85.2%,88.8% 80.3%,90.6% 79.3%,91.7% 77.0%,90.5% 68.7%,92.5% 65.7%,96.2% 63.1%,95.8% 60.3%,91.7% 57.8%,91.1% 54.5%,94.4% 45.0%,99.7% 40.2%,99.1% 37.4%,94.4% 36.7%,92.8% 33.9%,95.2% 30.1%,93.8% 23.2%,96.6% 19.2%,96.6% 17.2%,93.3% 15.1%,93.9% 10.4%,92.8% 8.8%)"}, "muneo": {"src": "media/muneo-163b701a.webp", "ratio": 0.8547, "hit": "polygon(1.4% 48.1%,0.2% 53.9%,0.5% 57.2%,4.7% 66.2%,7.8% 68.0%,3.1% 69.5%,1.4% 74.0%,1.6% 79.0%,5.3% 85.4%,9.4% 87.6%,12.5% 87.8%,17.5% 92.9%,23.0% 94.7%,30.3% 93.6%,35.3% 89.4%,39.7% 96.2%,44.7% 99.6%,56.7% 98.7%,62.8% 93.8%,65.0% 89.0%,67.2% 93.4%,73.3% 96.9%,80.8% 97.4%,86.9% 95.1%,93.1% 88.1%,94.8% 81.9%,94.7% 78.2%,98.0% 74.4%,99.7% 69.1%,99.2% 60.5%,95.9% 54.7%,91.9% 52.1%,83.4% 52.1%,85.8% 45.0%,86.2% 35.3%,84.7% 25.4%,80.8% 16.5%,72.3% 6.6%,59.5% 0.7%,50.0% 0.2%,43.3% 1.8%,34.4% 6.9%,27.7% 14.3%,23.1% 23.0%,20.9% 33.6%,21.4% 43.9%,23.0% 49.9%,16.1% 51.9%,16.9% 43.9%,15.3% 41.3%,11.7% 40.0%,5.0% 42.2%)"}, "miyeok": {"src": "media/miyeok-916a5a2b.webp", "ratio": 1.1169, "hit": "polygon(38.2% 0.3%,35.1% 1.4%,33.5% 3.3%,33.2% 9.4%,31.1% 12.5%,29.8% 18.9%,26.0% 11.2%,23.7% 9.5%,18.2% 9.7%,11.9% 14.5%,10.3% 16.9%,11.2% 20.6%,13.3% 21.9%,19.2% 23.0%,13.4% 29.4%,14.0% 33.1%,16.2% 35.2%,15.4% 35.6%,8.9% 32.8%,6.6% 33.0%,2.3% 36.2%,0.2% 42.0%,2.1% 46.2%,9.4% 48.0%,10.3% 53.3%,6.1% 55.0%,4.0% 58.6%,4.4% 60.9%,6.5% 63.7%,12.6% 65.9%,9.9% 67.0%,7.7% 69.5%,7.9% 75.3%,9.2% 76.4%,15.0% 75.3%,16.4% 75.9%,17.8% 82.7%,20.1% 83.9%,23.6% 84.2%,25.7% 88.0%,25.7% 91.7%,29.1% 96.1%,31.8% 97.2%,37.5% 97.3%,41.7% 94.7%,43.3% 94.8%,46.9% 98.9%,53.4% 99.8%,57.8% 98.3%,59.9% 95.5%,65.6% 94.8%,66.8% 93.3%,66.8% 91.1%,68.4% 89.8%,74.7% 90.8%,77.5% 89.1%,78.2% 85.3%,77.1% 82.7%,83.2% 80.6%,82.2% 74.8%,83.1% 72.0%,88.3% 67.2%,88.1% 63.3%,85.3% 58.3%,86.7% 57.2%,93.0% 57.2%,96.9% 53.1%,96.5% 48.8%,93.5% 42.3%,98.1% 38.0%,99.7% 32.8%,98.3% 31.7%,90.8% 32.8%,88.1% 35.0%,87.1% 38.1%,84.5% 38.0%,81.5% 36.4%,81.8% 30.9%,80.5% 27.3%,73.3% 20.8%,73.5% 18.0%,76.4% 16.1%,81.0% 18.3%,85.2% 18.1%,86.6% 16.1%,86.4% 14.1%,82.0% 10.0%,76.1% 7.3%,69.6% 7.2%,68.1% 8.4%,66.7% 0.6%,60.0% 1.6%,56.7% 3.8%,56.4% 6.9%,58.6% 11.4%,57.2% 14.4%,54.8% 11.2%,50.3% 8.8%,49.2% 4.7%,46.4% 1.7%,41.9% 0.2%)"}};
+/* 해녀문화 팝업 사진 (media/popup/) */
+SEA.items[0].photos[0][2] = "media/asset-25b4a5c5.webp";
+SEA.items[1].photos[0][2] = "media/asset-4d1205f9.webp";
+SEA.items[2].photos[0][2] = "media/asset-6fb6e474.webp";
+SEA.items[3].photos[0][2] = "media/asset-1d483336.webp";
 GAME.shot = "media/game-shot-aeed82df.webp";
 window.CLEAN_ART = {"gaet-before": "media/gaet-before-8873b37e.webp", "gaet-after": "media/gaet-after-e07c03ab.webp", "rest-before": "media/rest-before-059ab0c0.webp", "rest-after": "media/rest-after-e364d237.webp", "net-before": "media/net-before-906008a1.webp", "net-after": "media/net-after-04b23520.webp"};
 /* 인터뷰 카드 썸네일 (media/interview-1.webp · interview-2.webp 를 이 파일 안에 담음) */
@@ -2782,7 +2788,7 @@ var SUB = (function () {
       if (!alive) return;
       W = vp.clientWidth || innerWidth;
       var H = $('.stories__pin', sec).clientHeight || innerHeight;
-      cw = W < 700 ? Math.min(W * 0.78, 420, H * 0.46) : clamp(Math.min(W * 0.293, H * 0.61), 260, 600);
+      cw = W < 700 ? Math.min(W * 0.72, 420, H * 0.46) : clamp(Math.min(W * 0.293, H * 0.61), 260, 600);
       track.style.setProperty('--cw', cw + 'px');
       var pad = (W - cw) / 2;
       track.style.paddingLeft = pad + 'px'; track.style.paddingRight = pad + 'px';
@@ -2966,7 +2972,7 @@ var SUB = (function () {
       var art = (typeof SEA_ART !== 'undefined' && it.art && SEA_ART[it.art]) || null;
       var slides = ph.map(function (p, k) {
         return '<figure class="sxc-slide" style="--tint:' + esc(it.tint || '#E7E2D2') + '" aria-label="' + (k + 1) + ' / ' + ph.length + '">' +
-          '<img class="sxc-photo" src="' + esc(src(it, k, o.up)) + '" alt="' + esc(p[1]) + '" decoding="async" loading="' + (k ? 'lazy' : 'eager') + '" draggable="false">' +
+          '<img class="sxc-photo" src="' + esc(src(it, k, o.up)) + '" alt="' + esc(p[1]) + '"' + (p[3] ? ' style="object-position:' + esc(p[3]) + '"' : '') + ' decoding="async" loading="' + (k ? 'lazy' : 'eager') + '" draggable="false">' +
           '<span class="sxc-miss" aria-hidden="true">' + (art ? '<img src="' + esc(art.src) + '" alt="">' : '') + '<b>' + esc(SEA.photoMissing || '사진 준비 중') + '</b></span>' +
           '<figcaption>' + esc(p[1]) + '</figcaption></figure>';
       }).join('');
@@ -3430,7 +3436,7 @@ var SUB = (function () {
       W = vp.clientWidth || innerWidth;
       var H = sec.querySelector('.stories__pin').clientHeight || innerHeight;
       // 카드 폭 = 화면 가로의 29.3% 와 세로의 61% 중 작은 쪽 (브라우저 75% 배율에서 보던 비율)
-      cw = W < 700 ? Math.min(W * 0.78, 420, H * 0.46) : clamp(Math.min(W * 0.293, H * 0.61), 260, 600);
+      cw = W < 700 ? Math.min(W * 0.72, 420, H * 0.46) : clamp(Math.min(W * 0.293, H * 0.61), 260, 600);
       track.style.setProperty('--cw', cw + 'px');
       var pad = (W - cw) / 2;
       track.style.paddingLeft = pad + 'px'; track.style.paddingRight = pad + 'px';
@@ -3756,12 +3762,11 @@ var SUB = (function () {
   var Ocean = (function () {
     var sec = $('#ocean');
     if (!sec || typeof CLEAN === 'undefined') return {};
-    var C = CLEAN, guides = (typeof SITE !== 'undefined' && SITE.showGuides !== false);
+    var C = CLEAN;
     var br = function (s) { return String(s || '').split('\n').map(esc).join('<br>'); };
     $('.oc__kicker', sec).textContent = C.kicker || '';
     $('.oc__side', sec).textContent = C.nav || '';
-    $('#ocTitle').innerHTML = br(C.title);
-    $('.oc__sub', sec).textContent = C.sub || '';
+    $('#ocTitle').textContent = C.nav || '';                        // 큰 제목은 빼고(사용자 요청), 화면 읽기 프로그램용 이름만
 
     // ── 그림: 같은 바다의 BEFORE / AFTER (이해를 돕기 위한 일러스트) ──
     var uid = 0;
@@ -3853,29 +3858,12 @@ var SUB = (function () {
         '</div></article>';
     }).join('') + '</div>';
     var CL = C.closing || {};
-    html += '<div class="oc-closing oc-rv"><p class="oc-closing__line oc-r" style="--at:0">' + esc(CL.line1) + '<br><em>' + esc(CL.em) + '</em>' + esc(CL.rest) + '</p>' +
-      (C.source ? '<p class="oc-source oc-r" style="--at:.1">' + esc(C.source) + '</p>' : '') + '</div>';
-    // 후원 · 박물관 버튼 (계좌 · 주소가 비어 있으면 누를 때 '준비 중' 안내)
+    html += '<div class="oc-closing oc-rv"><p class="oc-closing__line oc-r" style="--at:0">' + esc(CL.line1) + '<br><em>' + esc(CL.em) + '</em>' + esc(CL.rest) + '</p></div>';
+    // 후원 · 박물관 버튼: 누르면 그 페이지가 새 탭으로 열려요 (주소가 없는 버튼은 숨겨요)
     var A = C.cta || {}, S = A.support || {}, M = A.museum || {};
-    var notes = guides ? [has(S.account) ? '' : S.note, has(M.url) ? '' : M.note].filter(Boolean) : [];
-    html += '<div class="oc-cta oc-rv"><div class="oc-cta__row oc-r" style="--at:0">' +
-        '<button type="button" class="oc-cta__btn" id="ocCopy">' + esc(S.button) + '</button>' +
-        (has(M.url) ? '<a class="oc-cta__btn oc-cta__btn--line" href="' + esc(M.url) + '" target="_blank" rel="noopener">' + esc(M.button) + '</a>'
-                    : '<button type="button" class="oc-cta__btn oc-cta__btn--line" id="ocMuseum">' + esc(M.button) + '</button>') +
-      '</div><p class="oc-cta__msg" id="ocMsg" role="status" aria-live="polite"></p>' +
-      notes.map(function (n) { return '<p class="oc-cta__note">' + esc(n) + '</p>'; }).join('') + '</div>';
+    var link = function (o, cls) { return has(o.url) ? '<a class="oc-cta__btn' + cls + '" href="' + esc(o.url) + '" target="_blank" rel="noopener">' + esc(o.button) + '<span class="sr-only"> (새 탭에서 열려요)</span></a>' : ''; };
+    html += '<div class="oc-cta oc-rv"><div class="oc-cta__row oc-r" style="--at:0">' + link(S, '') + link(M, ' oc-cta__btn--line') + '</div></div>';
     $('.oc-paper__rows', sec).innerHTML = html;
-
-    // 계좌번호 복사 · 준비 중 안내
-    var copy = $('#ocCopy'), museum = $('#ocMuseum'), msg = $('#ocMsg'), msgT = 0;
-    function say(t) { msg.textContent = t; clearTimeout(msgT); msgT = setTimeout(function () { msg.textContent = ''; }, 2600); }
-    if (copy) copy.addEventListener('click', function () {
-      if (!has(S.account)) { say(S.soon || '후원처를 준비하고 있어요'); return; }
-      var done = function () { say((S.copied || '복사했어요') + ' · ' + S.account); };
-      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(S.account).then(done, done);
-      else { var t = document.createElement('textarea'); t.value = S.account; document.body.appendChild(t); t.select(); try { document.execCommand('copy'); } catch (e) {} t.remove(); done(); }
-    });
-    if (museum) museum.addEventListener('click', function () { say(M.soon || '박물관 주소를 준비하고 있어요'); });
 
     // ── BEFORE / AFTER 손잡이: 끌기(마우스 · 손가락) · 키보드 ← → ──
     $$('.oc-cmp', sec).forEach(function (box) {
@@ -3969,7 +3957,8 @@ var SUB = (function () {
     var root = document.createElement('div');
     root.className = 'ocp'; root.id = 'oceanPop'; root.hidden = true;
     root.innerHTML = '<div class="ocp__dim"></div>' +
-      '<div class="ocp__box" role="dialog" aria-modal="true" aria-labelledby="ocpTitle" aria-describedby="ocpSub" tabindex="-1"><div class="ocp__in">' +
+      '<div class="ocp__box" role="dialog" aria-modal="true" aria-labelledby="ocpTitle" aria-describedby="ocpSub" tabindex="-1">' +
+        '<button type="button" class="ocp__x" data-act="close" aria-label="' + esc(P.close || '닫기') + '">×</button><div class="ocp__in">' +
         '<div class="chr-scene" role="meter" aria-valuemin="' + min + '" aria-valuemax="' + goal + '" aria-label="' + esc(P.tempLabel || '') + '">' +
           (has(MEDIA.cheerThermo) ? '<img class="chr-scene__img" src="' + MEDIA.cheerThermo + '" alt="" decoding="async" draggable="false">' : '') +
           '<span class="chr-merc" aria-hidden="true"></span>' +
@@ -3995,8 +3984,7 @@ var SUB = (function () {
           '<p class="chr-note">' + esc(P.note || '') + '</p>' +
           '<p class="sr-only chr-live" aria-live="polite"></p>' +
           '<div class="ocp__acts">' +
-            '<button type="button" class="ocp__btn ocp__btn--sub" data-act="today">' + esc(P.today || '오늘 하루 보지 않기') + '</button>' +
-            '<button type="button" class="ocp__btn ocp__btn--main" data-act="close">' + esc(P.close || '그냥 나가기') + '</button>' +
+            '<button type="button" class="ocp__today" data-act="today">' + esc(P.today || '오늘 하루 보지 않기') + '</button>' +
           '</div>' +
         '</div>' +
       '</div></div>';
@@ -4081,7 +4069,7 @@ var SUB = (function () {
       setTimeout(function () { if (!open) { root.hidden = true; form.hidden = true; talkBtn.setAttribute('aria-expanded', 'false'); } }, reduce ? 0 : 240);
       if (back && back.focus && document.contains(back)) try { back.focus({ preventScroll: true }); } catch (e) {}
     }
-    $$('.ocp__btn', root).forEach(function (b) { b.addEventListener('click', function () { close(b.getAttribute('data-act')); }); });
+    $$('[data-act]', root).forEach(function (b) { b.addEventListener('click', function () { close(b.getAttribute('data-act')); }); });
     root.addEventListener('keydown', function (e) {
       if (e.key === 'Escape') { e.preventDefault(); close('close'); return; }
       if (e.key !== 'Tab') return;                                   // Tab 은 창 안에서만 돌아요

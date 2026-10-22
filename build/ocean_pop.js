@@ -35,7 +35,8 @@
     var root = document.createElement('div');
     root.className = 'ocp'; root.id = 'oceanPop'; root.hidden = true;
     root.innerHTML = '<div class="ocp__dim"></div>' +
-      '<div class="ocp__box" role="dialog" aria-modal="true" aria-labelledby="ocpTitle" aria-describedby="ocpSub" tabindex="-1"><div class="ocp__in">' +
+      '<div class="ocp__box" role="dialog" aria-modal="true" aria-labelledby="ocpTitle" aria-describedby="ocpSub" tabindex="-1">' +
+        '<button type="button" class="ocp__x" data-act="close" aria-label="' + esc(P.close || '닫기') + '">×</button><div class="ocp__in">' +
         '<div class="chr-scene" role="meter" aria-valuemin="' + min + '" aria-valuemax="' + goal + '" aria-label="' + esc(P.tempLabel || '') + '">' +
           (has(MEDIA.cheerThermo) ? '<img class="chr-scene__img" src="' + MEDIA.cheerThermo + '" alt="" decoding="async" draggable="false">' : '') +
           '<span class="chr-merc" aria-hidden="true"></span>' +
@@ -61,8 +62,7 @@
           '<p class="chr-note">' + esc(P.note || '') + '</p>' +
           '<p class="sr-only chr-live" aria-live="polite"></p>' +
           '<div class="ocp__acts">' +
-            '<button type="button" class="ocp__btn ocp__btn--sub" data-act="today">' + esc(P.today || '오늘 하루 보지 않기') + '</button>' +
-            '<button type="button" class="ocp__btn ocp__btn--main" data-act="close">' + esc(P.close || '그냥 나가기') + '</button>' +
+            '<button type="button" class="ocp__today" data-act="today">' + esc(P.today || '오늘 하루 보지 않기') + '</button>' +
           '</div>' +
         '</div>' +
       '</div></div>';
@@ -147,7 +147,7 @@
       setTimeout(function () { if (!open) { root.hidden = true; form.hidden = true; talkBtn.setAttribute('aria-expanded', 'false'); } }, reduce ? 0 : 240);
       if (back && back.focus && document.contains(back)) try { back.focus({ preventScroll: true }); } catch (e) {}
     }
-    $$('.ocp__btn', root).forEach(function (b) { b.addEventListener('click', function () { close(b.getAttribute('data-act')); }); });
+    $$('[data-act]', root).forEach(function (b) { b.addEventListener('click', function () { close(b.getAttribute('data-act')); }); });
     root.addEventListener('keydown', function (e) {
       if (e.key === 'Escape') { e.preventDefault(); close('close'); return; }
       if (e.key !== 'Tab') return;                                   // Tab 은 창 안에서만 돌아요

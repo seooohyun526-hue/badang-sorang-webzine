@@ -18,6 +18,15 @@ site/
 
 `site/` 안의 파일은 모두 아래 빌드로 만들어져요. 직접 고치지 말고 `build/` 를 고친 뒤 다시 빌드해요.
 
+## 미리 보기 (GitHub Pages)
+
+- 주소: https://seooohyun526-hue.github.io/badang-sorang-webzine/
+- `gh-pages` 브랜치에 `site/` 폴더만 올라가 있어요. `site/` 를 다시 만든 뒤 커밋하고, 아래 명령으로 Pages 도 갱신해요.
+
+```bash
+git push origin `git subtree split --prefix site main`:refs/heads/gh-pages --force
+```
+
 ## 웹진 구성
 
 | 칸 (주소) | 내용 |
@@ -79,7 +88,7 @@ media/           그림 원본 (캐릭터 · 털실 인형 · 장면)
 |---|---|
 | 게임 주소 · 게임 미니 팝업 문구 | `build/game_data.js` (`GAME.url`, `popButton`, `popBubble`) |
 | 응원 미니 팝업 문구 | `build/float_data.js` (`SUPPORT`) |
-| 바다 지키기 칸 글 · 응원 온도 창 · 후원 계좌 · 박물관 주소 | `build/clean_data.js` (`CLEAN`, `CLEAN.cheer`, `CLEAN.cta`) |
+| 바다 지키기 칸 글 · 응원 온도 창 · 후원 · 박물관 주소 | `build/clean_data.js` (`CLEAN`, `CLEAN.cheer`, `CLEAN.cta`) |
 | 목적 칸 글 · 해녀문화 팝업 | `build/explore_data.js` (`SEA`) |
 | 해녀문화 팝업 사진 | `media/popup/` 에 `01_물질_대표.jpg` 같은 이름으로 넣고 다시 빌드 |
 
@@ -87,6 +96,6 @@ media/           그림 원본 (캐릭터 · 털실 인형 · 장면)
 
 - '응원 온도'(좋아요 · 응원의 한 마디)는 서버가 없어서 **보는 사람의 브라우저에만** 저장돼요. 모두의 응원을 모으려면 서버를 연결해야 해요 (`build/ocean_pop.js` 의 `load` · `save`).
 - HIGH SCORE 는 지금 디자인 확인용 샘플 데이터예요 (`build/game_data.js` 의 `RANKING.mode`).
-- 후원 계좌와 제주해녀박물관 주소는 아직 비어 있어서 누르면 '준비 중' 안내가 나와요.
+- 바다 지키기 맨 아래 버튼: 후원 = (사)제주해녀협회 후원하기 페이지, 박물관 = 제주해녀박물관 홈페이지 (새 탭).
 - 해녀 이야기 3 · 4번은 아직 사진이 없어서 그림으로 보여요.
 - 그림은 이해를 돕기 위한 일러스트예요. 해녀 수 출처는 웹진 첫 화면 아래에 적혀 있어요.

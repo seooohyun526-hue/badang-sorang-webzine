@@ -2,7 +2,7 @@
 /* =========================================================
    ★ 오른쪽 미니 팝업 2개 — 위: 게임(해녀의 바당길) · 아래: 후원(바당 소랑 응원하기)
    · 데스크톱: 화면 오른쪽 가운데에 캐릭터 두 명이 세로로 떠 있어요 (흰 상자 없이 캐릭터 + 작은 버튼 글 · 마우스를 올리면 왼쪽에 짧은 말풍선)
-   · 휴대폰(760px 이하): 오른쪽 아래(아래 버튼 줄보다 조금 위) 캐릭터만 작게 두 개
+   · 휴대폰(760px 이하): 오른쪽 아래(아래 버튼 줄보다 조금 위)에 PC 처럼 캐릭터 + 버튼 글을 작게
    · 웹진의 주요 버튼과 겹치게 되면 그동안만 살짝 사라져 비켜요 (.is-dodge)
    · 두 팝업은 크기 · 그림자 · 버튼 모양이 같아요 (색만 게임 = 민트 · 후원 = 주황)
    · 그림은 사용자가 만든 캐릭터 그대로 (비율 유지 · 잘리지 않게 contain)
@@ -53,11 +53,11 @@ body.is-locked .fdock .fcard.is-on,body.in-ocean .fdock .fcard.is-on{opacity:0; 
 }
 /* 휴대폰: 오른쪽 아래 동그란 아이콘 (글은 화면 읽기 프로그램에만) — 이야기 화살표 · 아래 버튼 줄보다 위에 */
 @media (max-width:760px){
-  .fdock{top:auto; bottom:calc(120px + env(safe-area-inset-bottom, 0px)); right:10px; gap:10px; transform:none}
-  .fdock .fcard .fcard__go{width:60px; height:60px; gap:0; justify-content:center; border-radius:12px}
+  .fdock{top:auto; bottom:calc(110px + env(safe-area-inset-bottom, 0px)); right:6px; gap:8px; transform:none}
+  .fdock .fcard .fcard__go{width:84px; gap:3px}
   .fdock .fcard .fcard__go:hover{transform:none}
-  .fdock .fcard .fcard__art{height:100%}
-  .fdock .fcard .fcard__label{position:absolute; width:1px; height:1px; padding:0; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+  .fdock .fcard .fcard__art{height:54px}
+  .fdock .fcard .fcard__label{padding:3px 7px; font-size:.62rem; line-height:1.25; letter-spacing:-.02em; white-space:nowrap}
   .fdock .fcard .fcard__bubble{display:none}
   .fdock .fcard .fcard__close{top:-6px; left:-6px; right:auto; width:22px; height:22px; font-size:.8rem}
 }

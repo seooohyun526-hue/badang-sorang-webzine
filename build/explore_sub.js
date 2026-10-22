@@ -14,7 +14,7 @@
       var art = (typeof SEA_ART !== 'undefined' && it.art && SEA_ART[it.art]) || null;
       var slides = ph.map(function (p, k) {
         return '<figure class="sxc-slide" style="--tint:' + esc(it.tint || '#E7E2D2') + '" aria-label="' + (k + 1) + ' / ' + ph.length + '">' +
-          '<img class="sxc-photo" src="' + esc(src(it, k, o.up)) + '" alt="' + esc(p[1]) + '" decoding="async" loading="' + (k ? 'lazy' : 'eager') + '" draggable="false">' +
+          '<img class="sxc-photo" src="' + esc(src(it, k, o.up)) + '" alt="' + esc(p[1]) + '"' + (p[3] ? ' style="object-position:' + esc(p[3]) + '"' : '') + ' decoding="async" loading="' + (k ? 'lazy' : 'eager') + '" draggable="false">' +
           '<span class="sxc-miss" aria-hidden="true">' + (art ? '<img src="' + esc(art.src) + '" alt="">' : '') + '<b>' + esc(SEA.photoMissing || '사진 준비 중') + '</b></span>' +
           '<figcaption>' + esc(p[1]) + '</figcaption></figure>';
       }).join('');
