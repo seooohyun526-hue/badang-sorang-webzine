@@ -45,8 +45,11 @@ git push origin `git subtree split --prefix site main`:refs/heads/gh-pages --for
 Python 3 · Pillow · NumPy · OpenCV 가 필요해요 (카드 사진은 playwright + 크롬도). 저장소 맨 위에서 실행해요.
 
 ```bash
-BS_PURPOSE=v2 BS_GAME=v2 BS_OCEAN=v2 BS_SEABG=v2 PYTHONUTF8=1 python build/build_sea.py build/base_loader.html build site/index.html media/haenyeo-line.svg
+BS_FONT=gotgam BS_PURPOSE=v2 BS_GAME=v2 BS_OCEAN=v2 BS_SEABG=v2 PYTHONUTF8=1 python build/build_sea.py build/base_loader.html build site/index.html media/haenyeo-line.svg
 ```
+
+- 지금 올라간 웹진은 글씨체 `BS_FONT=gotgam`(제목 상주곶감체 · 본문 학교안심 보드마카)이에요. 빼면 예전 기본 글씨체로 만들어져요.
+- 상주곶감체 파일은 저장소의 `build/fonts/` 에 없어요(글꼴 파일 수정 · 재배포 금지). 다시 만들 때는 눈누(https://noonnu.cc/font_page/786)에서 받은 `SANJUGotgam.woff` 를 `build/fonts/` 에 넣어 두세요. 웹진(`site/fonts/`)에는 웹폰트로 쓰기 위해 원본 그대로 담겨요.
 
 - 결과: `site/index.html` 과 `site/media/` · `site/fonts/` (사진 · 영상 · 글꼴을 HTML 안에 넣지 않고 파일로 따로 둬요. 사진은 webp · 한 장 500KB 이하)
 - 웹진 이름(브라우저 탭 · 공유 미리보기)은 `바당소랑_웹진_1` 이에요. 바꾸려면 `BS_SITE_NAME=…` 을 앞에 붙여요.

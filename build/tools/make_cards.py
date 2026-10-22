@@ -12,7 +12,7 @@ from playwright.async_api import async_playwright
 SITE = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'site')
 SITE = os.path.abspath(SITE)
 NAME = os.environ.get('BS_SITE_NAME', '바당소랑_웹진_1')
-HIDE_UI = '.fdock,.sound,.ld,#oceanPop{display:none!important}'
+HIDE_UI = '.fdock,.sound,.ld,#oceanPop,.lang{display:none!important}'   # 언어 선택 줄도 빼고 찍어요
 NO_POP = "try{const d=new Date();localStorage.setItem('bs-ocean-pop-hide', d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2))}catch(e){}"
 LIMIT = 500 * 1024
 
@@ -42,6 +42,7 @@ async def gate_shot(b, url, w, h):
     ctx = await b.new_context(viewport={'width': w, 'height': h}); pg = await ctx.new_page()
     await pg.goto(url); await pg.add_style_tag(content=HIDE_UI)
     await pg.wait_for_function("document.querySelector('#gate.is-done') !== null", timeout=20000)
+    await pg.evaluate("document.fonts.ready.then(() => 1)")   # 글꼴이 다 불러와진 뒤에 찍어요
     await pg.wait_for_timeout(800)
     png = await pg.screenshot(); await ctx.close(); return png
 
@@ -61,6 +62,7 @@ async def main():
         ctx = await b.new_context(viewport={'width': 1600, 'height': 900}); await ctx.add_init_script(NO_POP)
         pg = await ctx.new_page(); await pg.goto(url)
         await pg.wait_for_function("document.querySelector('#gate.is-done') !== null", timeout=20000)
+        await pg.evaluate("document.fonts.ready.then(() => 1)")   # 글꼴이 다 불러와진 뒤에 찍어요
         await pg.evaluate("document.getElementById('btnStart').click()"); await pg.wait_for_timeout(2600)
         await pg.add_style_tag(content=HIDE_UI); await pg.evaluate("document.documentElement.style.scrollBehavior='auto'")
         d = await pg.evaluate("""(()=>({gt:GATE.title, gs:GATE.sub, cap:(document.querySelector('.sea__cap-l')||{}).textContent,
