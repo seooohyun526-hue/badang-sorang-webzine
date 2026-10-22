@@ -2466,7 +2466,7 @@ var GAME = {
                  허용되지 않았으면 '불러오지 못했어요' 화면이 보여요 (샘플로 바꿔 보여 주지 않아요)
    · 확인용: 주소 끝에 ?rank=loading · empty · error · sample · live 를 붙이면 그 상태를 미리 볼 수 있어요 */
 var RANKING = {
-  mode: "sample",
+  mode: "live",                    // 2026-10-22: 게임 서버에 CORS 가 들어가서 실제 랭킹을 불러와요 ("sample" 로 바꾸면 샘플)
   endpoint: "https://haenyeo-ocean-online.vercel.app/api/leaderboard?metric=score&period=all",
   refreshSeconds: 30,              // live: 화면에 보이는 동안 몇 초마다 다시 불러올지
   bestPerPlayer: true,             // live: 같은 닉네임은 최고 점수 한 번만 (게임 서버는 '판마다' 순위를 줘요)
