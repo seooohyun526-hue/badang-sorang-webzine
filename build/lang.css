@@ -1,0 +1,39 @@
+<style id="lang-style">
+/* =========================================================
+   ★ 언어 선택 (오른쪽 위 고정 · 모든 화면 같은 자리) — 한국어 | English | 日本語 를 한 줄로 늘 보여 줘요
+   · 지금은 고른 언어를 표시하고 기억하는 데까지만 (번역은 아직이에요)
+   · 기존 머리 메뉴 · 상세 화면 막대 · 첫 화면 머리글은 이 줄 폭(--lang-w)만큼 왼쪽으로 비켜요
+   ========================================================= */
+:root{--lang-w:226px; --lang-h:36px; --lang-top:calc((var(--hd) - var(--lang-h)) / 2)}
+.lang{position:fixed; z-index:86; top:var(--lang-top); right:var(--gutter);   /* 첫 화면(gate 80) · 미니 팝업(84) · 소리 버튼(85) 위, 팝업 창(150~) · 로딩(200) 아래 */
+  display:flex; align-items:center; gap:2px; width:var(--lang-w); height:var(--lang-h); padding:3px;
+  border:1.5px solid rgba(31,74,72,.16); border-radius:999px; background:rgba(251,246,236,.92);
+  -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px); box-shadow:0 6px 16px -10px rgba(6,44,53,.55); font-family:var(--sans)}
+.lang__opt{flex:1 1 auto; display:grid; place-items:center; height:100%; min-width:0; margin:0; padding:0 8px; border:0; border-radius:999px;
+  background:none; color:#3E5A58; font:inherit; font-size:.8rem; font-weight:700; letter-spacing:-.01em; white-space:nowrap; cursor:pointer; transition:background-color .2s, color .2s}
+.lang__opt:hover{background:rgba(95,191,174,.18); color:#1F4A48}
+.lang__opt[aria-checked="true"]{background:#1F5E58; color:#fff; box-shadow:0 2px 6px -2px rgba(20,62,60,.5)}
+.lang__opt:focus-visible{outline:3px solid #E97842; outline-offset:1px}
+.lang__short{display:none}
+/* 기존 것들이 비켜 주는 자리 */
+.hd{padding-right:calc(var(--gutter) + var(--lang-w) + 14px)}
+.page__bar{padding-right:calc(var(--gutter) + var(--lang-w) + 14px)}
+.gate__kicker{padding-right:calc(var(--lang-w) + 14px)}
+@media (max-width:860px){
+  .hd__nav{padding-right:var(--gutter)}                 /* 펼친 메뉴 목록은 원래대로 */
+}
+/* 휴대폰: 조금 작게 · English → EN */
+@media (max-width:560px){
+  :root{--lang-w:136px; --lang-h:32px}
+  .lang{padding:2px}
+  .lang__opt{padding:0 6px; font-size:.7rem}
+  .lang__full{display:none}
+  .lang__short{display:inline}
+  .hd{padding-right:calc(var(--gutter) + var(--lang-w) + 6px)}
+  .page__bar{padding-right:calc(var(--gutter) + var(--lang-w) + 8px)}
+  .gate__kicker{padding-right:0; margin-top:calc(var(--lang-h) + 6px)}   /* 휴대폰 첫 화면: 머리글을 언어 줄 아래로 내려 한 줄로 */
+  .page__back{white-space:nowrap; padding:6px 12px; font-size:.84rem}
+  .page__bar a:has(> .page__logo){display:none}   /* 휴대폰 상세 화면: 작은 로고는 숨겨요 (돌아가기 버튼이 같은 일을 해요) → 돌아가기 · 언어 줄이 한 줄에 */
+}
+@media (prefers-reduced-motion:reduce){ .lang__opt{transition:none} }
+</style>

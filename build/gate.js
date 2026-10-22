@@ -30,13 +30,13 @@
        채워진 높이는 해녀 수를 빗대어 정해요: 1970년 기록 = 머리끝까지 가득, 0명 = 텅 빈 선
        ※ 줄어드는 해녀 수를 그림 속 색이 빠지는 모습으로 보여 주는 표현이에요 */
     function setLevel(v) {
-      fillImg.style.setProperty('--drain', (clamp(1 - v / FIRST[1]) * 100).toFixed(2) + '%');
+      fillImg.parentNode.style.setProperty('--drain', (clamp(1 - v / FIRST[1]) * 100).toFixed(2) + '%');   // 틀(.drain__clip)에 걸면 그림도 함께 따라요
     }
-    // 숫자는 실제 기록(STATS.byYear)에 있는 연도 · 인원만 보여 줘요 (사이 값을 지어내지 않아요)
-    function showPoint(r, tick) {
-      yearEl.textContent = r[0] + '년'; numEl.textContent = fmt(r[1]);
-      if (tick) { numEl.classList.remove('is-tick'); void numEl.offsetWidth; numEl.classList.add('is-tick'); }
-    }
+    // 숫자 · 연도: 글자마다 같은 폭의 칸에 넣어서, 굴러가며 바뀌어도 옆으로 흔들리지 않아요 ('1' 이 다른 숫자보다 좁아요)
+    var digits = function (s) { return esc(String(s)).replace(/\d/g, '<span class="gd">$&</span>'); };
+    function paint(year, num) { yearEl.innerHTML = digits(year) + '년'; numEl.innerHTML = digits(fmt(num)); }
+    // 처음(1970년)과 끝(2025년)은 실제 기록 그대로 보여 줘요
+    function showPoint(r) { paint(r[0], r[1]); }
     function later(fn, ms) { timers.push(setTimeout(fn, ms)); }
     function clearAll() { timers.forEach(clearTimeout); timers = []; cancelAnimationFrame(raf); }
     function setNote(html) {
@@ -50,31 +50,28 @@
     };
     var finalNoteHTML = function () { return PROJ ? '<span class="gate__end">' + endNoteHTML() + '</span>' + projNoteHTML() : endNoteHTML(); };
 
-    // 기록 사이 시간 = 줄어든 인원(60%) + 흐른 해(40%) 비율로 나눠서, 물이 한꺼번에 쏟아지지 않고 고르게 빠져요
-    var SEGS = (function () {
-      var span = (LAST[0] - FIRST[0]) || 1, drop = (FIRST[1] - LAST[1]) || 1, w = [], sum = 0, t = 0, k;
-      for (k = 1; k < SERIES.length; k++) {
-        var x = 0.6 * Math.abs(SERIES[k - 1][1] - SERIES[k][1]) / drop + 0.4 * (SERIES[k][0] - SERIES[k - 1][0]) / span;
-        w.push(x); sum += x;
-      }
-      return w.map(function (x, i) { var s = { a: SERIES[i], b: SERIES[i + 1], t0: t / sum }; t += x; s.t1 = t / sum; return s; });
-    })();
+    // 그림은 1970년 높이에서 2025년 높이까지 하나의 부드러운 곡선으로 멈춤 없이 내려가요 (처음과 끝만 살짝 천천히)
+    // 숫자는 그림 높이와 똑같이 촤르륵 굴러 내려가고, 연도도 실제 기록을 따라 함께 굴러가요 → 마지막엔 실제 기록(2025년 2,371명)에 딱 멈춰요
+    //  (가는 동안 보이는 숫자 · 연도는 기록 사이를 잇는 '세는 효과'예요)
+    var KV = SERIES.map(function (r) { return r[1]; });
+    function levelAt(p) { return lerp(FIRST[1], LAST[1], p); }
+    function yearAt(v) {                                      // 이 인원에 해당하는 해 (기록 두 점 사이를 이어서)
+      for (var k = 1; k < KV.length; k++) if (v >= KV[k]) return Math.round(lerp(SERIES[k - 1][0], SERIES[k][0], (KV[k - 1] - v) / ((KV[k - 1] - KV[k]) || 1)));
+      return LAST[0];
+    }
     var soft = function (t) { return t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2; };   // 천천히 시작해 천천히 멈춰요
-
     function runSea() {
-      if (!SEGS.length) return finish();
+      if (SERIES.length < 2) return finish();
       gate.classList.add('is-draining');
       var start = 0, shown = 0;
       function frame(now) {
         try {
           if (!start) start = now;
-          var q = clamp((now - start) / DRAIN), p = soft(q), s = SEGS[SEGS.length - 1], k, idx = 0;
-          for (k = 0; k < SEGS.length; k++) if (p <= SEGS[k].t1) { s = SEGS[k]; break; }
-          setLevel(lerp(s.a[1], s.b[1], clamp((p - s.t0) / ((s.t1 - s.t0) || 1))));
-          for (k = 0; k < SEGS.length; k++) if (p >= SEGS[k].t1 - 1e-6) idx = k + 1;
-          if (idx !== shown) { shown = idx; showPoint(SERIES[idx], true); }   // 수면이 기록 하나를 지날 때마다 그 해의 숫자로
+          var q = clamp((now - start) / DRAIN), p = soft(q), v = levelAt(p), n = Math.round(v), y = yearAt(v);
+          setLevel(v);
+          if (n !== shown) { shown = n; paint(y, n); }                     // 촤르륵 — 프레임마다 숫자가 굴러가요
           if (q < 1) { raf = requestAnimationFrame(frame); return; }
-          setLevel(LAST[1]); showPoint(LAST, false);
+          setLevel(LAST[1]); showPoint(LAST);
           gate.classList.remove('is-draining'); gate.classList.add('is-sea-done');
           setNote(endNoteHTML());
           later(finish, ENDHOLD);
@@ -84,8 +81,17 @@
     }
     // 해녀 그림이 화면에 들어왔을 때 한 번 시작해요 (휴대폰에서 아래쪽에 있으면 보일 때까지 기다려요)
     function stopWatch() { if (io) { io.disconnect(); io = null; } }
+    // 배경 영상이 막 재생을 시작하는 순간(풀어서 그리기 시작할 때)은 화면이 잠깐 버벅여요
+    // → 영상이 실제로 흐르기 시작하고 조금 지난 뒤에 색이 빠지기 시작해요 (영상이 없거나 늦으면 최대 1.6초만 기다려요)
+    function afterVideo(fn) {
+      if (!video.src || video.style.display === 'none') return fn();
+      var fired = false, run = function () { if (fired) return; fired = true; fn(); };
+      if (!video.paused && video.currentTime > 0.25) return run();
+      video.addEventListener('playing', function () { later(run, 350); }, { once: true });
+      later(run, 1600);
+    }
     function watch() {
-      var go = function () { stopWatch(); later(function () { try { runSea(); } catch (e) { finish(); } }, HOLD); };
+      var go = function () { stopWatch(); afterVideo(function () { later(function () { try { runSea(); } catch (e) { finish(); } }, HOLD); }); };
       if (!sea || !('IntersectionObserver' in window)) return go();
       io = new IntersectionObserver(function (en) { if (en[0].isIntersecting) go(); }, { threshold: 0.35 });
       io.observe(sea);
@@ -97,7 +103,7 @@
       gate.classList.remove('is-draining');
       gate.classList.add('is-open', 'is-viz', 'is-done', 'is-sea-done');
       try { setLevel(LAST[1]); } catch (e) {}
-      showPoint(LAST, false);
+      showPoint(LAST);
       noteEl.classList.remove('is-swap'); noteEl.innerHTML = finalNoteHTML();
       setTimeout(function () { $('#btnStart').focus({ preventScroll: true }); }, 900);
     }
@@ -108,7 +114,7 @@
       tryPlay();
       // 한 번 끝까지 본 뒤에는 처음으로 돌아와도 다시 돌리지 않고 완성된 바다를 보여 줘요 (새로 열면 다시 재생)
       if (seaDone) { gate.classList.add('is-direct'); return finish(); }
-      setLevel(FIRST[1]); showPoint(FIRST, false); noteEl.innerHTML = '';
+      setLevel(FIRST[1]); showPoint(FIRST); noteEl.innerHTML = '';
       // 다시 보기를 위해 처음 물방울 애니메이션을 새로 시작해요
       var blob = $('.gate__blob'); blob.style.animation = 'none'; void blob.offsetWidth; blob.style.animation = '';
       if (reduce) { gate.classList.add('is-open', 'is-viz'); return finish(); }

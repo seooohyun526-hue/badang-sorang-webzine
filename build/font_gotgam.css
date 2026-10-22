@@ -1,0 +1,52 @@
+<style id="font-gotgam-style">
+/* =========================================================
+   ★ 글씨체 시안 '상주곶감' (빌드 23단계, BS_FONT=gotgam)
+   · 제목 = 상주곶감체 (상주시 · 웹 임베딩 가능 · 글꼴 파일 수정 · 재배포 금지 → 파일을 자르지 않고 그대로 담아요)
+   · 본문 = 학교안심 보드마카 (한국교육학술정보원 KERIS · OFL)
+   · 그대로 두는 곳: 유네스코(목적) 칸의 제목 — 큰 제목 '유네스코 · 인류무형문화유산', 목적 문구, 해녀문화 팝업 제목 (본문만 보드마카)
+                    게임 칸('해녀의 바당길')과 게임 상세 화면 · HIGH SCORE 픽셀체
+                    영어 장식 글씨(badang · sorang 기울임) · 큰 숫자(2,371 · 01)
+   ========================================================= */
+@font-face{font-family:'SangjuGotgam'; src:url(data:font/woff;base64,__GOTGAM__) format('woff'); font-weight:400; font-style:normal; font-display:block}
+@font-face{font-family:'SchoolSafeBoardMarker'; src:url(data:font/woff2;base64,__BOARD__) format('woff2'); font-weight:400; font-style:normal; font-display:block}
+
+/* 본문: 웹진 전체의 기본 글꼴(고딕 --sans · 명조 --serif)을 보드마카로 */
+:root{
+  --sans:'SchoolSafeBoardMarker','Pretendard','Pretendard Variable','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕','Noto Sans KR',system-ui,sans-serif;
+  --serif:'SchoolSafeBoardMarker','Gowun Batang','Nanum Myeongjo','Noto Serif KR','AppleMyungjo','Batang','바탕',serif;
+}
+body{font-family:var(--sans)}
+/* 일본어판: 이 두 글꼴엔 가나만 있고 한자가 없어 글자마다 글꼴이 섞여요 → 가나 · 한자는 일본어 고딕으로 같이 써요 (영문 · 숫자는 시안 글꼴 그대로) */
+:root{--ja-sans-lead:'SchoolSafeBoardMarker',; --ja-serif-lead:'SchoolSafeBoardMarker',}
+@font-face{font-family:'SchoolSafeBoardMarker'; src:local('Hiragino Sans W4'), local('HiraginoSans-W4'), local('Yu Gothic Medium'), local('YuGothic-Medium'), local('Meiryo'), local('Noto Sans CJK JP'); unicode-range:U+3005, U+3040-30FF, U+4E00-9FFF}
+@font-face{font-family:'SangjuGotgam'; src:local('Hiragino Sans W7'), local('HiraginoSans-W7'), local('Yu Gothic Bold'), local('YuGothic-Bold'), local('Meiryo Bold'), local('Noto Sans CJK JP Bold'); unicode-range:U+3005, U+3040-30FF, U+4E00-9FFF}
+
+/* 제목: 각 칸의 큰 제목 · 문구 (유네스코 칸 제목은 빼요) */
+:is(.gate__title, .stories__title, .st-end h3, .sp-title,
+    .oc-intro__title, .oc-card__title, .oc-closing__line, .ocp__title,
+    #abTitle, .why__title, #marquee, .ending__copy),
+:is(.gate__title, .stories__title, .st-end h3, .sp-title,
+    .oc-intro__title, .oc-card__title, .oc-closing__line, .ocp__title,
+    #abTitle, .why__title, #marquee, .ending__copy) *{
+  font-family:'SangjuGotgam', var(--sans) !important; font-weight:400 !important; font-synthesis:none}
+#abTitle em{font-family:var(--latin) !important}          /* 'badang' · 'sorang' 기울임 영어는 그대로 */
+
+/* 유네스코 칸 해녀문화 팝업 · 상세 화면의 제목 · 부제는 원래 명조 그대로 (큰 제목 · 목적 문구는 함렛 그대로라 따로 손대지 않아요) */
+.sxc-title,.sxc-sub{font-family:'Gowun Batang','Nanum Myeongjo','Noto Serif KR','AppleMyungjo','Batang','바탕',serif}
+
+/* 첫 화면 '2025년 2,371명' 숫자: 학교안심 둥근미소 Bold (KERIS · OFL, 숫자 · 쉼표 · 년 · 명만 담음 → build/fonts/dunggeunmiso-B-num.woff2) */
+@font-face{font-family:'BS Round Num'; src:url(data:font/woff2;base64,__ROUNDNUM__) format('woff2'); font-weight:400 800; font-display:block}
+.gate__year,.gate__num,.gate__num b{font-family:'BS Round Num', var(--sans) !important; font-style:normal; font-weight:700; font-synthesis:none}
+.gate__year{letter-spacing:-.01em}
+.gate__num b{letter-spacing:-.03em}
+.gate__num b .gd,.gate__year .gd{width:.64em}   /* 둥근미소 숫자 폭(0.656em)에 맞춰요 */
+
+/* 해녀 이야기 '바다에서 만난 사람들' 제목을 더 크게 (예전: 최대 2.6rem) */
+.stories__title{font-size:clamp(2.1rem, min(3.6vw, 7vh), 3.9rem); line-height:1.15}
+
+/* 게임 칸 · 게임 상세 화면: 원래 글꼴로 되돌려요 (HIGH SCORE 픽셀체도 그대로) */
+:is(#badatgil, #subView:has(.game__title)){
+  --sans:'Pretendard','Pretendard Variable','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕','Noto Sans KR',system-ui,sans-serif;
+  --serif:'Gowun Batang','Nanum Myeongjo','Noto Serif KR','AppleMyungjo','Batang','바탕',serif;
+  font-family:var(--sans)}
+</style>

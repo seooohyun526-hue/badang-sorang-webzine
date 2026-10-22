@@ -1,0 +1,59 @@
+<style id="i18n-style">
+/* =========================================================
+   ★ 영어판 모양 맞춤 — 영어로 볼 때(<html lang="en">)만 적용돼요. 한국어 화면은 그대로예요 (일본어판은 아래쪽)
+   · 영어 글은 한국어보다 길어서, 넘치거나 겹치는 곳만 글자 크기 · 폭을 살짝 고쳐요
+   ========================================================= */
+/* 함렛(굵은 명조) 글꼴 파일에는 한글 · 숫자만 담겨 있어서, 영문 글자는 비슷한 명조(Georgia)로 이어 써요 */
+@font-face{font-family:'Hahmlet'; font-weight:700; src:local('Georgia Bold'), local('Georgia-Bold'); unicode-range:U+0041-005A, U+0061-007A, U+0026, U+0027, U+2018-201D}
+@font-face{font-family:'Hahmlet'; font-weight:800; src:local('Georgia Bold'), local('Georgia-Bold'); unicode-range:U+0041-005A, U+0061-007A, U+0026, U+0027, U+2018-201D}
+html[lang="en"] body{word-break:normal; overflow-wrap:break-word}
+/* 줄바꿈: 제목은 줄 길이를 고르게(끝줄에 한 단어만 남지 않게), 본문은 마지막 줄 외톨이 단어를 피해요 */
+html[lang="en"] :is(h1, h2, h3, .gate__title, .stories__title, .sx-pp__title, .oc-intro__title, .oc-closing__line, .why__title, .ending__copy, .chr-title, .ocp__title){text-wrap:balance}
+html[lang="en"] :is(p, li, dd, figcaption, .st-quote){text-wrap:pretty}
+/* 유네스코 큰 제목: 영어가 길어서 조금 작게 (두 줄 모두 칸 안에) */
+html[lang="en"] .sx__big{font-size:9.2cqw}
+html[lang="en"] .sx__big-line + .sx__big-line{font-size:.78em}
+/* 게임 제목: 영문도 픽셀 글꼴로 */
+html[lang="en"] .game .game__title, html[lang="en"] .gp .game__title{font-family:'BS Pixel Title','BS Pixel KO',var(--sans)}
+/* 머리 메뉴: 영어 메뉴 이름이 길어서 (☰ 메뉴로 바뀌는 폭은 일본어도 같이) — 한 줄로 두고, 좁아지면 글자를 줄이고 로고 글씨는 숨겨요(로고 그림은 그대로) → 더 좁으면 휴대폰처럼 ☰ 메뉴 */
+html[lang="en"] .hd__logo, html[lang="en"] .hd__nav a{white-space:nowrap}
+@media (max-width:1400px) and (min-width:861px){
+  html[lang="en"] .hd__nav{gap:clamp(12px,1.5vw,22px); font-size:.84rem}
+  html[lang="en"] .hd__logo > span:not(.logo-mask){display:none}
+}
+@media (max-width:1180px) and (min-width:861px){
+  html[lang="en"] .hd__logo > span:not(.logo-mask){display:inline}
+  /* (일본어도 이 폭에서는 ☰ 메뉴) */
+  :is(html[lang="en"], html[lang="ja"]) .hd__menu{display:block}
+  :is(html[lang="en"], html[lang="ja"]) .hd__nav{position:fixed; inset:0 0 auto 0; padding:calc(var(--hd) + 6px) var(--gutter) 26px;
+    flex-direction:column; gap:0; font-size:1.12rem; background:var(--cream); color:var(--deep); box-shadow:0 24px 40px -24px rgba(6,44,53,.4);
+    transform:translateY(-104%); transition:transform .5s var(--ease)}
+  :is(html[lang="en"], html[lang="ja"]) .hd__nav a{padding:14px 0; border-bottom:1px solid rgba(18,52,60,.1)}
+  :is(html[lang="en"], html[lang="ja"]) .hd__nav a::after{display:none}
+  :is(html[lang="en"], html[lang="ja"]) .hd.is-open{color:var(--deep)}
+  :is(html[lang="en"], html[lang="ja"]) .hd.is-open .hd__nav{transform:none}
+  :is(html[lang="en"], html[lang="ja"]) .hd__logo{position:relative; z-index:2}
+}
+/* 휴대폰 */
+@media (max-width:560px){
+  :is(html[lang="en"], html[lang="ja"]) .gate__kicker{letter-spacing:.03em}                      /* 첫 화면 머리글 한 줄로 */
+  :is(html[lang="en"], html[lang="ja"]) .hd__logo{white-space:nowrap; gap:6px; font-size:.98rem}   /* 머리 메뉴 'Badang Sorang' 한 줄로 */
+  :is(html[lang="en"], html[lang="ja"]) .hd__logo .logo-mask{width:50px}
+}
+
+/* =========================================================
+   ★ 일본어판 모양 맞춤 — 일본어로 볼 때(<html lang="ja">)만 적용돼요. 한국어 · 영어 화면은 그대로예요
+   ========================================================= */
+/* 글꼴: 웹진 글꼴(한글용)에는 일본어 글자가 없어서, 일본어는 컴퓨터 · 휴대폰에 있는 일본어 고딕 · 명조로 이어 써요
+   · 영문 · 숫자는 원래 글꼴 그대로 (글꼴 시안 판은 --ja-sans-lead 로 시안 글꼴을 맨 앞에 둬요) */
+html[lang="ja"]{
+  --sans:var(--ja-sans-lead,) 'Pretendard','Pretendard Variable','Hiragino Sans','Hiragino Kaku Gothic ProN','Yu Gothic Medium','Yu Gothic','YuGothic','Meiryo','Noto Sans JP','Noto Sans CJK JP',system-ui,sans-serif;
+  --serif:var(--ja-serif-lead,) 'Hiragino Mincho ProN','Yu Mincho','YuMincho','BIZ UDPMincho','MS PMincho','Noto Serif JP','Noto Serif CJK JP','Yu Gothic Medium','Yu Gothic','Meiryo',serif}   /* 명조가 없는 컴퓨터는 고딕으로 (글자마다 글꼴이 섞이지 않게) */
+html[lang="ja"] body{font-feature-settings:'palt' 0}
+/* 줄바꿈: 한국어용 '단어 단위로만 끊기'(keep-all)를 풀고, 일본어는 말의 덩어리(文節)에서 끊어요 · 줄 머리에 。、」 가 오지 않게 */
+html[lang="ja"] body, html[lang="ja"] body *{word-break:auto-phrase; line-break:strict; overflow-wrap:break-word}
+html[lang="ja"] :is(h1, h2, h3, .gate__title, .stories__title, .sx-pp__title, .oc-intro__title, .oc-closing__line, .why__title, .ending__copy, .chr-title, .ocp__title, .sx__big){text-wrap:balance}
+html[lang="ja"] :is(p, li, dd, figcaption, .st-quote){text-wrap:pretty}
+html[lang="ja"] .hd__nav a, html[lang="ja"] .hd__logo{white-space:nowrap}
+html[lang="ja"] .sx-pp__keep{white-space:normal}   /* 한국어용 '숫자+뒷말 붙이기'가 일본어에선 줄 전체를 붙여 버려서 풀어요 (숫자 자체는 그대로 안 갈라져요) */
+</style>

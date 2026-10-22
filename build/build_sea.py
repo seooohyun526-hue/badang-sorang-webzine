@@ -22,7 +22,7 @@ scene = f'''      <figure class="sea" id="gSea">
              위 그림이 위에서부터 잘려 나가며 색이 빠지고 선만 남아요. 그림을 바꾸려면 두 src 를 파일 경로로 바꿔요 -->
         <div class="drain" role="img" aria-label="테왁을 안은 해녀 그림. 그림 속 색이 위에서부터 빠져나가 선만 남아요">
           <img class="drain__line" alt="" decoding="async" src="{line_uri}">
-          <img class="drain__fill" id="gFill" alt="" decoding="async" src="{fill_uri}">
+          <span class="drain__clip"><img class="drain__fill" id="gFill" alt="" decoding="async" src="{fill_uri}"></span>
         </div>
         <figcaption class="sea__cap"><span class="sea__cap-l">해녀 그림 속 색이 빠져나가는 모습은 줄어드는 해녀의 수를 빗댄 표현이에요.</span><span class="sea__cap-s">색이 빠지는 그림은 줄어드는 해녀 수를 빗댄 표현이에요.</span></figcaption>
       </figure>
@@ -537,6 +537,7 @@ if os.environ.get('BS_GAME') == 'v2':
     s = s.replace('해녀의 바닷길', '해녀의 바당길').replace('해녀의\n바닷길', '해녀의\n바당길').replace('오늘의 바닷길 챔피언', '오늘의 바당길 챔피언')
     gcss = open(sp + '/game.css', encoding='utf-8').read().strip()
     gcss = gcss.replace('__PIXEL_TITLE_WOFF2__', _b64.b64encode(open(sp + '/pixel_title.woff2', 'rb').read()).decode())
+    gcss = gcss.replace('__PIXEL_KO_WOFF2__', _b64.b64encode(open(sp + '/fonts/MonaS12-Bold-ko.woff2', 'rb').read()).decode())   # 랭킹 한글 픽셀체
     # 랭킹 숫자 · 라벨 글꼴 Press Start 2P (SIL OFL) — 웹진은 바깥 글꼴을 불러오지 않아서 영문 · 숫자만 담아 넣어요
     gcss = gcss.replace('<style id="game-v2-style">', '<style id="game-v2-style">\n' + "@font-face{font-family:'Press Start 2P'; font-display:block; src:url(data:font/woff2;base64," + _b64.b64encode(open(sp + '/pressstart2p.woff2', 'rb').read()).decode() + ") format('woff2')}", 1)
     one('</style>' + nl + '<script>document.documentElement', '</style>' + nl + N(gcss) + nl + '<script>document.documentElement')
@@ -693,15 +694,33 @@ if True:
     one(".ld.is-out .ld__box{transform:translateY(-10px) scale(.96); transition:transform .75s cubic-bezier(.4,0,.2,1)}",
         ".ld.is-out .ld__box{transform:translateY(-10px) scale(.96); transition:transform .45s cubic-bezier(.4,0,.2,1)}")
 
-# 23) (글씨체 시안) BS_FONT=gumi 이면 제목 = 낭만있구미체 · 본문 = 학교안심 보드마카 (게임 칸은 그대로)
+# 23) (글씨체 시안) BS_FONT=gumi → 제목 낭만있구미체 · BS_FONT=gotgam → 제목 상주곶감체(유네스코 칸 제목 제외), 본문은 둘 다 학교안심 보드마카 (게임 칸은 그대로)
 #     · 글꼴 파일: build/fonts/ (눈누 웹폰트 · 파일을 자르지 않고 그대로 담아요) · 모양: build/font_gumi.css
 #     · 결과 파일 이름 예: 바당소랑_웹진_글씨체_낭만있구미.html (여러 시안을 만들어 비교해요)
-if os.environ.get('BS_FONT') == 'gumi':
+if os.environ.get('BS_FONT') in ('gumi', 'gotgam'):
     import base64 as _b64g
     _gf = lambda n: _b64g.b64encode(open(sp + '/fonts/' + n, 'rb').read()).decode()
-    _fc = open(sp + '/font_gumi.css', encoding='utf-8').read()
-    _fc = _fc.replace('__GUMI__', _gf('GumiRomanceTTF.woff2')).replace('__BOARD__', _gf('HakgyoansimBoadmarkerR.woff2'))
+    _fk = os.environ.get('BS_FONT')
+    _fc = open(sp + '/font_%s.css' % _fk, encoding='utf-8').read()
+    _fc = _fc.replace('__BOARD__', _gf('HakgyoansimBoadmarkerR.woff2'))
+    if _fk == 'gumi': _fc = _fc.replace('__GUMI__', _gf('GumiRomanceTTF.woff2'))
+    if _fk == 'gotgam': _fc = _fc.replace('__GOTGAM__', _gf('SANJUGotgam.woff')).replace('__ROUNDNUM__', _gf('dunggeunmiso-B-num.woff2'))
     one('</head>', N(_fc) + '</head>')
+
+# 25) 언어 선택 (오른쪽 위 고정 · 모든 화면) — 한국어 · English · 日本語 (고른 언어를 표시 · 기억만, 번역은 아직) · 모양 lang.css · 동작 lang.js
+if True:
+    one(N("  var GamePop = (function () {\n"), N(open(sp + '/lang.js', encoding='utf-8').read() + "  var GamePop = (function () {\n"))
+    one('</head>', N(open(sp + '/lang.css', encoding='utf-8').read()) + '</head>')
+
+# 26) 영어판 — 번역 사전(build/i18n_en.js · 나중에 i18n_ja.js 도 같은 모양으로) + 번역 입히기(i18n.js) + 영어판 모양 맞춤(i18n.css)
+#     · 웹진 내용 글(SITE … CLEAN) 바로 뒤에 넣어요 → 화면을 그리기 전에 글을 바꿔 둘 수 있게
+#     · 한국어를 고르면 아무것도 바뀌지 않아요
+if True:
+    import glob as _gl
+    _dicts = ''.join(open(f, encoding='utf-8').read() for f in sorted(_gl.glob(sp + '/i18n_*.js')))
+    _i18n = '<script>' + nl + N(_dicts + open(sp + '/i18n.js', encoding='utf-8').read()) + '</script>' + nl
+    one('  big: "badang sorang"' + nl + '};' + nl + nl + '</script>' + nl, '  big: "badang sorang"' + nl + '};' + nl + nl + '</script>' + nl + _i18n)
+    one('</head>', N(open(sp + '/i18n.css', encoding='utf-8').read()) + '</head>')
 
 # 18) (배경 추가 시안) BS_SEABG=v2 이면 바다색 칸들(해녀 이야기 · 목적 · 바다 지키기 · 해녀의 바당길) 뒤에 실제 제주 바다 사진을 깔아요
 #     사진은 첫 화면 영상의 포스터(드론으로 찍은 제주 바다)에서 해녀 · 테왁을 지운 한 장(media/sea-bg.webp, 약 70KB)이에요

@@ -7,6 +7,8 @@
 /* 제목 '해녀의 바당길' — 게임과 같은 픽셀 글꼴 (모나S12 Bold, Monad ABXY, SIL Open Font License 1.1 — 제목 글자 6자만 담았어요)
    픽셀이 또렷하게 보이도록 글자 크기는 12px 의 배수로 맞춰요 */
 @font-face{font-family:'BS Pixel Title'; src:url(data:font/woff2;base64,__PIXEL_TITLE_WOFF2__) format('woff2'); font-display:block}
+/* 랭킹(HIGH SCORE) 한글 픽셀체: 모나S12 Bold (SIL OFL) — 닉네임이 무엇이든 보이도록 한글 11,172자 · 영문 · 숫자를 담았어요 (build/fonts/MonaS12-Bold-ko.woff2) */
+@font-face{font-family:'BS Pixel KO'; src:url(data:font/woff2;base64,__PIXEL_KO_WOFF2__) format('woff2'); font-display:swap}
 .game .game__title,.gp .game__title{font-family:'BS Pixel Title',var(--sans); font-weight:400; font-size:72px; line-height:1.12; letter-spacing:0; font-synthesis:none}
 .game__kicker{letter-spacing:.14em}
 .game__lead{max-width:470px}
@@ -75,15 +77,15 @@
 /* ── 바당 소랑 HIGH SCORE ── */
 .grank{position:relative; z-index:2; min-width:0}
 .grank__kicker{margin:0; font-family:'Press Start 2P',ui-monospace,monospace; font-size:.66rem; letter-spacing:.12em; color:var(--g-mint)}
-.grank__title{margin:8px 0 0; font-weight:900; font-size:clamp(1.35rem,1.9vw,1.8rem); line-height:1.15; letter-spacing:-.01em; color:#f4fffd; word-break:keep-all;
+.grank__title{margin:8px 0 0; font-family:'BS Pixel KO',var(--sans); font-weight:400; font-synthesis:none; font-size:24px; line-height:1.25; letter-spacing:0; color:#f4fffd; word-break:keep-all;
   text-shadow:2px 0 0 var(--g-deep),-2px 0 0 var(--g-deep),0 2px 0 var(--g-deep),0 -2px 0 var(--g-deep),0 6px 0 rgba(5,27,43,.5)}
-.grank__sub{margin:6px 0 0; color:#b5d7dd; line-height:1.5; font-size:.9rem}
-.grank__badge{display:inline-flex; align-items:center; gap:8px; margin-top:10px; padding:5px 10px; font-size:.74rem; font-weight:800; border-radius:4px}
+.grank__sub{margin:6px 0 0; color:#b5d7dd; line-height:1.5; font-family:'BS Pixel KO',var(--sans); font-size:12px}
+.grank__badge{display:inline-flex; align-items:center; gap:8px; margin-top:10px; padding:5px 10px; font-family:'BS Pixel KO',var(--sans); font-size:12px; font-weight:400; border-radius:4px}
 .grank.is-sample .grank__badge{border:2px dashed var(--g-sun); color:var(--g-sun); background:rgba(255,210,90,.08)}
 .grank.is-live .grank__badge{border:2px solid var(--g-mint); color:var(--g-mint); background:rgba(117,242,201,.08)}
 .grank.is-live .grank__badge::before{content:''; width:8px; height:8px; background:#ff6b6b; animation:gdBlink 1.2s steps(2) infinite}
 @keyframes gdBlink{50%{opacity:0}}
-.grank__note{margin:8px 0 12px; font-size:.74rem; line-height:1.5; color:#9fc6cf}
+.grank__note{margin:8px 0 12px; font-family:'BS Pixel KO',var(--sans); font-size:12px; line-height:1.6; color:#9fc6cf}
 /* 아케이드 화면 같은 판 (픽셀 모서리 · 주사선) */
 .grank__board{position:relative; min-height:250px; padding:14px 14px 12px; background:linear-gradient(180deg,#0b3c51 0%,#062a3a 100%); color:#5cd6f2;
   clip-path:polygon(0 12px,12px 12px,12px 0,calc(100% - 12px) 0,calc(100% - 12px) 12px,100% 12px,100% calc(100% - 12px),calc(100% - 12px) calc(100% - 12px),calc(100% - 12px) 100%,12px 100%,12px calc(100% - 12px),0 calc(100% - 12px));
@@ -102,7 +104,7 @@
 .grank__ico{width:16px; height:auto; flex:none}
 .grank__rk > span{min-width:2ch}
 .grank__name{overflow:hidden}
-.grank__nm{display:block; overflow:hidden; text-overflow:ellipsis; font-family:var(--sans); font-weight:900; font-size:.86rem; letter-spacing:.02em}
+.grank__nm{display:block; overflow:hidden; text-overflow:ellipsis; font-family:'BS Pixel KO',var(--sans); font-weight:400; font-synthesis:none; font-size:12px; letter-spacing:0}
 .grank__d-m{display:none}
 .grank__date{color:rgba(181,215,221,.75); font-size:.44rem!important; letter-spacing:-.02em}
 .grank__row--n td{color:#5cd6f2}
@@ -110,7 +112,7 @@
 .grank__row--1 td:first-child,.grank__row--2 td:first-child,.grank__row--3 td:first-child{border-radius:4px 0 0 4px}
 .grank__row--1 td:last-child,.grank__row--2 td:last-child,.grank__row--3 td:last-child{border-radius:0 4px 4px 0}
 .grank__row--1 td{color:#ffd25a; font-size:.62rem}
-.grank__row--1 .grank__nm{font-size:.98rem}
+.grank__row--1 .grank__nm{font-size:12px}
 .grank__row--2 td{color:#dbeef5}
 .grank__row--3 td{color:#f0a46b}
 .grank__row--1 td.grank__date,.grank__row--2 td.grank__date,.grank__row--3 td.grank__date{color:rgba(219,238,245,.7)}
@@ -119,7 +121,7 @@
 .grank__state b{font-family:'Press Start 2P',ui-monospace,monospace; font-weight:400; font-size:.9rem; letter-spacing:.08em; color:#75f2c9}
 .grank__state--error b{color:#ff8a6b}
 .grank__state--empty b{color:var(--g-sun)}
-.grank__state p{margin:0; max-width:24em; color:#b5d7dd; font-size:.92rem; line-height:1.6}
+.grank__state p{margin:0; max-width:24em; color:#b5d7dd; font-family:'BS Pixel KO',var(--sans); font-size:12px; line-height:1.6}
 .grank__state--loading b{animation:gdBlink 1s steps(2) infinite}
 .grank__dots{display:flex; gap:8px}
 .grank__dots i{width:10px; height:10px; background:#75f2c9; animation:gdHop .9s steps(3) infinite}
@@ -152,8 +154,8 @@
   .grank__table th:nth-child(1){width:60px}
   .grank__table th.grank__num{width:78px}
   .grank__table td{padding:8px 6px; font-size:.56rem}
-  .grank__nm{font-size:.92rem}
-  .grank__row--1 .grank__nm{font-size:1rem}
+  .grank__nm{font-size:12px}
+  .grank__row--1 .grank__nm{font-size:12px}
   .grank__d-m{display:block; margin-top:3px; font-family:'Press Start 2P',ui-monospace,monospace; font-size:.5rem; color:rgba(181,215,221,.7)}
   .grank__ico{width:16px}
 }
