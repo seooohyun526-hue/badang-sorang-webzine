@@ -2,7 +2,10 @@
      2-2) '응원 온도' 창 — '바다 지키기' 칸에 들어오면 화면 가운데 떠요 (내용은 CLEAN.cheer)
      · 사랑의 열매 '사랑의 온도탑' · 스포츠 '우리 팀 응원하기' 처럼: 좋아요(여러 번 눌러도 돼요) · 응원의 한 마디를 남기면 온도계가 올라가요
        온도 = base + 좋아요 × likeStep + 한 마디 × commentStep (goal 에서 멈춰요) · 온도계 눈금은 min ℃ ~ goal ℃
-     · 응원 저장: 지금은 이 브라우저(localStorage 'bs-cheer')에만 — 서버를 붙이려면 아래 load · save 두 곳만 바꾸면 돼요
+     · 응원 저장: CLEAN.cheer.api 에 응원 API 주소가 있으면 모두가 함께 보는 공용 저장소(cheer-api/)에 — 좋아요 · 응원이 한 온도계에 모여요
+       비어 있으면 예전처럼 이 브라우저(localStorage 'bs-cheer')에만 저장해요
+       · 예전에 이 브라우저에만 남긴 응원은 공용 저장소에 처음 닿을 때 한 번 옮겨요 (같은 응원은 두 번 올라가지 않아요 · 'bs-cheer-moved')
+       · 보내는 동안 버튼을 잠가 두 번 저장되지 않게 · 실패하면 창 안에 안내 · 남이 쓴 글은 글자 그대로(esc)만 보여요
      · 오늘 하루 보지 않기: 닫고, 오늘이 끝날 때까지 이 칸에서 저절로 뜨지 않아요 (localStorage 'bs-ocean-pop-hide' = 오늘 날짜)
        → 날짜가 바뀌면 다시 떠요. 저장소를 못 쓰는 환경이면 이 화면에서만 기억해요
      · 그냥 나가기(또는 Esc): 창만 닫고 이 칸에 그대로 있어요. 칸을 완전히 벗어났다 다시 들어오면 다시 떠요
@@ -13,7 +16,8 @@
   var OceanPop = (function () {
     var sec = $('#ocean'), P = (typeof CLEAN !== 'undefined' && CLEAN.cheer) || null;
     if (!sec || !P) return {};
-    var HIDE = 'bs-ocean-pop-hide', DATA = 'bs-cheer', memHide = '', memData = null;
+    var HIDE = 'bs-ocean-pop-hide', DATA = 'bs-cheer', MOVED = 'bs-cheer-moved', memHide = '', memData = null;
+    var API = String(P.api || '').trim(), shared = !!API, cur = null, busy = false;   // cur: 공용 저장소에서 받아 온 지금 상태
     function today() { var d = new Date(); return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
     function hiddenToday() { var v = memHide; try { v = localStorage.getItem(HIDE) || memHide; } catch (e) {} return v === today(); }
     function hideToday() { memHide = today(); try { localStorage.setItem(HIDE, memHide); } catch (e) {} }
@@ -22,12 +26,35 @@
       var d = memData;
       try { var raw = localStorage.getItem(DATA); if (raw) d = JSON.parse(raw); } catch (e) {}
       d = d && typeof d === 'object' ? d : {};
-      return { likes: Math.max(0, +d.likes || 0), comments: Array.isArray(d.comments) ? d.comments.filter(function (c) { return c && typeof c.t === 'string'; }).slice(0, 50) : [] };
+      var cs = Array.isArray(d.comments) ? d.comments.filter(function (c) { return c && typeof c.t === 'string'; }).slice(0, 50) : [];
+      return { likes: Math.max(0, +d.likes || 0), comments: cs, commentCount: cs.length };
     }
-    function save(d) { memData = d; try { localStorage.setItem(DATA, JSON.stringify(d)); } catch (e) {} }
+    function save(d) { memData = d; try { localStorage.setItem(DATA, JSON.stringify({ likes: d.likes, comments: d.comments })); } catch (e) {} }
+    // 지금 보여 줄 상태: 공용이면 받아 온 것(아직이면 빈 상태), 아니면 이 브라우저
+    function state() { return shared ? (cur || { likes: 0, comments: [], commentCount: 0 }) : load(); }
+    function fromServer(x) {
+      var cs = x && Array.isArray(x.comments) ? x.comments.filter(function (c) { return c && typeof c.t === 'string'; }).slice(0, 50) : [];
+      return { likes: Math.max(0, +(x && x.likes) || 0), comments: cs, commentCount: Math.max(cs.length, +(x && x.commentCount) || 0) };
+    }
+    // 공용 저장소에 묻기 (8초 넘게 답이 없으면 실패로 봐요)
+    function api(method, body) {
+      var ctl = window.AbortController ? new AbortController() : null, tm = setTimeout(function () { if (ctl) ctl.abort(); }, 8000);
+      return fetch(API, { method: method, headers: body ? { 'Content-Type': 'application/json' } : undefined, body: body ? JSON.stringify(body) : undefined, cache: 'no-store', signal: ctl ? ctl.signal : undefined })
+        .then(function (r) { return r.json().catch(function () { return {}; }).then(function (data) { return { status: r.status, data: data }; }); })
+        .catch(function () { return { status: 0, data: {} }; })
+        .then(function (res) { clearTimeout(tm); return res; });
+    }
+    function uuid() {
+      if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+      var b = new Uint8Array(16), i;
+      if (window.crypto && crypto.getRandomValues) crypto.getRandomValues(b); else for (i = 0; i < 16; i++) b[i] = Math.random() * 256;
+      b[6] = (b[6] & 15) | 64; b[8] = (b[8] & 63) | 128;
+      var h = [].map.call(b, function (x) { return (x + 256).toString(16).slice(1); }).join('');
+      return h.slice(0, 8) + '-' + h.slice(8, 12) + '-' + h.slice(12, 16) + '-' + h.slice(16, 20) + '-' + h.slice(20);
+    }
     var goal = +P.goal || 100, base = +P.base || 0, min = Math.min(+P.min || 0, base), likeStep = +P.likeStep || 3, comStep = +P.commentStep || 7, maxLen = +P.maxLen || 100;
     function level(t) { return Math.max(0, Math.min(1, (t - min) / (goal - min))).toFixed(4); }   // 온도계 눈금 높이 (0 = 맨 아래 min ℃ · 1 = goal ℃)
-    function tempOf(d) { return Math.min(goal, base + d.likes * likeStep + d.comments.length * comStep); }
+    function tempOf(d) { return Math.min(goal, base + d.likes * likeStep + d.commentCount * comStep); }
     var fmt = function (t) { return (Math.round(t * 10) / 10).toFixed(1); };
 
     var heart = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.8 6.6 4.8c2.1 0 3.6 1.2 5.4 3.2 1.8-2 3.3-3.2 5.4-3.2 3.6 0 5.7 3.6 4.2 7C19.5 16.4 12 21 12 21z" fill="currentColor"/></svg>';
@@ -58,8 +85,9 @@
             '<textarea id="chrText" rows="2" maxlength="' + maxLen + '" placeholder="' + esc(P.placeholder || '') + '"></textarea>' +
             '<div class="chr-form__row"><span class="chr-form__hint" aria-live="polite"></span><span class="chr-form__count">0 / ' + maxLen + '</span><button type="submit" class="chr-btn chr-btn--send">' + esc(P.submit || '') + '</button></div>' +
           '</form>' +
-          '<div class="chr-list"><p class="chr-list__k">' + esc(P.listTitle || '') + '</p><ul class="chr-list__ul"></ul></div>' +
-          '<p class="chr-note">' + esc(P.note || '') + '</p>' +
+          '<p class="chr-msg" role="status"></p>' +
+          '<div class="chr-list"><p class="chr-list__k">' + esc((shared ? P.listTitleShared : P.listTitle) || '') + '</p><ul class="chr-list__ul"></ul></div>' +
+          '<p class="chr-note">' + esc((shared ? P.noteShared : P.note) || '') + '</p>' +
           '<p class="sr-only chr-live" aria-live="polite"></p>' +
           '<div class="ocp__acts">' +
             '<button type="button" class="ocp__today" data-act="today">' + esc(P.today || '오늘 하루 보지 않기') + '</button>' +
@@ -70,6 +98,8 @@
     var box = $('.ocp__box', root), scene = $('.chr-scene', root), merc = $('.chr-merc', root), num = $('.chr-temp__n', root), up = $('.chr-temp__up', root);
     var form = $('.chr-form', root), text = $('#chrText', root), hint = $('.chr-form__hint', root), count = $('.chr-form__count', root);
     var talkBtn = $('.chr-btn--talk', root), likeBtn = $('.chr-btn--like', root), list = $('.chr-list__ul', root), live = $('.chr-live', root);
+    var sendBtn = $('.chr-btn--send', root), msg = $('.chr-msg', root), listState = '';   // listState: '' · 'loading' · 'error' (공용 목록을 아직 못 받았을 때)
+    function say(t) { msg.textContent = t || ''; }
 
     // ── 온도계 · 숫자 · 목록 그리기 ──
     var shown = base, tween = 0;
@@ -77,7 +107,7 @@
       var t = tempOf(d);
       root.style.setProperty('--lv', level(t));
       scene.setAttribute('aria-valuenow', fmt(t)); scene.setAttribute('aria-valuetext', fmt(t) + '℃ / ' + goal + '℃');
-      $('.chr-likes', root).textContent = d.likes; $('.chr-coms', root).textContent = d.comments.length;
+      $('.chr-likes', root).textContent = d.likes; $('.chr-coms', root).textContent = d.commentCount;
       root.classList.toggle('is-goal', t >= goal);
       // 숫자는 올라가는 만큼 살짝 세어 올라가요
       cancelAnimationFrame(tween);
@@ -90,29 +120,76 @@
         up.textContent = '+' + fmt(bump) + '℃'; up.classList.remove('is-on'); void up.offsetWidth; up.classList.add('is-on');
         live.textContent = (P.tempLabel || '') + ' ' + fmt(t) + '℃' + (t >= goal ? ' · ' + (P.reached || '') : '');
       }
+      var none = listState === 'loading' ? P.loading : listState === 'error' ? P.loadError : P.empty;
       list.innerHTML = d.comments.length ? d.comments.map(function (c) {
         var at = new Date(c.at || 0), when = isNaN(at) ? '' : (at.getMonth() + 1) + '.' + at.getDate();
-        return '<li><span>' + esc(c.t) + '</span><time>' + esc(when) + '</time></li>';
-      }).join('') : '<li class="is-empty">' + esc(P.empty || '') + '</li>';
+        return '<li><span>' + esc(c.t) + '</span><time>' + esc(when) + '</time></li>';   // 남이 쓴 글은 글자 그대로만 (HTML 로 읽지 않아요)
+      }).join('') : '<li class="is-empty">' + esc(none || '') + '</li>';
     }
+    // 공용 저장소에서 지금 상태 받아 오기 → 다 받으면 then(d)
+    function refresh(then) {
+      if (!cur) { listState = 'loading'; draw(state()); }
+      return api('GET').then(function (res) {
+        if (res.status === 200) { cur = fromServer(res.data); listState = ''; if (then) then(cur); else draw(cur); moveOld(); }
+        else if (!cur) { listState = 'error'; draw(state()); }
+      });
+    }
+    // 예전에 이 브라우저에만 남긴 응원을 공용 저장소로 한 번 옮겨요 (같은 응원 id 는 두 번 저장되지 않아요)
+    var moving = false;
+    function moveOld() {
+      var moved = false; try { moved = localStorage.getItem(MOVED) === '1'; } catch (e) { return; }
+      if (moved || moving) return;
+      var d = load(); if (!d.comments.length) { try { localStorage.setItem(MOVED, '1'); } catch (e) {} return; }
+      d.comments.forEach(function (c) { if (!c.id) c.id = uuid(); }); save(d);   // id 를 먼저 적어 두면 중간에 끊겨도 다시 옮길 때 겹치지 않아요
+      moving = true;
+      api('POST', { type: 'import', comments: d.comments.slice(0, 20).map(function (c) { return { id: c.id, t: c.t, at: c.at }; }) }).then(function (res) {
+        moving = false;
+        if (res.status === 200) { try { localStorage.setItem(MOVED, '1'); } catch (e) {} cur = fromServer(res.data); if (open) draw(cur); }
+      });
+    }
+    function setBusy(on) { busy = on; likeBtn.disabled = on; sendBtn.disabled = on; text.readOnly = on; form.setAttribute('aria-busy', String(on)); }
     likeBtn.addEventListener('click', function () {
-      var d = load(); if (tempOf(d) >= goal) { draw(d); return; }
-      var before = tempOf(d); d.likes += 1; save(d); draw(d, tempOf(d) - before);
+      var d = state(); if (tempOf(d) >= goal) { draw(d); return; }
       likeBtn.classList.remove('is-pop'); void likeBtn.offsetWidth; likeBtn.classList.add('is-pop');
+      var before = tempOf(d);
+      if (!shared) { d.likes += 1; save(d); draw(d, tempOf(d) - before); return; }
+      if (busy) return;
+      // 공용: 눌렀다는 느낌은 바로(먼저 +1), 저장소 답을 받으면 모두의 숫자로 맞춰요
+      cur = { likes: d.likes + 1, comments: d.comments, commentCount: d.commentCount }; draw(cur, tempOf(cur) - before); say('');
+      setBusy(true);
+      api('POST', { type: 'like' }).then(function (res) {
+        setBusy(false);
+        if (res.status === 200 || res.status === 429) { cur = fromServer(res.data); draw(cur); }   // 429: 너무 빨리 누름 → 저장소 숫자 그대로
+        else { cur = d; draw(cur); say(P.sendError); }
+      });
     });
     talkBtn.addEventListener('click', function () {
       var open_ = form.hidden; form.hidden = !open_; talkBtn.setAttribute('aria-expanded', String(open_));
       if (open_) text.focus();
     });
     text.addEventListener('input', function () { count.textContent = text.value.length + ' / ' + maxLen; hint.textContent = ''; });
+    var pending = null;                                              // 보내다 실패한 응원 { t, id } — 같은 글을 다시 보내면 같은 id 로 (두 번 저장되지 않게)
+    function done() { text.value = ''; count.textContent = '0 / ' + maxLen; form.hidden = true; talkBtn.setAttribute('aria-expanded', 'false'); talkBtn.focus(); }
     form.addEventListener('submit', function (e) {
       e.preventDefault();
+      if (busy) return;                                              // 보내는 중에 또 누르면 무시
       var t = text.value.replace(/\s+/g, ' ').trim().slice(0, maxLen);
       if (!t) { hint.textContent = P.tooShort || ''; text.focus(); return; }
-      var d = load(), before = tempOf(d);
-      d.comments.unshift({ t: t, at: Date.now() }); d.comments = d.comments.slice(0, 50); save(d);
-      draw(d, tempOf(d) - before);
-      text.value = ''; count.textContent = '0 / ' + maxLen; form.hidden = true; talkBtn.setAttribute('aria-expanded', 'false'); talkBtn.focus();
+      var d = state(), before = tempOf(d);
+      if (!shared) {
+        d.comments.unshift({ t: t, at: Date.now() }); d.comments = d.comments.slice(0, 50); d.commentCount = d.comments.length; save(d);
+        draw(d, tempOf(d) - before); done(); return;
+      }
+      var id = pending && pending.t === t ? pending.id : uuid(); pending = { t: t, id: id };
+      setBusy(true); hint.textContent = P.sending || '';
+      api('POST', { type: 'comment', id: id, t: t }).then(function (res) {
+        setBusy(false); hint.textContent = '';
+        if (res.status === 201 || res.status === 200) {
+          pending = null; listState = ''; cur = fromServer(res.data); draw(cur, Math.max(0, tempOf(cur) - before)); done(); say('');
+        } else if (res.status === 429) { hint.textContent = P.tooFast || ''; text.focus(); }
+        else if (res.status === 400) { hint.textContent = P.tooShort || ''; text.focus(); }
+        else { hint.textContent = P.sendError || ''; text.focus(); }  // 글은 그대로 두어 다시 보낼 수 있어요
+      });
     });
 
     // ── 열기 · 닫기 ──
@@ -125,7 +202,7 @@
       if (open) return;
       open = true; back = document.activeElement;
       if (inside) armed = false;                                     // (칸 밖에서 미니 팝업으로 연 것은 '이번 방문'으로 치지 않아요)
-      var d0 = load(); draw(d0, 0);                                  // 숫자 · 목록을 먼저 채우고
+      say(''); var d0 = state(); draw(d0, 0);                        // 숫자 · 목록을 먼저 채우고
       // 뒤 화면은 잠깐 누를 수도, 키보드로 갈 수도 없게
       muted = [].filter.call(document.body.children, function (el) { return el !== root && !el.inert; });
       muted.forEach(function (el) { el.inert = true; });
@@ -134,8 +211,10 @@
       // 창이 열리면 온도계가 처음(체온)에서 지금 온도까지 차올라요
       if (!reduce && tempOf(d0) > base) {
         root.style.setProperty('--lv', level(base)); shown = base; num.textContent = fmt(base);
-        setTimeout(function () { draw(d0, tempOf(d0) - base, true); }, 300);
+        setTimeout(function () { var d = state(); draw(d, tempOf(d) - base, true); }, 300);   // 그 사이 새로 받아 온 응원이 있으면 그걸로
       }
+      // 공용: 열 때마다 모두의 최신 응원을 받아 와요 (그 사이 다른 사람이 남긴 것도 보여요)
+      if (shared) refresh(function (d) { draw(d, Math.max(0, tempOf(d) - shown), true); });
       box.focus({ preventScroll: true });                            // 창 자체에 초점 (화면 읽기 프로그램이 제목을 읽어요 · Tab 으로 버튼)
     }
     function close(act) {

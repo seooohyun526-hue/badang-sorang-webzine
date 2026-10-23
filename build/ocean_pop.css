@@ -85,6 +85,9 @@ html.ocp-lock{overflow:hidden; scrollbar-gutter:stable}
 .chr-list__ul li{display:flex; gap:10px; justify-content:space-between; padding:8px 2px; border-bottom:1px solid rgba(31,74,72,.08); font-size:.86rem; line-height:1.5; color:#33423F; word-break:break-word}
 .chr-list__ul time{flex:none; font-size:.74rem; color:#8A9593}
 .chr-list__ul li.is-empty{justify-content:flex-start; color:#7A8584}
+.chr-msg{margin:6px 0 0; min-height:0; font-size:.78rem; font-weight:700; color:#C85A28}
+.chr-msg:empty{display:none}
+.chr-btn:disabled{opacity:.6; cursor:progress}
 .chr-note{margin:8px 0 0; font-size:.74rem; color:#8A9593}
 /* 아래 버튼 두 개 (왼쪽 보조 · 오른쪽 주요) */
 .ocp__acts{display:flex; justify-content:flex-end; align-items:center; margin-top:12px}

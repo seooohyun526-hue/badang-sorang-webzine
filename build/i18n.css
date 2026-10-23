@@ -7,6 +7,30 @@
 @font-face{font-family:'Hahmlet'; font-weight:700; src:local('Georgia Bold'), local('Georgia-Bold'); unicode-range:U+0041-005A, U+0061-007A, U+0026, U+0027, U+2018-201D}
 @font-face{font-family:'Hahmlet'; font-weight:800; src:local('Georgia Bold'), local('Georgia-Bold'); unicode-range:U+0041-005A, U+0061-007A, U+0026, U+0027, U+2018-201D}
 html[lang="en"] body{word-break:normal; overflow-wrap:break-word}
+/* 영어판 글씨체 (한국어 시안과 같은 방식) — 제목 = 학교안심 퍼즐 블랙 · 본문 = 학교안심 떡볶이 (둘 다 KERIS · SIL OFL)
+   · 그대로 두는 곳: 유네스코(목적) 칸 제목 · 해녀문화 팝업 제목, 게임 칸 · 게임 상세 화면, 오른쪽 위 언어 선택 줄, 기울임 영어(badang · sorang)
+   · 글꼴 파일은 영어를 고를 때만 내려받아요 (한국어 · 일본어 화면에서는 받지 않아요) */
+@font-face{font-family:'BS EN Title'; src:url(data:font/woff2;base64,__EN_TITLE__) format('woff2'); font-weight:400; font-display:swap}
+@font-face{font-family:'BS EN Body'; src:url(data:font/woff2;base64,__EN_BODY__) format('woff2'); font-weight:400; font-display:swap; size-adjust:110%}   /* 글자가 작게 그려지는 글꼴이라 10% 키워요 */
+html[lang="en"] body > :not(.lang){
+  --sans:'BS EN Body','Pretendard','Pretendard Variable','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕','Noto Sans KR',system-ui,sans-serif;
+  --serif:'BS EN Body','Gowun Batang','Nanum Myeongjo','Noto Serif KR','AppleMyungjo','Batang','바탕',serif;
+  font-family:var(--sans)}
+html[lang="en"] :is(.gate__title, .stories__title, .st-end h3, .sp-title,
+    .oc-intro__title, .oc-card__title, .oc-closing__line, .ocp__title,
+    #abTitle, .why__title, #marquee, .ending__copy),
+html[lang="en"] :is(.gate__title, .stories__title, .st-end h3, .sp-title,
+    .oc-intro__title, .oc-card__title, .oc-closing__line, .ocp__title,
+    #abTitle, .why__title, #marquee, .ending__copy) *{
+  font-family:'BS EN Title', var(--sans) !important; font-weight:400 !important; font-synthesis:none}
+html[lang="en"] #abTitle em{font-family:var(--latin) !important}
+html[lang="en"] #abTitle{font-size:clamp(1.6rem, 7vw, 7.2rem)}   /* 제목 글꼴이 옆으로 넓어서 'Badang means sea,'가 한 줄에 들어가게 조금 작게 */
+html[lang="en"] #abTitle [data-t]{white-space:nowrap}
+html[lang="en"] .sxc-title, html[lang="en"] .sxc-sub{font-family:'Gowun Batang','Nanum Myeongjo','Noto Serif KR','AppleMyungjo','Batang','바탕',serif}
+html[lang="en"] :is(#badatgil, #subView:has(.game__title)){
+  --sans:'Pretendard','Pretendard Variable','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕','Noto Sans KR',system-ui,sans-serif;
+  --serif:'Gowun Batang','Nanum Myeongjo','Noto Serif KR','AppleMyungjo','Batang','바탕',serif;
+  font-family:var(--sans)}
 /* 줄바꿈: 제목은 줄 길이를 고르게(끝줄에 한 단어만 남지 않게), 본문은 마지막 줄 외톨이 단어를 피해요 */
 html[lang="en"] :is(h1, h2, h3, .gate__title, .stories__title, .sx-pp__title, .oc-intro__title, .oc-closing__line, .why__title, .ending__copy, .chr-title, .ocp__title){text-wrap:balance}
 html[lang="en"] :is(p, li, dd, figcaption, .st-quote){text-wrap:pretty}

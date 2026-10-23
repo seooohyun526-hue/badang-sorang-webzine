@@ -1,0 +1,17 @@
+<style id="colortest-style">
+/* =========================================================
+   ★ (색 시험 · BS_COLORTEST=1 일 때만) 해녀마다 다른 파스텔 색 — 재생 버튼 · 영상 썸네일 테두리
+   · 1번 파랑 · 2번 노랑 · 3번 보라 · 4번 주황 (너무 진하지 않은 파스텔)
+   · 웹진의 '해녀 이야기' 카드와 상세 화면 아래 '다른 영상 보러 가기' 카드에 똑같이 적용돼요
+   · 재생 버튼: 파스텔로 칠하고 흰 테두리 · 썸네일: 파스텔 테두리 · 재생 세모는 진한 바다색(파스텔 위에서 잘 보이게)
+   ========================================================= */
+.st-card[data-i="0"], .st-card:has(> .st-frame[href$="story-1"]){--pc:#A9CFF2; --pc-shadow:rgba(88,140,196,.55)}
+.st-card[data-i="1"], .st-card:has(> .st-frame[href$="story-2"]){--pc:#F6DD8E; --pc-shadow:rgba(196,160,58,.55)}
+.st-card[data-i="2"], .st-card:has(> .st-frame[href$="story-3"]){--pc:#CDBDF0; --pc-shadow:rgba(132,104,196,.55)}
+.st-card[data-i="3"], .st-card:has(> .st-frame[href$="story-4"]){--pc:#F8BE94; --pc-shadow:rgba(214,128,72,.55)}
+.st-card{--pc-ring:4px}
+.st-card .st-frame{box-shadow:0 0 0 var(--pc-ring) var(--pc, transparent), 0 30px 60px -30px rgba(0,0,0,.7)}
+.st-card .st-play b{background:var(--pc, var(--coral)); color:#1F4A48; border:2.5px solid #fff; box-sizing:border-box;
+  box-shadow:0 10px 24px -8px var(--pc-shadow, rgba(229,92,51,.8))}
+@media (max-width:560px){ .st-card{--pc-ring:3px} }
+</style>

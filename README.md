@@ -85,6 +85,15 @@ media/           그림 원본 (캐릭터 · 털실 인형 · 장면)
 낭만있구미체 파일은 배포가 금지라 저장소에 없어요. 시안을 만들 때 `https://cdn.jsdelivr.net/gh/projectnoonnu/2410-1@1.0/GumiRomanceTTF.woff2` 를 `build/fonts/` 에 받아 두세요.
 시안은 `site/` 가 아닌 다른 폴더로 내보내요 (예: `preview/gumi/index.html`).
 
+다른 제목 글씨체 시안도 같은 방식이에요 (본문은 학교안심 보드마카, 유네스코 칸 제목 · 게임 칸은 그대로):
+
+| BS_FONT | 제목 글씨체 | 글꼴 파일 (`build/fonts/`) | 라이선스 |
+|---|---|---|---|
+| `gotgam` | 상주곶감체 (지금 올라간 판) | `SANJUGotgam.woff` (저장소에 없음) | 웹 임베딩 가능 · 수정 · 재배포 금지 |
+| `cafe24` | 카페24 클래식타입 | `Cafe24ClassicType-Regular.woff2` | SIL OFL 1.1 |
+| `keris` | 케리스 케듀체 B | `KERISKEDU_B.woff2` | SIL OFL |
+| `mulgyeol` | 학교안심 물결 B | `TTHakgyoansimMulgyeolB.woff2` | SIL OFL |
+
 ## 문구 · 링크 바꾸는 곳
 
 | 바꿀 것 | 파일 |
@@ -96,11 +105,17 @@ media/           그림 원본 (캐릭터 · 털실 인형 · 장면)
 | 해녀문화 팝업 사진 | `media/popup/` 에 `01_물질_대표.jpg` 같은 이름으로 넣고 다시 빌드 |
 | 영어 · 일본어 번역 | `build/i18n_en.js` · `build/i18n_ja.js` (왼쪽 한국어 원문 → 오른쪽 번역) |
 
+## 응원 온도 창 — 모두의 응원 (공용 저장소)
+
+- '바다 지키기' 칸의 응원 창은 `build/clean_data.js` 의 `CLEAN.cheer.api` 에 주소가 있으면 모든 방문자의 좋아요 · 응원을 함께 보여 줘요. 비어 있으면 예전처럼 각자 브라우저에만 저장돼요.
+- 서버는 `cheer-api/` (Vercel + Neon). 배포 · 연결 방법은 [cheer-api/README.md](cheer-api/README.md) 에 있어요.
+
 ## 언어 (한국어 · English · 日本語)
 
 - 오른쪽 위 언어 줄에서 고른 언어는 브라우저에 기억돼요(`localStorage 'bs-lang'`). 보이는 언어가 바뀌면 보던 자리 그대로 다시 열려요.
 - 번역 사전은 `build/i18n_en.js`(English) · `build/i18n_ja.js`(日本語) 예요. 두 사전의 왼쪽(한국어 원문)은 똑같아요. 한국어 글을 고치면 두 사전의 왼쪽도 똑같이 고쳐 주세요. 한 글자라도 다르면 그 글만 한국어로 남아요.
 - 다른 언어를 더하려면 사전을 복사해 `build/i18n_<언어>.js` 로 저장하고, 맨 위를 `I18N.<언어> = {` 로 바꾼 뒤 오른쪽만 고쳐요. 언어 줄 버튼은 `build/lang.js` 의 `LANGS` 에 있어요.
+- 영어판 글씨체: 제목 = 학교안심 퍼즐 블랙(`build/fonts/HakgyoansimPuzzleTTF-Black.woff2`), 본문 = 학교안심 떡볶이(`build/fonts/HakgyoansimTTeokbokkiB.woff2`) — 둘 다 KERIS · OFL. 유네스코 칸 제목 · 게임 칸 · 언어 선택 줄은 그대로예요. 글씨체 시안(BS_FONT)과 상관없이 영어판은 늘 이 두 글꼴이에요.
 - 번역 입히는 코드는 `build/i18n.js`, 언어별 모양 맞춤은 `build/i18n.css` 예요 (그 언어일 때만 적용돼요). 일본어는 컴퓨터 · 휴대폰의 일본어 고딕 · 명조로 보여요.
 - 사진 · 영상 · 게임 화면 그림 속 한글은 그림이라 그대로예요. 랭킹 닉네임 · 응원 글처럼 사람이 쓴 글도 바꾸지 않아요.
 

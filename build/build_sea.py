@@ -694,10 +694,10 @@ if True:
     one(".ld.is-out .ld__box{transform:translateY(-10px) scale(.96); transition:transform .75s cubic-bezier(.4,0,.2,1)}",
         ".ld.is-out .ld__box{transform:translateY(-10px) scale(.96); transition:transform .45s cubic-bezier(.4,0,.2,1)}")
 
-# 23) (글씨체 시안) BS_FONT=gumi → 제목 낭만있구미체 · BS_FONT=gotgam → 제목 상주곶감체(유네스코 칸 제목 제외), 본문은 둘 다 학교안심 보드마카 (게임 칸은 그대로)
+# 23) (글씨체 시안) BS_FONT=gumi → 제목 낭만있구미체 · BS_FONT=gotgam → 제목 상주곶감체 · BS_FONT=cafe24 → 제목 카페24 클래식타입 · BS_FONT=keris → 제목 케리스 케듀체 · BS_FONT=mulgyeol → 제목 학교안심 물결(유네스코 칸 제목 제외), 본문은 둘 다 학교안심 보드마카 (게임 칸은 그대로)
 #     · 글꼴 파일: build/fonts/ (눈누 웹폰트 · 파일을 자르지 않고 그대로 담아요) · 모양: build/font_gumi.css
 #     · 결과 파일 이름 예: 바당소랑_웹진_글씨체_낭만있구미.html (여러 시안을 만들어 비교해요)
-if os.environ.get('BS_FONT') in ('gumi', 'gotgam'):
+if os.environ.get('BS_FONT') in ('gumi', 'gotgam', 'cafe24', 'keris', 'mulgyeol'):
     import base64 as _b64g
     _gf = lambda n: _b64g.b64encode(open(sp + '/fonts/' + n, 'rb').read()).decode()
     _fk = os.environ.get('BS_FONT')
@@ -705,6 +705,9 @@ if os.environ.get('BS_FONT') in ('gumi', 'gotgam'):
     _fc = _fc.replace('__BOARD__', _gf('HakgyoansimBoadmarkerR.woff2'))
     if _fk == 'gumi': _fc = _fc.replace('__GUMI__', _gf('GumiRomanceTTF.woff2'))
     if _fk == 'gotgam': _fc = _fc.replace('__GOTGAM__', _gf('SANJUGotgam.woff')).replace('__ROUNDNUM__', _gf('dunggeunmiso-B-num.woff2'))
+    if _fk == 'cafe24': _fc = _fc.replace('__CAFE24__', _gf('Cafe24ClassicType-Regular.woff2')).replace('__ROUNDNUM__', _gf('dunggeunmiso-B-num.woff2'))
+    if _fk == 'keris': _fc = _fc.replace('__KERIS__', _gf('KERISKEDU_B.woff2')).replace('__ROUNDNUM__', _gf('dunggeunmiso-B-num.woff2'))
+    if _fk == 'mulgyeol': _fc = _fc.replace('__MULGYEOL__', _gf('TTHakgyoansimMulgyeolB.woff2')).replace('__ROUNDNUM__', _gf('dunggeunmiso-B-num.woff2'))
     one('</head>', N(_fc) + '</head>')
 
 # 25) 언어 선택 (오른쪽 위 고정 · 모든 화면) — 한국어 · English · 日本語 (고른 언어를 표시 · 기억만, 번역은 아직) · 모양 lang.css · 동작 lang.js
@@ -712,7 +715,7 @@ if True:
     one(N("  var GamePop = (function () {\n"), N(open(sp + '/lang.js', encoding='utf-8').read() + "  var GamePop = (function () {\n"))
     one('</head>', N(open(sp + '/lang.css', encoding='utf-8').read()) + '</head>')
 
-# 26) 영어판 — 번역 사전(build/i18n_en.js · 나중에 i18n_ja.js 도 같은 모양으로) + 번역 입히기(i18n.js) + 영어판 모양 맞춤(i18n.css)
+# 26) 영어판 · 일본어판 — 번역 사전(build/i18n_en.js · 나중에 i18n_ja.js 도 같은 모양으로) + 번역 입히기(i18n.js) + 영어판 모양 맞춤(i18n.css)
 #     · 웹진 내용 글(SITE … CLEAN) 바로 뒤에 넣어요 → 화면을 그리기 전에 글을 바꿔 둘 수 있게
 #     · 한국어를 고르면 아무것도 바뀌지 않아요
 if True:
@@ -720,7 +723,23 @@ if True:
     _dicts = ''.join(open(f, encoding='utf-8').read() for f in sorted(_gl.glob(sp + '/i18n_*.js')))
     _i18n = '<script>' + nl + N(_dicts + open(sp + '/i18n.js', encoding='utf-8').read()) + '</script>' + nl
     one('  big: "badang sorang"' + nl + '};' + nl + nl + '</script>' + nl, '  big: "badang sorang"' + nl + '};' + nl + nl + '</script>' + nl + _i18n)
-    one('</head>', N(open(sp + '/i18n.css', encoding='utf-8').read()) + '</head>')
+    import base64 as _b64i
+    _ff = lambda n: _b64i.b64encode(open(sp + '/fonts/' + n, 'rb').read()).decode()
+    _ic = open(sp + '/i18n.css', encoding='utf-8').read()
+    _ic = _ic.replace('__EN_TITLE__', _ff('HakgyoansimPuzzleTTF-Black.woff2')).replace('__EN_BODY__', _ff('HakgyoansimTTeokbokkiB.woff2'))   # 영어판 글씨체 (영어를 고를 때만 내려받아요)
+    one('</head>', N(_ic) + '</head>')
+
+# 27) 주황 글자 띠(물질 ✦ 숨비소리 ✦ 테왁 …)가 넓은 화면에서 양 끝이 잘리고 선이 어긋나던 것 바로잡기 — build/marquee.css
+if True:
+    one('</head>', N(open(sp + '/marquee.css', encoding='utf-8').read()) + '</head>')
+
+# 28) (색 시험) BS_COLORTEST=1 이면 해녀마다 다른 파스텔 색으로 재생 버튼 · 영상 썸네일 테두리를 칠해요 — build/colortest.css
+if os.environ.get('BS_COLORTEST') == '1':
+    one('</head>', N(open(sp + '/colortest.css', encoding='utf-8').read()) + '</head>')
+
+# 29) 응원 공용 저장소 주소를 빌드할 때 넣기: BS_CHEER_API=https://…/api/cheers (비우면 clean_data.js 의 CLEAN.cheer.api 그대로)
+if os.environ.get('BS_CHEER_API'):
+    one('    api: "",', '    api: ' + __import__('json').dumps(os.environ['BS_CHEER_API']) + ',')
 
 # 18) (배경 추가 시안) BS_SEABG=v2 이면 바다색 칸들(해녀 이야기 · 목적 · 바다 지키기 · 해녀의 바당길) 뒤에 실제 제주 바다 사진을 깔아요
 #     사진은 첫 화면 영상의 포스터(드론으로 찍은 제주 바다)에서 해녀 · 테왁을 지운 한 장(media/sea-bg.webp, 약 70KB)이에요
