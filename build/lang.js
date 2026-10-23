@@ -1,6 +1,8 @@
   /* =========================================================
      언어 선택 (오른쪽 위) — 한국어 | English | 日本語 를 한 줄로 늘 보여 줘요 (외국인도 누르기 전에 한눈에)
-     · 고른 언어는 이 브라우저에 기억해요 (localStorage 'bs-lang') → 새로고침 · 다른 화면에서도 그대로
+     · 사이트(서버 · Pages): 언어마다 주소가 따로 있어요 — 한국어 ./ · 영어 ./en/ · 일본어 ./ja/ (window.BS_PAGE_LANG · BS_LANG_HOME)
+       → 누르면 그 언어 주소로 이동해요. 보던 칸 · 상세 화면(#story-1 등)은 그대로 따라가요
+     · 한 파일 판: 고른 언어는 이 브라우저에 기억해요 (localStorage 'bs-lang') → 새로고침 · 다른 화면에서도 그대로
      · <html data-lang="ko|en|ja"> 로 표시하고 'bs:langchange' 이벤트를 보내요
      · 번역(i18n.js)은 화면을 그리기 전에 입혀요 → 보이는 언어가 바뀌면 지금 보던 자리(칸 · 상세 화면)로 다시 열어요
        (사전이 없는 언어는 한국어로 보여요 — 그런 언어와 한국어 사이에서는 다시 열지 않아요)
@@ -9,8 +11,12 @@
      ========================================================= */
   var Lang = (function () {
     var LANGS = [{ code: 'ko', label: '한국어', short: '한국어' }, { code: 'en', label: 'English', short: 'EN' }, { code: 'ja', label: '日本語', short: '日本語' }];
-    var KEY = 'bs-lang', mem = '';
-    function load() { var v = mem; try { v = localStorage.getItem(KEY) || mem; } catch (e) {} return LANGS.some(function (l) { return l.code === v; }) ? v : 'ko'; }
+    var KEY = 'bs-lang', mem = '', PAGE = window.BS_PAGE_LANG || '', HOME = window.BS_LANG_HOME || './';
+    function load() {
+      if (PAGE) return PAGE;                                     // 언어별 주소 페이지: 이 페이지의 언어
+      var v = mem; try { v = localStorage.getItem(KEY) || mem; } catch (e) {} return LANGS.some(function (l) { return l.code === v; }) ? v : 'ko';
+    }
+    function urlOf(code) { return HOME + (code === 'ko' ? '' : code + '/'); }
     function save(v) { mem = v; try { localStorage.setItem(KEY, v); } catch (e) {} }
     var cur = load();
     var root = document.createElement('div');
@@ -33,11 +39,13 @@
     function pick(code) {
       if (code === cur) return;
       var before = shown(cur); save(code); show(code, true);
-      if (shown(code) !== before) reopen();
+      if (PAGE) reopen(urlOf(code));                            // 그 언어 주소로
+      else if (shown(code) !== before) reopen();
     }
     // 같은 자리로 다시 열기: 웹진 안이면 지금 보던 칸 + 칸 안에서 내려온 만큼을 기억해요 (상세 화면 · 첫 화면은 주소 그대로)
     var POS = 'bs-lang-pos';
-    function reopen() {
+    function reopen(to) {
+      var hash = location.hash;                                  // 상세 화면(#story-1 …) · 칸 주소는 그대로 가져가요
       try {
         var b = document.body;
         if (!b.classList.contains('is-gate') && !b.classList.contains('in-sub')) {
@@ -46,11 +54,12 @@
           at = at || document.getElementById('stories');
           if (at) {
             sessionStorage.setItem(POS, JSON.stringify({ id: at.id, dy: y - at.offsetTop, hash: location.hash }));
-            history.replaceState(history.state, '', location.pathname + location.search + '#' + at.id);
+            hash = '#' + at.id;
+            if (!to) history.replaceState(history.state, '', location.pathname + location.search + hash);
           }
         }
       } catch (e) {}
-      location.reload();
+      if (to) location.href = to + hash; else location.reload();
     }
     (function back() {                                   // 다시 열린 뒤: 기억한 자리로 · 주소는 원래대로
       var p = null; try { p = JSON.parse(sessionStorage.getItem(POS) || 'null'); sessionStorage.removeItem(POS); } catch (e) {}

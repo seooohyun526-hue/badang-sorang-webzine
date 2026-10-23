@@ -10,6 +10,8 @@
 ```
 site/
   index.html      웹진 (글 · 디자인 · 동작이 모두 들어 있어요, 약 350KB)
+  en/index.html   영어판 주소 (…/en/) — 내용은 같고 영어로 · 제목 · 공유 미리보기도 영어
+  ja/index.html   일본어판 주소 (…/ja/)
   media/          사진(webp) · 첫 화면 영상(mp4) · 파도 소리(m4a) — index.html 이 상대 경로(media/…)로 불러와요
   fonts/          글꼴(woff2)
   og.jpg          공유 미리보기 그림 (1200×630)
@@ -112,7 +114,8 @@ media/           그림 원본 (캐릭터 · 털실 인형 · 장면)
 
 ## 언어 (한국어 · English · 日本語)
 
-- 오른쪽 위 언어 줄에서 고른 언어는 브라우저에 기억돼요(`localStorage 'bs-lang'`). 보이는 언어가 바뀌면 보던 자리 그대로 다시 열려요.
+- 언어마다 주소가 따로 있어요: 한국어 `…/` · 영어 `…/en/` · 일본어 `…/ja/`. 오른쪽 위 언어 줄을 누르면 그 주소로 이동하고, 보던 칸 · 상세 화면은 그대로 따라가요. 세 페이지는 서로를 검색엔진에 알려 줘요(hreflang).
+- 한 파일 판(`BS_SPLIT=0`)은 주소가 하나라, 고른 언어를 브라우저에 기억해서(`localStorage 'bs-lang'`) 같은 자리로 다시 열어요.
 - 번역 사전은 `build/i18n_en.js`(English) · `build/i18n_ja.js`(日本語) 예요. 두 사전의 왼쪽(한국어 원문)은 똑같아요. 한국어 글을 고치면 두 사전의 왼쪽도 똑같이 고쳐 주세요. 한 글자라도 다르면 그 글만 한국어로 남아요.
 - 다른 언어를 더하려면 사전을 복사해 `build/i18n_<언어>.js` 로 저장하고, 맨 위를 `I18N.<언어> = {` 로 바꾼 뒤 오른쪽만 고쳐요. 언어 줄 버튼은 `build/lang.js` 의 `LANGS` 에 있어요.
 - 영어판 글씨체: 제목 = 학교안심 퍼즐 블랙(`build/fonts/HakgyoansimPuzzleTTF-Black.woff2`), 본문 = 학교안심 떡볶이(`build/fonts/HakgyoansimTTeokbokkiB.woff2`) — 둘 다 KERIS · OFL. 유네스코 칸 제목 · 게임 칸 · 언어 선택 줄은 그대로예요. 글씨체 시안(BS_FONT)과 상관없이 영어판은 늘 이 두 글꼴이에요.

@@ -9,10 +9,15 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
 })(window,document,'script','dataLayer','GTM-M2LF732B');</script>
 <!-- End Google Tag Manager -->
+<script>window.BS_PAGE_LANG='ko';window.BS_LANG_HOME='./';</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>바당소랑_웹진_1</title>
 <meta name="description" content="바다와 함께 살아온 사람들, 우리가 미처 몰랐던 해녀의 이야기. 제주 해녀 웹진 바당소랑.">
 <link rel="canonical" href="https://lxwebzine.hankyung.com/2026-1/team6/">
+<link rel="alternate" hreflang="ko" href="https://lxwebzine.hankyung.com/2026-1/team6/">
+<link rel="alternate" hreflang="en" href="https://lxwebzine.hankyung.com/2026-1/team6/en/">
+<link rel="alternate" hreflang="ja" href="https://lxwebzine.hankyung.com/2026-1/team6/ja/">
+<link rel="alternate" hreflang="x-default" href="https://lxwebzine.hankyung.com/2026-1/team6/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="바당소랑_웹진_1">
 <meta property="og:title" content="바당소랑_웹진_1">
@@ -1943,6 +1948,31 @@ html[lang="ja"] .sx-pp__keep{white-space:normal}   /* 한국어용 '숫자+뒷�
   box-shadow:0 10px 24px -8px var(--pc-shadow, rgba(229,92,51,.8))}
 @media (max-width:560px){ .st-card{--pc-ring:3px} }
 </style>
+<style id="bright-style">
+/* ★ 배경 밝기 (BS_BRIGHT=bg2) — 바다 사진 · 청록 막 · 첫 화면 막을 밝게 */
+:root{--sea-veil:0.62}
+.sea-bg{filter:saturate(.9) brightness(1.28)}
+.gate__video{filter:brightness(1.12)}
+.gate__shade{background:
+    radial-gradient(120% 90% at 78% 40%, rgba(30,82,79,0.08) 0%, rgba(30,82,79,0.29) 100%),
+    linear-gradient(180deg, rgba(30,82,79,0.16) 0%, rgba(30,82,79,0.05) 40%, rgba(30,82,79,0.36) 100%)}
+.gate.is-viz .gate__shade{background:
+    radial-gradient(120% 90% at 78% 40%, rgba(30,82,79,0.22) 0%, rgba(30,82,79,0.40) 100%),
+    linear-gradient(180deg, rgba(30,82,79,0.23) 0%, rgba(30,82,79,0.13) 40%, rgba(30,82,79,0.45) 100%)}
+html .stories{background:radial-gradient(120% 70% at 50% 0%, rgba(117,192,183,calc(var(--sea-veil) - .06)) 0%, rgba(93,165,160,var(--sea-veil)) 45%, rgba(84,143,140,calc(var(--sea-veil) + .1)) 100%)}
+html .purpose.sx{background:
+    radial-gradient(55% 45% at 30% 42%, rgba(141,224,208,.16) 0%, rgba(141,224,208,0) 70%),
+    linear-gradient(180deg, rgba(84,143,140,calc(var(--sea-veil) + .1)) 0%, rgba(90,156,153,var(--sea-veil)) 38%, rgba(89,152,149,var(--sea-veil)) 70%, rgba(80,122,121,calc(var(--sea-veil) + .14)) 100%)}
+html .oc{background:rgba(80,122,121,calc(var(--sea-veil) + .14))}
+html .game{background:
+    linear-gradient(180deg, rgba(80,122,121,calc(var(--sea-veil) + .14)) 0, rgba(80,122,121,0) 220px),
+    radial-gradient(ellipse 90% 70% at 70% 10%, rgba(103,179,178,calc(var(--sea-veil) - .04)) 0%, rgba(86,146,151,var(--sea-veil)) 45%, rgba(80,130,133,calc(var(--sea-veil) + .1)) 100%)}
+/* 밝아진 배경 위 흰 글씨를 또렷하게 (아주 옅은 그림자) */
+:is(.stories, .purpose.sx, .game, .gate) :is(p, span, small, h1, h2, h3, b, em, a, li, time){text-shadow:0 1px 2px rgba(10,48,52,.38), 0 0 12px rgba(10,48,52,.18)}
+:is(.st-card, .sx-pop, .sx-obj, .grank, .pix-btn, .btn, .game__shot, .gate__start, .btn-start) :is(p, span, small, h1, h2, h3, b, em, a, li, time){text-shadow:none}
+/* 작은 흰 글씨(안내 · 본문)는 그림자를 조금 더 진하게 */
+html body :is(.stories__hint, .stories__hint span, .st-quote, #sxPurposeBody p, .sx-pp__label, .game__lead, .game__note, .gate__note, .gate__care, .gate__src, .sea__cap, .sea__cap span){text-shadow:0 1px 2px rgba(8,40,44,.6), 0 0 10px rgba(8,40,44,.35)}
+</style>
 </head>
 <body class="is-gate">
 <!-- Google Tag Manager (noscript) -->
@@ -3373,6 +3403,7 @@ I18N.ja = {
   'use strict';
   var lang = 'ko';
   try { lang = localStorage.getItem('bs-lang') || 'ko'; } catch (e) {}
+  if (window.BS_PAGE_LANG) lang = window.BS_PAGE_LANG;            // 언어별 주소(/en/ · /ja/) 페이지는 그 언어로 정해져 있어요
   var D = window.I18N && window.I18N[lang];
   var HANGUL = /[가-힣ㄱ-ㆎ]/, FILE = /\.(jpe?g|png|webp|gif|svg|mp4|m4a|webm)$/i;
   var own = function (o, k) { return Object.prototype.hasOwnProperty.call(o, k); };
@@ -5246,7 +5277,9 @@ var SUB = (function () {
   /* ---------- 오른쪽 아래 게임 팝업: 누르면 '해녀의 바당길'로 내려가요 ---------- */
   /* =========================================================
      언어 선택 (오른쪽 위) — 한국어 | English | 日本語 를 한 줄로 늘 보여 줘요 (외국인도 누르기 전에 한눈에)
-     · 고른 언어는 이 브라우저에 기억해요 (localStorage 'bs-lang') → 새로고침 · 다른 화면에서도 그대로
+     · 사이트(서버 · Pages): 언어마다 주소가 따로 있어요 — 한국어 ./ · 영어 ./en/ · 일본어 ./ja/ (window.BS_PAGE_LANG · BS_LANG_HOME)
+       → 누르면 그 언어 주소로 이동해요. 보던 칸 · 상세 화면(#story-1 등)은 그대로 따라가요
+     · 한 파일 판: 고른 언어는 이 브라우저에 기억해요 (localStorage 'bs-lang') → 새로고침 · 다른 화면에서도 그대로
      · <html data-lang="ko|en|ja"> 로 표시하고 'bs:langchange' 이벤트를 보내요
      · 번역(i18n.js)은 화면을 그리기 전에 입혀요 → 보이는 언어가 바뀌면 지금 보던 자리(칸 · 상세 화면)로 다시 열어요
        (사전이 없는 언어는 한국어로 보여요 — 그런 언어와 한국어 사이에서는 다시 열지 않아요)
@@ -5255,8 +5288,12 @@ var SUB = (function () {
      ========================================================= */
   var Lang = (function () {
     var LANGS = [{ code: 'ko', label: '한국어', short: '한국어' }, { code: 'en', label: 'English', short: 'EN' }, { code: 'ja', label: '日本語', short: '日本語' }];
-    var KEY = 'bs-lang', mem = '';
-    function load() { var v = mem; try { v = localStorage.getItem(KEY) || mem; } catch (e) {} return LANGS.some(function (l) { return l.code === v; }) ? v : 'ko'; }
+    var KEY = 'bs-lang', mem = '', PAGE = window.BS_PAGE_LANG || '', HOME = window.BS_LANG_HOME || './';
+    function load() {
+      if (PAGE) return PAGE;                                     // 언어별 주소 페이지: 이 페이지의 언어
+      var v = mem; try { v = localStorage.getItem(KEY) || mem; } catch (e) {} return LANGS.some(function (l) { return l.code === v; }) ? v : 'ko';
+    }
+    function urlOf(code) { return HOME + (code === 'ko' ? '' : code + '/'); }
     function save(v) { mem = v; try { localStorage.setItem(KEY, v); } catch (e) {} }
     var cur = load();
     var root = document.createElement('div');
@@ -5279,11 +5316,13 @@ var SUB = (function () {
     function pick(code) {
       if (code === cur) return;
       var before = shown(cur); save(code); show(code, true);
-      if (shown(code) !== before) reopen();
+      if (PAGE) reopen(urlOf(code));                            // 그 언어 주소로
+      else if (shown(code) !== before) reopen();
     }
     // 같은 자리로 다시 열기: 웹진 안이면 지금 보던 칸 + 칸 안에서 내려온 만큼을 기억해요 (상세 화면 · 첫 화면은 주소 그대로)
     var POS = 'bs-lang-pos';
-    function reopen() {
+    function reopen(to) {
+      var hash = location.hash;                                  // 상세 화면(#story-1 …) · 칸 주소는 그대로 가져가요
       try {
         var b = document.body;
         if (!b.classList.contains('is-gate') && !b.classList.contains('in-sub')) {
@@ -5292,11 +5331,12 @@ var SUB = (function () {
           at = at || document.getElementById('stories');
           if (at) {
             sessionStorage.setItem(POS, JSON.stringify({ id: at.id, dy: y - at.offsetTop, hash: location.hash }));
-            history.replaceState(history.state, '', location.pathname + location.search + '#' + at.id);
+            hash = '#' + at.id;
+            if (!to) history.replaceState(history.state, '', location.pathname + location.search + hash);
           }
         }
       } catch (e) {}
-      location.reload();
+      if (to) location.href = to + hash; else location.reload();
     }
     (function back() {                                   // 다시 열린 뒤: 기억한 자리로 · 주소는 원래대로
       var p = null; try { p = JSON.parse(sessionStorage.getItem(POS) || 'null'); sessionStorage.removeItem(POS); } catch (e) {}

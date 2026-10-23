@@ -888,6 +888,51 @@ if os.environ.get('BS_SPLIT', '1') != '0':
         '<meta name="twitter:image" content="%sog.jpg">' % _SITE])
     s = s[:_dm.end()] + nl + _meta + s[_dm.end():]
 
+# 31) 배경 밝기 — 기본은 두 단계 밝게(bg2, 2026-10-23 사용자가 고름) · BS_BRIGHT=bg1 → 한 단계 · BS_BRIGHT=off → 예전 어두운 배경
+#     · 바꾸는 것: 바다색 칸 뒤 바다 사진의 밝기 · 그 위 청록 막(색은 더 밝게, 진하기는 조금 옅게) · 첫 화면 영상과 그 위 어두운 막
+#     · 그대로: 글씨 · 그림 · 카드 · 크림색 칸 / 칸과 칸이 만나는 색은 같은 비율로 바꿔서 이음새에 띠가 안 생겨요
+#     · 배경이 밝아진 만큼 청록 칸의 흰 글씨에는 아주 옅은 그림자를 넣어 또렷하게
+if os.environ.get('BS_BRIGHT', 'bg2') in ('bg1', 'bg2'):
+    _bk = os.environ.get('BS_BRIGHT', 'bg2')
+    _f, _veil, _photo, _shade, _video = {'bg1': (.12, .68, 1.16, .80, 1.06), 'bg2': (.22, .62, 1.28, .65, 1.12)}[_bk]
+    def _c(rgb, alpha): return 'rgba(%d,%d,%d,%s)' % (tuple(round(c + (255 - c) * _f) for c in rgb) + (alpha,))
+    V = 'var(--sea-veil)'
+    def _a(x): return '%.2f' % (x * _shade)
+    _bc = N("""<style id="bright-style">
+/* ★ 배경 밝기 (BS_BRIGHT=%s) — 바다 사진 · 청록 막 · 첫 화면 막을 밝게 */
+:root{--sea-veil:%s}
+.sea-bg{filter:saturate(.9) brightness(%s)}
+.gate__video{filter:brightness(%s)}
+.gate__shade{background:
+    radial-gradient(120%% 90%% at 78%% 40%%, rgba(30,82,79,%s) 0%%, rgba(30,82,79,%s) 100%%),
+    linear-gradient(180deg, rgba(30,82,79,%s) 0%%, rgba(30,82,79,%s) 40%%, rgba(30,82,79,%s) 100%%)}
+.gate.is-viz .gate__shade{background:
+    radial-gradient(120%% 90%% at 78%% 40%%, rgba(30,82,79,%s) 0%%, rgba(30,82,79,%s) 100%%),
+    linear-gradient(180deg, rgba(30,82,79,%s) 0%%, rgba(30,82,79,%s) 40%%, rgba(30,82,79,%s) 100%%)}
+html .stories{background:radial-gradient(120%% 70%% at 50%% 0%%, %s 0%%, %s 45%%, %s 100%%)}
+html .purpose.sx{background:
+    radial-gradient(55%% 45%% at 30%% 42%%, rgba(141,224,208,.16) 0%%, rgba(141,224,208,0) 70%%),
+    linear-gradient(180deg, %s 0%%, %s 38%%, %s 70%%, %s 100%%)}
+html .oc{background:%s}
+html .game{background:
+    linear-gradient(180deg, %s 0, %s 220px),
+    radial-gradient(ellipse 90%% 70%% at 70%% 10%%, %s 0%%, %s 45%%, %s 100%%)}
+/* 밝아진 배경 위 흰 글씨를 또렷하게 (아주 옅은 그림자) */
+:is(.stories, .purpose.sx, .game, .gate) :is(p, span, small, h1, h2, h3, b, em, a, li, time){text-shadow:0 1px 2px rgba(10,48,52,.38), 0 0 12px rgba(10,48,52,.18)}
+:is(.st-card, .sx-pop, .sx-obj, .grank, .pix-btn, .btn, .game__shot, .gate__start, .btn-start) :is(p, span, small, h1, h2, h3, b, em, a, li, time){text-shadow:none}
+/* 작은 흰 글씨(안내 · 본문)는 그림자를 조금 더 진하게 */
+html body :is(.stories__hint, .stories__hint span, .st-quote, #sxPurposeBody p, .sx-pp__label, .game__lead, .game__note, .gate__note, .gate__care, .gate__src, .sea__cap, .sea__cap span){text-shadow:0 1px 2px rgba(8,40,44,.6), 0 0 10px rgba(8,40,44,.35)}
+</style>
+""" % (_bk, _veil, _photo, _video,
+       _a(.12), _a(.45), _a(.25), _a(.08), _a(.55),
+       _a(.34), _a(.62), _a(.36), _a(.2), _a(.7),
+       _c((78, 174, 163), 'calc(%s - .06)' % V), _c((47, 139, 133), V), _c((36, 111, 108), 'calc(%s + .1)' % V),
+       _c((36, 111, 108), 'calc(%s + .1)' % V), _c((43, 128, 124), V), _c((42, 123, 119), V), _c((31, 85, 83), 'calc(%s + .14)' % V),
+       _c((31, 85, 83), 'calc(%s + .14)' % V),
+       _c((31, 85, 83), 'calc(%s + .14)' % V), _c((31, 85, 83), '0'),
+       _c((60, 158, 156), 'calc(%s - .04)' % V), _c((38, 115, 122), V), _c((31, 95, 99), 'calc(%s + .1)' % V)))
+    one('</head>', _bc + '</head>')
+
 # 30) Google Tag Manager — <head> 맨 위(글자 설정 바로 다음)와 <body> 바로 뒤에 넣어요 (구글이 안내한 코드 그대로)
 #     · 컨테이너 ID 는 BS_GTM_ID 로 바꿀 수 있어요 (BS_GTM_ID=off 이면 넣지 않아요)
 _gtm = os.environ.get('BS_GTM_ID', 'GTM-M2LF732B')
@@ -913,6 +958,48 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     assert _m, 'body'
     s = s[:_m.end()] + _gb + s[_m.end():]
 
+# 32) 언어별 주소 — 사이트로 내보낼 때(BS_SPLIT 기본) 한국어는 site/index.html, 영어는 site/en/index.html, 일본어는 site/ja/index.html
+#     · 세 페이지는 내용이 같고, 페이지마다 언어가 정해져 있어요 (window.BS_PAGE_LANG) → 언어 줄을 누르면 그 언어 주소로 이동해요 (보던 칸 · 상세 화면 그대로)
+#     · 탭 제목 · 설명 · 공유 미리보기(og · twitter)는 페이지마다 그 언어로 (검색 · 카톡 미리보기는 글을 바꾸는 코드를 돌리지 않아서 HTML 에 미리 적어 둬요)
+#     · 서로의 언어판을 검색엔진에 알려 줘요 (hreflang) · 사진 · 영상 · 글꼴은 site/media · site/fonts 를 같이 써요 (../media/…)
+#     · 한 파일 판(BS_SPLIT=0)은 예전처럼 언어를 브라우저에 기억해서 바꿔요
+_pages = {}
+if os.environ.get('BS_SPLIT', '1') != '0':
+    import json as _js
+    _LANGS = (('ko', 'ko_KR', ''), ('en', 'en_US', 'en/'), ('ja', 'ja_JP', 'ja/'))
+    _alt = nl.join(['<link rel="alternate" hreflang="%s" href="%s%s">' % (c, _SITE, sub) for c, _, sub in _LANGS] +
+                   ['<link rel="alternate" hreflang="x-default" href="%s">' % _SITE])
+    def _word(code, ko):                                        # 번역 사전(build/i18n_<언어>.js)에서 한 줄 찾기
+        _d = open(sp + '/i18n_%s.js' % code, encoding='utf-8').read()
+        _m = re.search(re.escape(_js.dumps(ko, ensure_ascii=False)) + r'\s*:\s*("(?:[^"\\]|\\.)*")', _d)
+        assert _m, (code, ko); return _js.loads(_m.group(1))
+    def _esc(t): return t.replace('&', '&amp;').replace('"', '&quot;').replace('<', '&lt;')
+    _koT = re.search(r'<title>(.*?)</title>', s).group(1); _koD = re.search(r'<meta name="description" content="([^"]*)">', s).group(1)
+    for _c, _loc, _sub in _LANGS:
+        _p = s
+        _home = './' if not _sub else '../'
+        _m = re.search(r'<meta charset="utf-8">\r?\n(?:<!-- Google Tag Manager -->.*?<!-- End Google Tag Manager -->\r?\n)?', _p, re.S)
+        _p = _p[:_m.end()] + ("<script>window.BS_PAGE_LANG='%s';window.BS_LANG_HOME='%s';</script>" % (_c, _home)) + nl + _p[_m.end():]
+        _p = _p.replace('<link rel="canonical" href="%s">' % _SITE, '<link rel="canonical" href="%s%s">' % (_SITE, _sub) + nl + _alt, 1)
+        if _c != 'ko':
+            _T, _D = _esc(_word(_c, _koT)), _esc(_word(_c, _koD))
+            _p = re.sub(r'<html lang="ko">', '<html lang="%s">' % _c, _p, count=1)
+            _p = _p.replace('<title>%s</title>' % _koT, '<title>%s</title>' % _T, 1)
+            for _k in ('og:site_name', 'og:title'): _p = _p.replace('<meta property="%s" content="%s">' % (_k, _koT), '<meta property="%s" content="%s">' % (_k, _T), 1)
+            _p = _p.replace('<meta name="twitter:title" content="%s">' % _koT, '<meta name="twitter:title" content="%s">' % _T, 1)
+            for _k in ('<meta name="description" content="%s">', '<meta property="og:description" content="%s">', '<meta name="twitter:description" content="%s">'):
+                _p = _p.replace(_k % _koD, _k % _D, 1)
+            _p = _p.replace('<meta property="og:url" content="%s">' % _SITE, '<meta property="og:url" content="%s%s">' % (_SITE, _sub), 1)
+            _p = _p.replace('<meta property="og:locale" content="ko_KR">', '<meta property="og:locale" content="%s">' % _loc, 1)
+            _p = re.sub(r'(?<=["\'(])(media|fonts)/', r'../\1/', _p)   # 한 폴더 안쪽이라 그림 · 글꼴은 ../ 에서
+        _pages[_sub] = _p
+    s = _pages['']
+
 os.makedirs(os.path.dirname(os.path.abspath(out)), exist_ok=True)
 open(out, 'w', encoding='utf-8', newline='').write(s)
+for _sub, _p in _pages.items():                                # 32) 영어 · 일본어 페이지
+    if not _sub: continue
+    _o = os.path.join(os.path.dirname(os.path.abspath(out)), _sub, 'index.html')
+    os.makedirs(os.path.dirname(_o), exist_ok=True)
+    open(_o, 'w', encoding='utf-8', newline='').write(_p)
 print('ok', len(s))

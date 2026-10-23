@@ -10,6 +10,7 @@
   'use strict';
   var lang = 'ko';
   try { lang = localStorage.getItem('bs-lang') || 'ko'; } catch (e) {}
+  if (window.BS_PAGE_LANG) lang = window.BS_PAGE_LANG;            // 언어별 주소(/en/ · /ja/) 페이지는 그 언어로 정해져 있어요
   var D = window.I18N && window.I18N[lang];
   var HANGUL = /[가-힣ㄱ-ㆎ]/, FILE = /\.(jpe?g|png|webp|gif|svg|mp4|m4a|webm)$/i;
   var own = function (o, k) { return Object.prototype.hasOwnProperty.call(o, k); };
