@@ -83,7 +83,6 @@
     // ── 종이 안 내용 ──
     var I = C.intro || {}, html = '';
     html += '<section class="oc-intro oc-rv" aria-labelledby="ocIntroT">' +
-      '<p class="oc-intro__no oc-r" style="--at:0">' + esc(I.no) + ' · ' + esc(I.label) + '</p>' +
       '<h3 class="oc-intro__title oc-r" style="--at:.04" id="ocIntroT">' + br(I.title) + '</h3>' +
       '<p class="oc-intro__body oc-r" style="--at:.1"><b>' + esc(I.lead) + '</b><em>' + esc(I.em) + '</em></p>' +
       (I.hint ? '<p class="oc-hint oc-r" style="--at:.14">' + arrows + esc(I.hint) + '</p>' : '') + '</section>';

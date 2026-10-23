@@ -1550,7 +1550,6 @@ var SUB = (function () {
           '<span class="st-media" data-photo="' + esc(o.up(it.photo || '')) + '"></span>' + WAVES +
           '<span class="st-ph">' + ART.char({ shadow: false, pose: k % 2 ? 'dive' : 'hug' }) + '</span>' +
           '<span class="st-no">' + String(k + 1).padStart(2, '0') + '</span>' +
-          (has(it.theme) ? '<span class="st-theme">' + esc(it.theme) + '</span>' : '') +
           '<span class="st-play"><b>' + PLAY + '</b>인터뷰 영상</span>' +
         '</a>' +
         '<div class="st-cap"><small>' + esc(it.label) + '</small><h3>' + esc(it.name) + '</h3>' + (has(it.title) ? '<p>' + esc(it.title) + '</p>' : '') + q + '</div>' +
@@ -2116,7 +2115,6 @@ var SUB = (function () {
           '<span class="st-media" data-photo="' + esc(it.photo || '') + '"></span>' + WAVES +
           '<span class="st-ph">' + ART.char({ shadow: false, pose: i % 2 ? 'dive' : 'hug' }) + '</span>' +
           '<span class="st-no">' + String(i + 1).padStart(2, '0') + '</span>' +
-          (has(it.theme) ? '<span class="st-theme">' + esc(it.theme) + '</span>' : '') +
           '<span class="st-play"><b>' + PLAY + '</b>인터뷰 영상</span>' +
         '</button>' +
         '<div class="st-cap"><small>' + esc(it.label) + '</small><h3>' + esc(it.name) + '</h3>' +

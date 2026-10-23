@@ -733,9 +733,9 @@ if True:
 if True:
     one('</head>', N(open(sp + '/marquee.css', encoding='utf-8').read()) + '</head>')
 
-# 28) (색 시험) BS_COLORTEST=1 이면 해녀마다 다른 파스텔 색으로 재생 버튼 · 영상 썸네일 테두리를 칠해요 — build/colortest.css
-if os.environ.get('BS_COLORTEST') == '1':
-    one('</head>', N(open(sp + '/colortest.css', encoding='utf-8').read()) + '</head>')
+# 28) 해녀마다 다른 파스텔 색으로 재생 버튼 · 영상 썸네일 테두리를 칠해요 (1 파랑 · 2 노랑 · 3 보라 · 4 주황) — build/card_colors.css
+if True:
+    one('</head>', N(open(sp + '/card_colors.css', encoding='utf-8').read()) + '</head>')
 
 # 29) 응원 공용 저장소(Supabase)를 빌드할 때 넣기: BS_SUPABASE_URL=https://….supabase.co BS_SUPABASE_KEY=<anon 공개 키>
 #     (비우면 clean_data.js 의 CLEAN.cheer.supabase 그대로)
