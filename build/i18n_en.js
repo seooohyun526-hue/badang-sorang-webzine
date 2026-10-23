@@ -41,10 +41,11 @@ I18N.en = {
     "조은별 해녀": "Haenyeo Jo Eun-byeol",
     "물질의 자부심": "Pride in Diving",
     "이야기 셋": "Story Three",
-    "○○○ 해녀": "Haenyeo ○○○",
     "바다에 대한 애정": "Love for the Sea",
     "이야기 넷": "Story Four",
-    "○○○ 선생님": "Teacher ○○○",
+    "카일리 해녀": "Haenyeo Kylie",
+    "전 해녀학교 강사, 박신혜 해녀": "Haenyeo Park Shin-hye, Former Haenyeo School Instructor",
+    "Haenyeo Park Shin-hye, Former Haenyeo School Instructor의 이야기": "The Story of Haenyeo Park Shin-hye, Former Haenyeo School Instructor",   // 상세 화면 제목 (이름이 먼저 번역된 뒤 붙는 글)
     "다음 세대에게": "To the Next Generation",
     "목적": "Purpose",
     "바당소랑이\n하는 일": "What Badang\nSorang Does",
