@@ -26,7 +26,7 @@
 .gate__num b .gd,.gate__year .gd{display:inline-block; width:.62em; text-align:center}
 /* 2,371 숫자는 주황으로 강조 (바다색 위에서 또렷하게 옅은 그림자) */
 .gate__num b{color:#FF8F55; text-shadow:0 3px 0 rgba(120,44,14,.22), 0 6px 22px rgba(8,40,44,.35)}
-/* 상세 화면 제목('전 해녀학교 강사 최명수의 이야기')처럼 긴 제목은 줄 길이를 고르게 — 끝줄에 한 단어만 남지 않게 */
+/* 상세 화면 제목('전 해녀 학교 강사 최명수 & 박신혜 해녀의 이야기')처럼 긴 제목은 줄 길이를 고르게 — 끝줄에 한 단어만 남지 않게 */
 .sp-title{text-wrap:balance}
 .gate__end{display:block; font-weight:700; margin-bottom:6px}
 
