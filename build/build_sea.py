@@ -888,6 +888,31 @@ if os.environ.get('BS_SPLIT', '1') != '0':
         '<meta name="twitter:image" content="%sog.jpg">' % _SITE])
     s = s[:_dm.end()] + nl + _meta + s[_dm.end():]
 
+# 30) Google Tag Manager — <head> 맨 위(글자 설정 바로 다음)와 <body> 바로 뒤에 넣어요 (구글이 안내한 코드 그대로)
+#     · 컨테이너 ID 는 BS_GTM_ID 로 바꿀 수 있어요 (BS_GTM_ID=off 이면 넣지 않아요)
+_gtm = os.environ.get('BS_GTM_ID', 'GTM-M2LF732B')
+if _gtm and _gtm != 'off':
+    assert re.fullmatch(r'GTM-[A-Z0-9]+', _gtm), _gtm
+    _gh = N("""<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','""" + _gtm + """');</script>
+<!-- End Google Tag Manager -->
+""")
+    _gb = N("""<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=""" + _gtm + """"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+""")
+    _m = re.search(r'<head>\r?\n<meta charset="utf-8">\r?\n', s)
+    assert _m, 'head'
+    s = s[:_m.end()] + _gh + s[_m.end():]
+    _m = re.search(r'(?m)^<body[^>]*>\r?\n', s)
+    assert _m, 'body'
+    s = s[:_m.end()] + _gb + s[_m.end():]
+
 os.makedirs(os.path.dirname(os.path.abspath(out)), exist_ok=True)
 open(out, 'w', encoding='utf-8', newline='').write(s)
 print('ok', len(s))
