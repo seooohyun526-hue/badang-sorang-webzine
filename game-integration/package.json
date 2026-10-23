@@ -1,0 +1,14 @@
+{
+  "name": "haenyeo-webzine-integration",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "start": "node server/serve.mjs",
+    "preview": "node server/serve.mjs --preview",
+    "test": "node --test test/*.test.mjs",
+    "check": "node scripts/check-package.mjs"
+  }
+}

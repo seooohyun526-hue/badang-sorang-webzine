@@ -1,0 +1,19 @@
+# Insert these locations INSIDE the existing HTTPS server for lxwebzine.hankyung.com.
+# Keep the existing webzine locations, TLS and analytics configuration.
+# Start this package's Node service: PORT=8787 npm start (Node >=22).
+# Both HTML/assets and API use the same public origin. No iframe and no CORS change.
+location = /2026-1/team6/game {
+    proxy_pass http://127.0.0.1:8787;
+    proxy_set_header Host $host;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_read_timeout 30s;
+}
+location ^~ /2026-1/team6/game/ {
+    proxy_pass http://127.0.0.1:8787;
+    proxy_set_header Host $host;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_read_timeout 30s;
+    client_max_body_size 2k;
+}
+# .unityweb files already use Unity's built-in gzip fallback.
+# Do NOT add Content-Encoding:gzip to .unityweb responses.

@@ -112,6 +112,12 @@ media/           그림 원본 (캐릭터 · 털실 인형 · 장면)
 - '바다 지키기' 칸의 응원 창은 `build/clean_data.js` 의 `CLEAN.cheer.supabase`(url · anonKey)가 있으면 모든 방문자의 좋아요 · 응원을 함께 보여 줘요. 비어 있으면 예전처럼 각자 브라우저에만 저장돼요.
 - 저장소는 Supabase 하나예요 (서버 따로 없음). 만들기 · 연결 방법은 [cheer-supabase/README.md](cheer-supabase/README.md) 에 있어요.
 
+## 게임 '해녀의 바당길' (웹진 안 /game/)
+
+- Unity 게임을 웹진 주소 `…/2026-1/team6/game/` 에서 바로 실행해요. 화면 · 실행 파일은 `site/game/`, 통합 코드는 `game-integration/` 이에요.
+- 점수 · 랭킹 · 응모는 기존 Vercel 서버와 Neon DB 를 그대로 써요. 한경 서버에 API 연결(Node + Apache 경로 한 줄)이 있어야 동작해요.
+- 분석은 웹진과 같은 GTM `GTM-M2LF732B` (GA4 `G-Z57PKSMHPK`). 남은 서버 · GTM 설정은 [game-integration/WEBZINE-INTEGRATION-KO.md](game-integration/WEBZINE-INTEGRATION-KO.md) 에 있어요.
+
 ## 언어 (한국어 · English · 日本語)
 
 - 언어마다 주소가 따로 있어요: 한국어 `…/` · 영어 `…/en/` · 일본어 `…/ja/`. 오른쪽 위 언어 줄을 누르면 그 주소로 이동하고, 보던 칸 · 상세 화면은 그대로 따라가요. 세 페이지는 서로를 검색엔진에 알려 줘요(hreflang).

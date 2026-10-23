@@ -1,0 +1,19 @@
+# lxwebzine.hankyung.com (Apache 2.4) — 바당소랑(team6) 게임 API 연결 예시
+# 기존 HTTPS VirtualHost 안에 이 부분만 추가하세요. 다른 팀 · 웹진 설정은 건드리지 않습니다.
+#
+# 1) 게임 화면 · 실행 파일(정적): 웹진 site/ 폴더를 올리면 /2026-1/team6/game/ 에 함께 올라갑니다 (Apache 가 그대로 제공).
+#    · /2026-1/team6/game (끝 / 없음) 은 Apache 기본 DirectorySlash 로 /2026-1/team6/game/ 로 넘어갑니다.
+#    · .unityweb 에 Content-Encoding: gzip 을 붙이지 마세요 (Unity 내장 압축 해제를 씁니다).
+#
+# 2) 게임 API: 이 폴더(game-integration/)의 Node 서비스를 서버 안에서만 열어 두고, API 경로만 넘깁니다.
+#      cd game-integration && PORT=8787 SITE_ORIGIN=https://lxwebzine.hankyung.com npm start     (Node 22 이상, 상시 실행)
+#    필요한 모듈: mod_proxy, mod_proxy_http, mod_headers
+<Location "/2026-1/team6/game/api/">
+    ProxyPass        "http://127.0.0.1:8787/2026-1/team6/game/api/"
+    ProxyPassReverse "http://127.0.0.1:8787/2026-1/team6/game/api/"
+    ProxyPreserveHost On
+    RequestHeader set X-Forwarded-Proto "https"
+    LimitRequestBody 2048
+</Location>
+# event-maintenance 등 운영 경로는 Node 프록시가 404 로 막습니다 (허용: profile · session · submit · leaderboard · event-status · event-entry).
+# CORS 헤더(*)는 추가하지 마세요. 같은 주소(lxwebzine.hankyung.com)에서만 동작하는 구조입니다.

@@ -1,0 +1,9 @@
+// Next App Router example. Not needed if the Node server is reverse-proxied.
+// Put this at app/2026-1/team6/game/api/[endpoint]/route.js.
+// Adjust the import to the actual project location; keep configuration.mjs beside server/.
+import { handleGameApi } from '@/game-integration/server/game-api-proxy.mjs';
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+export async function GET(request) { return handleGameApi(request); }
+export async function POST(request) { return handleGameApi(request); }
+// Reject all other methods by the framework's default 405 response.

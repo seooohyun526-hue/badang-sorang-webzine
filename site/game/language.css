@@ -1,0 +1,30 @@
+#language-menu{position:absolute;top:58px;left:12px;z-index:6;width:136px;padding:4px 6px;background:#082842ed;border:1px solid #88edfa}
+#language-menu[hidden]{display:none}
+#language-menu label{display:block;color:#a6eaf1;font:10px/1.2 MonaRegular,system-ui,sans-serif;letter-spacing:0;margin-bottom:1px}
+#language-choice{border:0;border-radius:0;background:#082842;color:#fff;font:14px MonaRegular,system-ui,sans-serif;padding:2px 0;min-height:27px;width:100%}
+#game[data-view=playing] #rank-open,#game[data-view=paused] #rank-open,#game[data-view=preparing] #rank-open,
+#game[data-view=playing] #event-open,#game[data-view=paused] #event-open,#game[data-view=preparing] #event-open,
+#game[data-view=playing] #language-menu,#game[data-view=paused] #language-menu,#game[data-view=preparing] #language-menu{display:none!important}
+#language-welcome{box-sizing:border-box;width:min(90vw,380px);max-height:92dvh;overflow:auto;padding:26px 22px 18px;border:3px solid #9feef5;border-radius:0;background:#082b40;color:#f0fcff;font-family:MonaRegular,system-ui,sans-serif;text-align:center;box-shadow:7px 7px 0 #041722}
+#language-welcome::backdrop{background:#041b2de8}
+#language-welcome *{box-sizing:border-box}
+#language-welcome .welcome-mark{font:bold 45px/1 system-ui;color:#72efd0;margin-bottom:8px}
+#language-welcome .welcome-brand{margin:0 0 18px;font:11px/1.4 MonaRegular;letter-spacing:2px;color:#83e6d1}
+#language-welcome h2{margin:0;font:23px/1.4 Mona,system-ui,sans-serif;color:#fff}
+#language-welcome h2 span{display:block;margin-top:5px;font:19px/1.4 Mona,system-ui,sans-serif;color:#9feef5}
+#language-welcome #welcome-intro{margin:15px 0 21px;font:13px/1.7 MonaRegular;color:#d6edf4}
+#language-welcome #welcome-intro span{color:#a2c5d0;font-size:12px}
+#language-welcome .welcome-options{display:grid;gap:12px}
+#language-welcome .welcome-options button{border:2px solid #8dece0;border-radius:0;padding:14px 16px;min-height:82px;background:#73e8d1;color:#082b40;box-shadow:0 4px 0 #2a9c98;text-align:left;cursor:pointer}
+#language-welcome .welcome-options button:last-child{background:#123e56;color:#f0fcff;box-shadow:0 4px 0 #041722}
+#language-welcome .welcome-options button b{display:block;font:24px/1.2 Mona,system-ui,sans-serif}
+#language-welcome .welcome-options button span{display:block;margin-top:5px;font:12px/1.4 MonaRegular,system-ui,sans-serif}
+#language-welcome .welcome-options button i{float:right;font-size:18px;font-style:normal}
+#language-welcome .welcome-options button:focus-visible{outline:3px solid #ffe59c;outline-offset:4px}
+#language-welcome .welcome-tip{font:11px/1.7 MonaRegular;color:#cee3ed;letter-spacing:0;margin:22px 0 0}
+#language-welcome .welcome-tip span{color:#93b7c5}
+@media(max-height:650px){#language-welcome{padding:17px 18px}#language-welcome .welcome-mark{display:none}#language-welcome .welcome-brand{margin-bottom:10px}#language-welcome #welcome-intro{margin:12px 0}#language-welcome .welcome-options button{min-height:72px;padding:10px 14px}#language-welcome .welcome-tip{margin-top:15px}}
+html[lang=en] #event-open{display:none!important}
+html[lang=en] #ranking{font-family:MonaRegular,system-ui,sans-serif}
+html[lang=en] #ranking h2{font-size:24px}
+html[lang=en] #rank-open{font-size:13px}

@@ -4,6 +4,9 @@
 !site/webzine.json
 !cheer-supabase/package.json
 !cheer-supabase/package-lock.json
+!game-integration/package.json
+!game-integration/source/frontend/ocean-strings.json
+!site/game/**/*.json
 
 # 빌드 확인용 임시 파일
 _*.html

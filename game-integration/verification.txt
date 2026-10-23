@@ -1,0 +1,22 @@
+Verification date: 2026-10-23 (Asia/Seoul)
+
+PASS npm run build: generated HTML, UI and API paths for /2026-1/team6/game/.
+PASS node --test test/*.test.mjs: 9 tests, 0 failures.
+PASS package scan: Unity build files exist; no .env, database connection credentials,
+     node_modules, Library, .git or .vercel folder packaged.
+PASS browser: Unity game loaded on localhost /2026-1/team6/game/; Korean title
+     and nickname/start flow rendered; no captured browser error logs.
+PASS HTTP: /2026-1/team6/game without trailing slash returned HTTP 200.
+PASS HTTP: nested Web.wasm.unityweb HEAD returned HTTP 200.
+PASS read-only upstream check: existing Vercel leaderboard via the provided proxy
+     returned HTTP 200 and 65 entries. No player/session/run/event writes performed.
+PASS GA event unit test: ready/start/pause/resume/end/record saved; no email,
+     nickname, runId, duplicate page view or local-preview analytics emitted.
+
+Not yet verified: actual Hankyung production routing, hosting capabilities,
+shared GA4/GTM tag ID and published event tags, production cookie behavior,
+real score writes or prize entry from the final webzine domain.
+These need final integration and verification in the webzine environment.
+
+The game and database on Vercel/Neon have not been redeployed or migrated by
+this handoff. Existing infrastructure must remain online for this proxy model.
