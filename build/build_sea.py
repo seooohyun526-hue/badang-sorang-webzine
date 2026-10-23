@@ -995,6 +995,7 @@ if os.environ.get('BS_SPLIT', '1') != '0':
             _p = _p.replace('<meta property="og:url" content="%s">' % _SITE, '<meta property="og:url" content="%s%s">' % (_SITE, _sub), 1)
             _p = _p.replace('<meta property="og:locale" content="ko_KR">', '<meta property="og:locale" content="%s">' % _loc, 1)
             _p = re.sub(r'(?<=["\'(])(media|fonts)/', r'../\1/', _p)   # 한 폴더 안쪽이라 그림 · 글꼴은 ../ 에서
+            _p = _p.replace('  url: "game/",', '  url: "../game/",', 1)  # 게임 하러 가기 — 웹진 안 게임(../game/)
         _pages[_sub] = _p
     s = _pages['']
 
