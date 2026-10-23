@@ -107,8 +107,8 @@ media/           그림 원본 (캐릭터 · 털실 인형 · 장면)
 
 ## 응원 온도 창 — 모두의 응원 (공용 저장소)
 
-- '바다 지키기' 칸의 응원 창은 `build/clean_data.js` 의 `CLEAN.cheer.api` 에 주소가 있으면 모든 방문자의 좋아요 · 응원을 함께 보여 줘요. 비어 있으면 예전처럼 각자 브라우저에만 저장돼요.
-- 서버는 `cheer-api/` (Vercel + Neon). 배포 · 연결 방법은 [cheer-api/README.md](cheer-api/README.md) 에 있어요.
+- '바다 지키기' 칸의 응원 창은 `build/clean_data.js` 의 `CLEAN.cheer.supabase`(url · anonKey)가 있으면 모든 방문자의 좋아요 · 응원을 함께 보여 줘요. 비어 있으면 예전처럼 각자 브라우저에만 저장돼요.
+- 저장소는 Supabase 하나예요 (서버 따로 없음). 만들기 · 연결 방법은 [cheer-supabase/README.md](cheer-supabase/README.md) 에 있어요.
 
 ## 언어 (한국어 · English · 日本語)
 

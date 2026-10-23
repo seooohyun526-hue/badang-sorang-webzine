@@ -737,9 +737,12 @@ if True:
 if os.environ.get('BS_COLORTEST') == '1':
     one('</head>', N(open(sp + '/colortest.css', encoding='utf-8').read()) + '</head>')
 
-# 29) 응원 공용 저장소 주소를 빌드할 때 넣기: BS_CHEER_API=https://…/api/cheers (비우면 clean_data.js 의 CLEAN.cheer.api 그대로)
-if os.environ.get('BS_CHEER_API'):
-    one('    api: "",', '    api: ' + __import__('json').dumps(os.environ['BS_CHEER_API']) + ',')
+# 29) 응원 공용 저장소(Supabase)를 빌드할 때 넣기: BS_SUPABASE_URL=https://….supabase.co BS_SUPABASE_KEY=<anon 공개 키>
+#     (비우면 clean_data.js 의 CLEAN.cheer.supabase 그대로)
+if os.environ.get('BS_SUPABASE_URL') and os.environ.get('BS_SUPABASE_KEY'):
+    _j = __import__('json')
+    one('      url: "",', '      url: ' + _j.dumps(os.environ['BS_SUPABASE_URL']) + ',')
+    one('      anonKey: ""', '      anonKey: ' + _j.dumps(os.environ['BS_SUPABASE_KEY']))
 
 # 18) (배경 추가 시안) BS_SEABG=v2 이면 바다색 칸들(해녀 이야기 · 목적 · 바다 지키기 · 해녀의 바당길) 뒤에 실제 제주 바다 사진을 깔아요
 #     사진은 첫 화면 영상의 포스터(드론으로 찍은 제주 바다)에서 해녀 · 테왁을 지운 한 장(media/sea-bg.webp, 약 70KB)이에요

@@ -1,14 +1,11 @@
 {
-  "name": "badang-sorang-cheer-api",
+  "name": "badang-sorang-cheer-supabase",
   "private": true,
   "type": "module",
-  "description": "바당소랑 웹진 '응원 온도' 창의 공용 저장소 (Vercel 서버리스 함수 + Neon Postgres)",
+  "description": "바당소랑 웹진 '응원 온도' 창의 공용 저장소 (Supabase) — schema.sql 시험용",
   "scripts": {
     "test": "node test/flow.test.mjs",
     "dev": "node test/dev-server.mjs"
-  },
-  "dependencies": {
-    "@neondatabase/serverless": "^1.2.0"
   },
   "devDependencies": {
     "@electric-sql/pglite": "^0.5.11"

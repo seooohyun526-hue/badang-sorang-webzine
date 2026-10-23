@@ -2,8 +2,9 @@
      2-2) '응원 온도' 창 — '바다 지키기' 칸에 들어오면 화면 가운데 떠요 (내용은 CLEAN.cheer)
      · 사랑의 열매 '사랑의 온도탑' · 스포츠 '우리 팀 응원하기' 처럼: 좋아요(여러 번 눌러도 돼요) · 응원의 한 마디를 남기면 온도계가 올라가요
        온도 = base + 좋아요 × likeStep + 한 마디 × commentStep (goal 에서 멈춰요) · 온도계 눈금은 min ℃ ~ goal ℃
-     · 응원 저장: CLEAN.cheer.api 에 응원 API 주소가 있으면 모두가 함께 보는 공용 저장소(cheer-api/)에 — 좋아요 · 응원이 한 온도계에 모여요
-       비어 있으면 예전처럼 이 브라우저(localStorage 'bs-cheer')에만 저장해요
+     · 응원 저장: CLEAN.cheer.supabase 에 주소(url) · 공개 키(anonKey)가 있으면 모두가 함께 보는 공용 저장소(Supabase · cheer-supabase/schema.sql)에
+       — 좋아요 · 응원이 한 온도계에 모여요. 비어 있으면 예전처럼 이 브라우저(localStorage 'bs-cheer')에만 저장해요
+       · Supabase 의 표는 잠겨 있고, 정해진 함수 4개(cheer_state · cheer_like · cheer_comment · cheer_import)로만 다뤄요 — 글 검사 · 연달아 쓰기 제한도 그 안에서
        · 예전에 이 브라우저에만 남긴 응원은 공용 저장소에 처음 닿을 때 한 번 옮겨요 (같은 응원은 두 번 올라가지 않아요 · 'bs-cheer-moved')
        · 보내는 동안 버튼을 잠가 두 번 저장되지 않게 · 실패하면 창 안에 안내 · 남이 쓴 글은 글자 그대로(esc)만 보여요
      · 오늘 하루 보지 않기: 닫고, 오늘이 끝날 때까지 이 칸에서 저절로 뜨지 않아요 (localStorage 'bs-ocean-pop-hide' = 오늘 날짜)
@@ -17,7 +18,8 @@
     var sec = $('#ocean'), P = (typeof CLEAN !== 'undefined' && CLEAN.cheer) || null;
     if (!sec || !P) return {};
     var HIDE = 'bs-ocean-pop-hide', DATA = 'bs-cheer', MOVED = 'bs-cheer-moved', memHide = '', memData = null;
-    var API = String(P.api || '').trim(), shared = !!API, cur = null, busy = false;   // cur: 공용 저장소에서 받아 온 지금 상태
+    var SB = P.supabase || {}, SB_URL = String(SB.url || '').trim().replace(/\/+$/, ''), SB_KEY = String(SB.anonKey || '').trim();
+    var shared = !!(SB_URL && SB_KEY), cur = null, busy = false;   // cur: 공용 저장소에서 받아 온 지금 상태
     function today() { var d = new Date(); return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
     function hiddenToday() { var v = memHide; try { v = localStorage.getItem(HIDE) || memHide; } catch (e) {} return v === today(); }
     function hideToday() { memHide = today(); try { localStorage.setItem(HIDE, memHide); } catch (e) {} }
@@ -36,11 +38,26 @@
       var cs = x && Array.isArray(x.comments) ? x.comments.filter(function (c) { return c && typeof c.t === 'string'; }).slice(0, 50) : [];
       return { likes: Math.max(0, +(x && x.likes) || 0), comments: cs, commentCount: Math.max(cs.length, +(x && x.commentCount) || 0) };
     }
-    // 공용 저장소에 묻기 (8초 넘게 답이 없으면 실패로 봐요)
+    // 공용 저장소(Supabase 함수)에 묻기 — 8초 넘게 답이 없으면 실패로 봐요
+    //  api('GET') → cheer_state · api('POST', { type: 'like' | 'comment' | 'import', … }) → cheer_like · cheer_comment · cheer_import
+    //  답: { status, data } — 함수가 { error } 를 돌려주면 too_fast → 429, text · id → 400, 새로 저장 → 201, 나머지 → 200 으로 맞춰요
     function api(method, body) {
+      var fn = 'cheer_state', args = {};
+      if (body && body.type === 'like') fn = 'cheer_like';
+      else if (body && body.type === 'comment') { fn = 'cheer_comment'; args = { p_id: body.id, p_body: body.t }; }
+      else if (body && body.type === 'import') { fn = 'cheer_import'; args = { p_comments: body.comments }; }
       var ctl = window.AbortController ? new AbortController() : null, tm = setTimeout(function () { if (ctl) ctl.abort(); }, 8000);
-      return fetch(API, { method: method, headers: body ? { 'Content-Type': 'application/json' } : undefined, body: body ? JSON.stringify(body) : undefined, cache: 'no-store', signal: ctl ? ctl.signal : undefined })
-        .then(function (r) { return r.json().catch(function () { return {}; }).then(function (data) { return { status: r.status, data: data }; }); })
+      return fetch(SB_URL + '/rest/v1/rpc/' + fn, {
+        method: 'POST', cache: 'no-store', signal: ctl ? ctl.signal : undefined,
+        headers: { 'Content-Type': 'application/json', apikey: SB_KEY, Authorization: 'Bearer ' + SB_KEY },
+        body: JSON.stringify(args)
+      })
+        .then(function (r) { return r.json().catch(function () { return {}; }).then(function (data) {
+          if (!r.ok) return { status: r.status || 0, data: {} };
+          data = data && typeof data === 'object' ? data : {};
+          var st = data.error === 'too_fast' ? 429 : (data.error ? 400 : (data.created ? 201 : 200));
+          return { status: st, data: data };
+        }); })
         .catch(function () { return { status: 0, data: {} }; })
         .then(function (res) { clearTimeout(tm); return res; });
     }

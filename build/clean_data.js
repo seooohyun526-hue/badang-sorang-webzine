@@ -29,11 +29,15 @@ var CLEAN = {
   ],
   // 이 칸에 들어오면(또는 오른쪽 '바당 소랑 응원하기'를 누르면) 화면 가운데 뜨는 '응원 온도' 창
   //  · 사랑의 열매 '사랑의 온도탑' · 스포츠 '우리 팀 응원하기' 처럼, 좋아요와 응원의 한 마디가 쌓일수록 온도계가 올라가요
-  //  · api: 응원 공용 저장소 주소 (cheer-api/ 를 Vercel 에 올린 뒤 받은 주소 + /api/cheers)
-  //      있으면 → 모든 방문자의 좋아요 · 응원이 한 온도계와 목록에 모여요 (새로고침 · 다른 기기에서도 그대로)
+  //  · supabase: 응원 공용 저장소 (Supabase · 만드는 법은 cheer-supabase/README.md)
+  //      url · anonKey 가 있으면 → 모든 방문자의 좋아요 · 응원이 한 온도계와 목록에 모여요 (새로고침 · 다른 기기에서도 그대로)
   //      비우면 → 예전처럼 보는 사람의 브라우저(localStorage 'bs-cheer')에만 저장돼요
+  //      anonKey 는 '공개 키'(anon public)예요 — 웹페이지에 넣도록 만든 키라 여기 적어도 괜찮아요 (service_role 키는 절대 넣지 마세요)
   cheer: {
-    api: "",                // 예: "https://badang-sorang-cheer.vercel.app/api/cheers"
+    supabase: {
+      url: "",              // 예: "https://abcdefghijklmnop.supabase.co"
+      anonKey: ""           // Supabase → Project Settings → API Keys → anon public (또는 Publishable key)
+    },
     brand: "BADANG SORANG",
     title: "바다를 지키는 해녀들을 응원해 주세요",
     sub: "좋아요와 응원의 한 마디가 모일수록 바다의 온도가 올라가요.",

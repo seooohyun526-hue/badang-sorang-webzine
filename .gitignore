@@ -2,8 +2,8 @@
 미리보기_*.png
 *.json
 !site/webzine.json
-!cheer-api/package.json
-!cheer-api/package-lock.json
+!cheer-supabase/package.json
+!cheer-supabase/package-lock.json
 
 # 빌드 확인용 임시 파일
 _*.html
@@ -26,4 +26,4 @@ build/fonts/GumiRomanceTTF.woff2
 build/fonts/SANJUGotgam.woff
 
 # 응원 API 개발용 패키지
-cheer-api/node_modules/
+cheer-supabase/node_modules/
