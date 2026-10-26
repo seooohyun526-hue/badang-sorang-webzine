@@ -965,9 +965,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 #     · 세 페이지는 내용이 같고, 페이지마다 언어가 정해져 있어요 (window.BS_PAGE_LANG) → 언어 줄을 누르면 그 언어 주소로 이동해요 (보던 칸 · 상세 화면 그대로)
 #     · 탭 제목 · 설명 · 공유 미리보기(og · twitter)는 페이지마다 그 언어로 (검색 · 카톡 미리보기는 글을 바꾸는 코드를 돌리지 않아서 HTML 에 미리 적어 둬요)
 #     · 서로의 언어판을 검색엔진에 알려 줘요 (hreflang) · 사진 · 영상 · 글꼴은 site/media · site/fonts 를 같이 써요 (../media/…)
-#     · 한 파일 판(BS_SPLIT=0)은 예전처럼 언어를 브라우저에 기억해서 바꿔요
+#     · 한 파일 판(BS_SPLIT=0)은 예전처럼 언어를 브라우저에 기억해서 바꿔요 · 게임 버튼은 한경의 웹진 안 게임 주소로 (파일 옆에 game/ 폴더가 없어서)
 _pages = {}
-if os.environ.get('BS_SPLIT', '1') != '0':
+if os.environ.get('BS_SPLIT', '1') == '0':
+    s = s.replace('  url: "game/",', '  url: "https://lxwebzine.hankyung.com/2026-1/team6/game/",', 1)
+    s = re.sub(r'<title>[^<]*</title>', '<title>%s</title>' % os.environ.get('BS_SITE_NAME', '바당소랑 — 사라지는 해녀들을 만나다'), s, count=1)   # 시안 이름 '(배경 추가)' 대신 실제 제목
+else:
     import json as _js
     _LANGS = (('ko', 'ko_KR', ''), ('en', 'en_US', 'en/'), ('ja', 'ja_JP', 'ja/'))
     _alt = nl.join(['<link rel="alternate" hreflang="%s" href="%s%s">' % (c, _SITE, sub) for c, _, sub in _LANGS] +
