@@ -1987,12 +1987,22 @@ html body :is(.stories__hint, .stories__hint span, .st-quote, #sxPurposeBody p, 
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
 <noscript><article class="seo-summary" lang="en">
-<h1>Meet the Vanishing Haenyeo</h1><p>The people who have lived with the sea — haenyeo stories we never knew</p><p>2025: 2,371 haenyeo — 83% fewer than in 1970.</p>
-<h2>People We Met by the Sea</h2><ul><li>Haenyeo Kim Eun-young</li><li>Haenyeo Jo Eun-byeol</li><li>Haenyeo Kylie</li><li>Choi Myeong-su, Former Haenyeo School Instructor &amp; Haenyeo Park Shin-hye</li></ul>
-<h2>UNESCO Intangible Cultural Heritage</h2><p>When the haenyeo disappear, the sea's oldest caretakers disappear with them.</p>
-<h2>Where the haenyeo go, the sea changes</h2><p>Haenyeo don't just harvest the sea. They scrub the rocks, let the sea rest, and pull out the trash.</p>
-<h2>Haenyeo's Sea Path</h2><p>Become a haenyeo, explore the sea, and set your own record alongside sea creatures.</p>
-<h2>Badang means sea, Sorang means love.</h2><p>We make this webzine out of love for the Jeju sea and the haenyeo who have lived by it.</p>
+<p>The people who have lived with the sea — haenyeo stories we never knew</p><p>2025: 2,371 haenyeo — 83% fewer than in 1970.</p>
+<h2>Haenyeo Stories</h2><h3>People We Met by the Sea</h3><ul><li>Haenyeo Kim Eun-young</li><li>Haenyeo Jo Eun-byeol</li><li>Haenyeo Kylie</li><li>Choi Myeong-su, Former Haenyeo School Instructor &amp; Haenyeo Park Shin-hye</li></ul>
+<p>More stories are on the way Next, become a haenyeo and cross the sea floor in a mini game.</p>
+<h2>UNESCO Intangible Cultural Heritage</h2>
+<p>Hands that pulled trash from the sea and tended its underwater forests — a community of care and solidarity handed down through generations. When the haenyeo disappear, the sea's oldest caretakers disappear with them. Badang Sorang carries on the fading haenyeo culture, protecting the sea and keeping it green the way they always have.</p>
+<h2>Where the haenyeo go, the sea changes</h2>
+<p>Haenyeo don't just harvest the sea. They scrub the rocks, let the sea rest, and pull out the trash.</p>
+<ul><li><b>Rock scrubbing</b> — Making room for underwater forests On rocks scraped clean of weedy algae, seaweed spores settle and grow.</li><li><b>Harvest closure</b> — Giving the sea time to recover They set seasons with no harvesting, protecting time for seaweed and shellfish to grow.</li><li><b>Marine debris pickup</b> — A sea where less gets trapped They pull up abandoned nets and plastic, and free creatures caught in nets.</li></ul>
+<h2>Haenyeo's Sea Path</h2>
+<p>Under the sea, one step at a time Become a haenyeo, explore the sea, and set your own record alongside sea creatures.</p>
+<h3>How to Play</h3><ul><li>Move forward one space</li><li>Swipe to change direction</li><li>Game over — don't get pushed off the bottom of the screen</li><li>Ocean current warning</li></ul>
+<h2>Badang means sea, Sorang means love.</h2>
+<p>We make this webzine out of love for the Jeju sea and the haenyeo who have lived by it.</p>
+<h3>Connecting Together, Carrying Values On</h3>
+<p>The haenyeo we met were not a shrinking number, but people who still head into the sea with bright spirits. A heart that never lets go of the sea, even alongside other work — we share that heart with more people. Hands that cared for the sea, hearts that looked after one another — we pass those values on to the next generation.</p>
+<p>The sea is still right where it was, remembering the stories of those who lived by it.</p>
 </article></noscript>
   <div class="sea-bg" aria-hidden="true"></div>
 <!-- ================= ★ 첫 진입 로딩: 방방 뛰는 해녀 (약 2.6초 · 누르면 바로 넘어가요) =================
@@ -2108,7 +2118,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <span class="gate__kicker" data-t="GATE.kicker"></span>
       </div>
       <div class="gate__text">
-        <h1 class="gate__title" id="gateTitle"></h1>
+        <h1 class="gate__title" id="gateTitle"><span class="ln"><span>Meet the</span></span><span class="ln"><span>Vanishing Haenyeo</span></span></h1>
         <p class="gate__sub" id="gateSub"></p>
         <div class="gate__count" aria-live="off">
           <span class="gate__year" id="gYear"></span>
@@ -3840,7 +3850,7 @@ var SUB = (function () {
     var bar = '<div class="page__bar"><a class="page__back" href="' + o.home + '#stories">' + esc(STORIES.backLabel) + '</a>' +
       '<a href="' + o.home + '#stories" aria-label="' + esc(SITE.name) + ' 웹진으로"><span class="logo-mask page__logo" aria-hidden="true"></span></a></div>';
     if (!it) {
-      root.insertAdjacentHTML('beforeend', bar + '<main class="sp-top"><h1 class="sp-title">이야기를 찾을 수 없어요</h1><p>data.js 의 INTERVIEWS 에 id "' + esc(id) + '" 가 있는지 확인해 주세요.</p></main>');
+      root.insertAdjacentHTML('beforeend', bar + '<main class="sp-top"><h2 class="sp-title">이야기를 찾을 수 없어요</h2><p>data.js 의 INTERVIEWS 에 id "' + esc(id) + '" 가 있는지 확인해 주세요.</p></main>');
       return function () {};
     }
     var c = it.color || ['#7fd6cf', '#14a3a0'];
@@ -3871,7 +3881,7 @@ var SUB = (function () {
       '<main class="sp">' +
         '<section class="sp-top">' +
           '<p class="kicker">' + esc(STORIES.kicker) + ' · ' + esc(it.label) + '</p>' +
-          '<h1 class="sp-title">' + esc(it.name) + '의 이야기</h1>' +
+          '<h2 class="sp-title">' + esc(it.name) + '의 이야기</h2>' +
           vh +
           (has(it.theme) ? '<p class="sp-meta"><span class="sp-tag">' + esc(it.theme) + '</span>' + (has(it.title) ? '<span>' + esc(it.title) + '</span>' : '') + '</p>' : '') +
         '</section>' +
@@ -3928,7 +3938,7 @@ var SUB = (function () {
         '<main class="gp">' +
           '<div class="gp__text">' +
             '<p class="game__kicker">' + esc(GAME.kicker) + '</p>' +
-            '<h1 class="game__title">' + esc(GAME.title).replace(/\n/g, '<br>') + '</h1>' +
+            '<h2 class="game__title">' + esc(GAME.title).replace(/\n/g, '<br>') + '</h2>' +
             '<p class="game__sub">' + esc(GAME.sub) + '</p>' +
             '<ul class="game__how">' + how + '</ul>' +
           '</div>' +
@@ -4035,12 +4045,12 @@ var SUB = (function () {
     var bar = '<div class="page__bar"><a class="page__back" href="' + o.home + '#purpose">' + esc(back) + '</a>' +
       '<a href="' + o.home + '#stories" aria-label="' + esc(SITE.name) + ' 웹진으로"><span class="logo-mask page__logo" aria-hidden="true"></span></a></div>';
     if (!it) {
-      root.insertAdjacentHTML('beforeend', bar + '<main class="sp-top"><h1 class="sp-title">이야기를 찾을 수 없어요</h1><p><a class="btn btn--coral" href="' + o.home + '#purpose">돌아가기</a></p></main>');
+      root.insertAdjacentHTML('beforeend', bar + '<main class="sp-top"><h2 class="sp-title">이야기를 찾을 수 없어요</h2><p><a class="btn btn--coral" href="' + o.home + '#purpose">돌아가기</a></p></main>');
       return function () {};
     }
     root.insertAdjacentHTML('beforeend', bar +
       '<main class="sxd"><div class="sxd-card">' +
-        SeaCard.html(list, k, { up: o.up, h: 'h1', titleId: 'sxdTitle', link: function (x) { return '#sea-' + encodeURIComponent(x.id); } }) +
+        SeaCard.html(list, k, { up: o.up, h: 'h2', titleId: 'sxdTitle', link: function (x) { return '#sea-' + encodeURIComponent(x.id); } }) +
       '</div>' +
       '<section class="sp-more"><a class="btn btn--coral sp-more__btn" href="' + o.home + '#purpose">다른 해녀 문화 보기</a></section>' +
       '</main>');

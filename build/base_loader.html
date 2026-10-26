@@ -1626,7 +1626,7 @@ var SUB = (function () {
     var bar = '<div class="page__bar"><a class="page__back" href="' + o.home + '#stories">' + esc(STORIES.backLabel) + '</a>' +
       '<a href="' + o.home + '#stories" aria-label="' + esc(SITE.name) + ' 웹진으로"><span class="logo-mask page__logo" aria-hidden="true"></span></a></div>';
     if (!it) {
-      root.insertAdjacentHTML('beforeend', bar + '<main class="sp-top"><h1 class="sp-title">이야기를 찾을 수 없어요</h1><p>data.js 의 INTERVIEWS 에 id "' + esc(id) + '" 가 있는지 확인해 주세요.</p></main>');
+      root.insertAdjacentHTML('beforeend', bar + '<main class="sp-top"><h2 class="sp-title">이야기를 찾을 수 없어요</h2><p>data.js 의 INTERVIEWS 에 id "' + esc(id) + '" 가 있는지 확인해 주세요.</p></main>');
       return function () {};
     }
     var c = it.color || ['#7fd6cf', '#14a3a0'];
@@ -1657,7 +1657,7 @@ var SUB = (function () {
       '<main class="sp">' +
         '<section class="sp-top">' +
           '<p class="kicker">' + esc(STORIES.kicker) + ' · ' + esc(it.label) + '</p>' +
-          '<h1 class="sp-title">' + esc(it.name) + '의 이야기</h1>' +
+          '<h2 class="sp-title">' + esc(it.name) + '의 이야기</h2>' +
           vh +
           (has(it.theme) ? '<p class="sp-meta"><span class="sp-tag">' + esc(it.theme) + '</span>' + (has(it.title) ? '<span>' + esc(it.title) + '</span>' : '') + '</p>' : '') +
         '</section>' +
@@ -1714,7 +1714,7 @@ var SUB = (function () {
         '<main class="gp">' +
           '<div class="gp__text">' +
             '<p class="game__kicker">' + esc(GAME.kicker) + '</p>' +
-            '<h1 class="game__title">' + esc(GAME.title).replace(/\n/g, '<br>') + '</h1>' +
+            '<h2 class="game__title">' + esc(GAME.title).replace(/\n/g, '<br>') + '</h2>' +
             '<p class="game__sub">' + esc(GAME.sub) + '</p>' +
             '<ul class="game__how">' + how + '</ul>' +
           '</div>' +

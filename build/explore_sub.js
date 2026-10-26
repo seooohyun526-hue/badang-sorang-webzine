@@ -88,12 +88,12 @@
     var bar = '<div class="page__bar"><a class="page__back" href="' + o.home + '#purpose">' + esc(back) + '</a>' +
       '<a href="' + o.home + '#stories" aria-label="' + esc(SITE.name) + ' 웹진으로"><span class="logo-mask page__logo" aria-hidden="true"></span></a></div>';
     if (!it) {
-      root.insertAdjacentHTML('beforeend', bar + '<main class="sp-top"><h1 class="sp-title">이야기를 찾을 수 없어요</h1><p><a class="btn btn--coral" href="' + o.home + '#purpose">돌아가기</a></p></main>');
+      root.insertAdjacentHTML('beforeend', bar + '<main class="sp-top"><h2 class="sp-title">이야기를 찾을 수 없어요</h2><p><a class="btn btn--coral" href="' + o.home + '#purpose">돌아가기</a></p></main>');
       return function () {};
     }
     root.insertAdjacentHTML('beforeend', bar +
       '<main class="sxd"><div class="sxd-card">' +
-        SeaCard.html(list, k, { up: o.up, h: 'h1', titleId: 'sxdTitle', link: function (x) { return '#sea-' + encodeURIComponent(x.id); } }) +
+        SeaCard.html(list, k, { up: o.up, h: 'h2', titleId: 'sxdTitle', link: function (x) { return '#sea-' + encodeURIComponent(x.id); } }) +
       '</div>' +
       '<section class="sp-more"><a class="btn btn--coral sp-more__btn" href="' + o.home + '#purpose">다른 해녀 문화 보기</a></section>' +
       '</main>');
