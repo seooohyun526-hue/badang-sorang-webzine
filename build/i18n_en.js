@@ -229,7 +229,6 @@ I18N.en = {
     "좋아요와 응원의 한 마디로 바다의 온도를 올려 주세요.": "Warm up the sea with a like and a word of support.",
 
     /* ── 탭 제목 · 공유 설명 ── */
-    "바당소랑_웹진_1": "Badang Sorang Webzine",
     "바다와 함께 살아온 사람들, 우리가 미처 몰랐던 해녀의 이야기. 제주 해녀 웹진 바당소랑.": "The people who have lived with the sea — haenyeo stories we never knew. Badang Sorang, a Jeju haenyeo webzine.",
 
     /* ── 로딩 · 첫 화면 ── */
@@ -259,6 +258,8 @@ I18N.en = {
     "인터뷰 핵심 문장이 들어갈 자리예요": "A key quote from the interview will go here",
     "인터뷰를 정리하고 있어요": "We're putting the interview together",
     "인터뷰 영상이 들어갈 자리예요": "The interview video will go here",
+    "인터뷰 영상은 지금 준비하고 있어요": "The interview video is on its way",
+    "바당소랑 — 사라지는 해녀들을 만나다": "Badang Sorang — Meet the Vanishing Haenyeo",
     "곧 영상으로 찾아올게요.": "The video is coming soon.",
     "영상 파일을 찾을 수 없어요": "Video file not found",
     "이야기를 찾을 수 없어요": "Story not found",

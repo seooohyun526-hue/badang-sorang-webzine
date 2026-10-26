@@ -810,7 +810,7 @@ if os.environ.get('BS_ORDER') == 'purpose-first':
 # 24) (사이트로 내보내기) 사진 · 영상 · 소리 · 글꼴을 HTML 안에 담지 않고, 결과 파일 옆 media/ · fonts/ 에 따로 두고 상대 경로로 불러와요
 #     · 서버(한경닷컴 lxwebzine)는 저장소의 site/ 폴더만 올리고 첫 화면은 site/index.html → 결과를 site/index.html 로 내보내요
 #     · 사진은 webp · 한 장 500KB 이하 (jpg · png 도 webp 로 바꿔요) · 2KB 이하의 아주 작은 그림은 그대로 둬요
-#     · 탭 제목은 웹진 이름 '바당소랑_웹진_1'(BS_SITE_NAME 으로 바꿀 수 있어요) · 공유 미리보기(og · twitter) · canonical 을 넣어요 (og:image = site/og.jpg, make_cards.py 가 만들어요)
+#     · 탭 제목은 '바당소랑 — 사라지는 해녀들을 만나다'(BS_SITE_NAME 으로 바꿀 수 있어요) · 공유 미리보기(og · twitter) · canonical 을 넣어요 (og:image = site/og.jpg, make_cards.py 가 만들어요)
 #     · BS_SPLIT=0 이면 예전처럼 한 파일에 모두 담아요
 if os.environ.get('BS_SPLIT', '1') != '0':
     import hashlib as _hl, io as _io
@@ -870,14 +870,14 @@ if os.environ.get('BS_SPLIT', '1') != '0':
     s = re.sub(r'data:([\w/+.-]+);base64,([A-Za-z0-9+/=]+)', _rep, _src)
     # (3) 제목 · 공유 미리보기
     _SITE = 'https://lxwebzine.hankyung.com/2026-1/team6/'
-    _t = os.environ.get('BS_SITE_NAME', '바당소랑_웹진_1')             # 브라우저 탭 · 공유 미리보기에 보이는 웹진 이름 (사용자가 정함)
+    _t = os.environ.get('BS_SITE_NAME', '바당소랑 — 사라지는 해녀들을 만나다')   # 브라우저 탭 · 공유 미리보기 제목 (2026-10-26 점검: 작업용 이름 '바당소랑_웹진_1' 대신 실제 제목)
     s = re.sub(r'<title>.*?</title>', lambda m: '<title>' + _t + '</title>', s, count=1)
     _dm = re.search(r'<meta name="description" content="([^"]*)">', s)
     _de = _dm.group(1)
     _meta = nl.join([
         '<link rel="canonical" href="%s">' % _SITE,
         '<meta property="og:type" content="website">',
-        '<meta property="og:site_name" content="%s">' % _t,
+        '<meta property="og:site_name" content="바당소랑">',
         '<meta property="og:title" content="%s">' % _t,
         '<meta property="og:description" content="%s">' % _de,
         '<meta property="og:url" content="%s">' % _SITE,
@@ -988,7 +988,8 @@ if os.environ.get('BS_SPLIT', '1') != '0':
             _T, _D = _esc(_word(_c, _koT)), _esc(_word(_c, _koD))
             _p = re.sub(r'<html lang="ko">', '<html lang="%s">' % _c, _p, count=1)
             _p = _p.replace('<title>%s</title>' % _koT, '<title>%s</title>' % _T, 1)
-            for _k in ('og:site_name', 'og:title'): _p = _p.replace('<meta property="%s" content="%s">' % (_k, _koT), '<meta property="%s" content="%s">' % (_k, _T), 1)
+            _p = _p.replace('<meta property="og:title" content="%s">' % _koT, '<meta property="og:title" content="%s">' % _T, 1)
+            _p = _p.replace('<meta property="og:site_name" content="바당소랑">', '<meta property="og:site_name" content="%s">' % _esc(_word(_c, '바당소랑')), 1)
             _p = _p.replace('<meta name="twitter:title" content="%s">' % _koT, '<meta name="twitter:title" content="%s">' % _T, 1)
             for _k in ('<meta name="description" content="%s">', '<meta property="og:description" content="%s">', '<meta name="twitter:description" content="%s">'):
                 _p = _p.replace(_k % _koD, _k % _D, 1)
@@ -996,6 +997,30 @@ if os.environ.get('BS_SPLIT', '1') != '0':
             _p = _p.replace('<meta property="og:locale" content="ko_KR">', '<meta property="og:locale" content="%s">' % _loc, 1)
             _p = re.sub(r'(?<=["\'(])(media|fonts)/', r'../\1/', _p)   # 한 폴더 안쪽이라 그림 · 글꼴은 ../ 에서
             _p = _p.replace('  url: "game/",', '  url: "../game/",', 1)  # 게임 하러 가기 — 웹진 안 게임(../game/)
+        # 구조화 데이터(JSON-LD) · 글자로 읽히는 웹진 소개 — 검색 · AI 검색은 화면을 그리는 코드를 돌리지 않고 HTML 글자를 읽어요
+        #  (소개 글은 웹진에 실제로 있는 문장 그대로 · 화면에는 보이지 않는 noscript 안 · 번역은 각 언어 사전)
+        _w = (lambda t: t) if _c == 'ko' else (lambda t: _word(_c, t))
+        _sp = '' if _c == 'ja' else ' '                           # 줄바꿈 자리: 일본어는 붙여 쓰고, 한국어 · 영어는 한 칸
+        _x = lambda t: _esc(_w(t)).replace(chr(10), _sp)
+        _brand = _w('바당소랑')
+        _ld = {'@context': 'https://schema.org', '@type': 'Article', 'headline': _w(_koT), 'description': _w(_koD), 'inLanguage': _c,
+               'url': _SITE + _sub, 'image': _SITE + 'og.jpg', 'datePublished': '2026-10-22', 'dateModified': __import__('datetime').date.today().isoformat(),
+               'author': {'@type': 'Organization', 'name': _brand}, 'publisher': {'@type': 'Organization', 'name': _brand}}
+        _ldt = '<script type="application/ld+json">' + _js.dumps(_ld, ensure_ascii=False).replace('</', '<\\/') + '</script>'
+        _p = _p.replace('<link rel="canonical" href="%s%s">' % (_SITE, _sub), _ldt + nl + '<link rel="canonical" href="%s%s">' % (_SITE, _sub), 1)
+        _stat = _w('{y}년, {v}명. {y0}년보다 {p}% 줄었습니다.').replace('{y0}', '1970').replace('{y}', '2025').replace('{v}', '2,371').replace('{p}', '83')
+        _names = ''.join('<li>%s</li>' % _x(n) for n in ('김은영 해녀', '조은별 해녀', '카일리 해녀', '전 해녀 학교 강사 최명수 & 박신혜 해녀'))
+        _about = nl.join(['<noscript><article class="seo-summary" lang="%s">' % _c,
+            '<h1>%s</h1><p>%s</p><p>%s</p>' % (_x('사라지는 해녀들을\n만나다'), _x('바다와 함께 살아온 사람들,\n우리가 미처 몰랐던 해녀의 이야기'), _esc(_stat)),
+            '<h2>%s</h2><ul>%s</ul>' % (_x('바다에서 만난 사람들'), _names),
+            '<h2>%s</h2><p>%s</p>' % (_x('유네스코\n인류무형문화유산'), _x('해녀가 사라진다는 것은 바다의 가장 오랜 돌봄이 사라진다는 뜻입니다.')),
+            '<h2>%s</h2><p>%s%s%s</p>' % (_x('해녀가 다녀가면,\n바다가 달라져요'), _x('해녀는 바다를 캐기만 하지 않아요.'), _sp, _x('바위를 닦고, 바다를 쉬게 하고, 쓰레기를 건져 올려요.')),
+            '<h2>%s</h2><p>%s</p>' % (_x('해녀의\n바당길'), _x('해녀가 되어 바닷속을 탐험하고, 해양 생물과 함께 나만의 기록을 만들어 보세요.')),
+            '<h2>%s%s%s</h2><p>%s</p>' % (_x('바당은 바다,'), _sp, _x('소랑은 사랑.'), _x('제주 바다와, 그 바다를 살아온 해녀를 아끼는 마음으로 이 웹진을 만듭니다.')),
+            '</article></noscript>']) + nl
+        _gm = '<!-- End Google Tag Manager (noscript) -->' + nl
+        assert _p.count(_gm) == 1
+        _p = _p.replace(_gm, _gm + _about, 1)
         _pages[_sub] = _p
     s = _pages['']
 

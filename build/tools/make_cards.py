@@ -11,7 +11,7 @@ from playwright.async_api import async_playwright
 
 SITE = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'site')
 SITE = os.path.abspath(SITE)
-NAME = os.environ.get('BS_SITE_NAME', '바당소랑_웹진_1')
+NAME = os.environ.get('BS_SITE_NAME', '바당소랑 — 사라지는 해녀들을 만나다')
 HIDE_UI = '.fdock,.sound,.ld,#oceanPop,.lang{display:none!important}'   # 언어 선택 줄도 빼고 찍어요
 NO_POP = "try{const d=new Date();localStorage.setItem('bs-ocean-pop-hide', d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2))}catch(e){}"
 LIMIT = 500 * 1024

@@ -1136,7 +1136,7 @@ var SITE = {
   instagram: { url: "https://www.instagram.com/badang.sorang/", label: "@badang.sorang" },
   copyright: "© 2026 바당소랑. All rights reserved.",
   // true: 비어 있는 칸에 '여기에 무엇을 넣으면 되는지' 안내가 보여요. 공개 직전에 false 로 바꾸세요.
-  showGuides: true
+  showGuides: false
 };
 
 /* ───────── 사진 · 영상 · 소리 파일 ───────── */
@@ -1229,7 +1229,7 @@ var INTERVIEWS = [
     title: "",
     theme: "바다에 대한 애정",
     quote: "",
-    photo: "images/interview-3.jpg",
+    photo: "",                         // (사진이 생기면 media/ 에 넣고 경로를 적어요)
     video: "",
     poster: "",
     color: ["#9fcbf2", "#2b7fd4"]
@@ -1241,7 +1241,7 @@ var INTERVIEWS = [
     title: "",
     theme: "다음 세대에게",
     quote: "",
-    photo: "images/interview-4.jpg",
+    photo: "",
     video: "",
     poster: "",
     color: ["#f7c6d3", "#e9879f"]
@@ -1544,7 +1544,7 @@ var SUB = (function () {
     track.innerHTML = list.map(function (it) {
       var c = it.color || ['#7fd6cf', '#14a3a0'], k = INTERVIEWS.indexOf(it);
       var q = has(it.quote) ? '<p class="st-quote">“' + esc(it.quote) + '”</p>'
-        : '<p class="st-quote is-ph">' + (guides ? '인터뷰 핵심 문장이 들어갈 자리예요' : '인터뷰를 정리하고 있어요') + '</p>';
+        : (guides ? '<p class="st-quote is-ph">인터뷰 핵심 문장이 들어갈 자리예요</p>' : '');   // 공개판: 핵심 문장이 없으면 아무것도 안 보여요
       return '<article class="st-card">' +
         '<a class="st-frame" href="' + o.link(it) + '" style="--c1:' + c[0] + ';--c2:' + c[1] + '" aria-label="' + esc(it.label + ' · ' + it.name + ' 인터뷰 영상 보기') + '">' +
           '<span class="st-media" data-photo="' + esc(o.up(it.photo || '')) + '"></span>' + WAVES +
@@ -1642,7 +1642,7 @@ var SUB = (function () {
     var poster = o.up(has(it.poster) ? it.poster : (has(it.photo) ? it.photo : ''));
     var vh = '<div class="vframe" style="--c1:' + c[0] + ';--c2:' + c[1] + '">';
     if (!v) {
-      vh += '<div class="vframe__empty"><b>' + PLAY + '</b><p>인터뷰 영상이 들어갈 자리예요</p>' +
+      vh += '<div class="vframe__empty"><b>' + PLAY + '</b><p>' + (guides ? '인터뷰 영상이 들어갈 자리예요' : '인터뷰 영상은 지금 준비하고 있어요') + '</p>' +
         (guides ? '<small>js/data.js → INTERVIEWS → video 칸에<br>영상 파일 경로(예: media/interview-' + esc(it.id) + '.mp4)나 유튜브 주소를 적어 주세요.</small>' : '<small>곧 영상으로 찾아올게요.</small>') + '</div>';
     } else if (v.k === 'file') {
       vh += '<video playsinline preload="metadata" src="' + esc(v.src) + '"' + (poster ? ' poster="' + esc(poster) + '"' : '') + '></video>' +
@@ -2109,7 +2109,7 @@ var SUB = (function () {
       var c = it.color || ['#7fd6cf', '#14a3a0'];
       var q = has(it.quote)
         ? '<p class="st-quote">“' + esc(it.quote) + '”</p>'
-        : '<p class="st-quote is-ph">' + (guides ? '인터뷰 핵심 문장이 들어갈 자리예요' : '인터뷰를 정리하고 있어요') + '</p>';
+        : (guides ? '<p class="st-quote is-ph">인터뷰 핵심 문장이 들어갈 자리예요</p>' : '');   // 공개판: 핵심 문장이 없으면 아무것도 안 보여요
       return '<article class="st-card" data-i="' + i + '">' +
         '<button class="st-frame" type="button" data-open="' + i + '" style="--c1:' + c[0] + ';--c2:' + c[1] + '" aria-label="' + esc(it.label + ' · ' + it.name + ' 인터뷰 영상 보기') + '">' +
           '<span class="st-media" data-photo="' + esc(it.photo || '') + '"></span>' + WAVES +
