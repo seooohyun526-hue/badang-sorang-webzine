@@ -1,7 +1,7 @@
 import { readdir, stat, readFile, writeFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
-import { basePath, gameDir } from '../configuration.mjs';
+import { basePath, gameDir, externalGameUrl } from '../configuration.mjs';
 const root = fileURLToPath(new URL('../', import.meta.url));
 const manifest = [];
 async function scan(folder, prefix = '') {
@@ -23,7 +23,8 @@ const publicRoot = gameDir;
 for (const name of ['Web.data.unityweb', 'Web.wasm.unityweb', 'Web.framework.js.unityweb', 'Web.loader.js']) if ((await stat(publicRoot + 'Build/' + name)).size < 1000) throw Error('Missing Unity build: ' + name);
 for (const name of ['online.js', 'event.js']) if ((await readFile(publicRoot + name, 'utf8')).includes("fetch('/api/")) throw Error('Root API path remains: ' + name);
 const html = await readFile(publicRoot + 'index.html', 'utf8');
-if (!html.includes('<base href="' + basePath + '">')) throw Error('Missing base href');
+if (externalGameUrl) { if (!html.includes('location.replace(' + JSON.stringify(externalGameUrl) + ')')) throw Error('Missing forward to ' + externalGameUrl); }
+else if (!html.includes('<base href="' + basePath + '">')) throw Error('Missing base href');
 if (/G-QS2FVTG7C1|GTM-MHKZ67TD|vercel-analytics|google-analytics\.js/.test(html)) throw Error('Old analytics was not removed');
 await writeFile(root + 'MANIFEST.json', JSON.stringify({ format: 1, createdAt: new Date().toISOString(), files: manifest }, null, 2));
 console.log('PASS: nested game path, 4 Unity build files, no root API calls, no old analytics injection, no private/cache files. ' + manifest.length + ' files.');

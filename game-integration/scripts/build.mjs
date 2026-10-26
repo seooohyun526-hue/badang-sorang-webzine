@@ -1,6 +1,6 @@
-import { cp, mkdir, readFile, writeFile } from 'node:fs/promises';
+import { cp, mkdir, readFile, writeFile, rm } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
-import { basePath, analytics, gameDir, apiMode } from '../configuration.mjs';
+import { basePath, analytics, gameDir, apiMode, externalGameUrl } from '../configuration.mjs';
 const root = fileURLToPath(new URL('../', import.meta.url));
 if (!/^\/[a-zA-Z0-9/_-]+\/$/.test(basePath)) throw Error('Invalid deployment path');
 const output = gameDir;   // configuration.mjs gives it with a trailing separator
@@ -26,5 +26,17 @@ html = html.replace('<head>', '<head><base href="' + basePath + '">' + baseFix +
 html = html.replace('</head>', '<link rel="stylesheet" href="event.css"><script type="module" src="event.js"></script></head>');
 html = html.replace('window.unityInstance=instance;', 'window.unityInstance=instance;window.dispatchEvent(new Event("ocean-unity-ready"));');
 if (analytics.mode === 'gtm' && /^GTM-[A-Z0-9]+$/.test(analytics.gtmContainerId || '')) html = html.replace('<body>', '<body><noscript><iframe src="https://www.googletagmanager.com/ns.html?id=' + analytics.gtmContainerId + '" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>');
+if (externalGameUrl) {
+  // Forwarding page: keeps the page's description · canonical · og, then sends players to the external game.
+  if (!/^https:\/\/[a-z0-9.-]+\/$/.test(externalGameUrl)) throw Error('Invalid externalGameUrl');
+  const source = await readFile(root + 'source/frontend/index.html', 'utf8');
+  const meta = source.match(/<title>[\s\S]*?(?=<link rel="preload")/)[0];
+  const intro = source.match(/<p class="intro">([^<]*)<\/p>/)[1];
+  html = '<!doctype html>\n<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#082e43">' + meta +
+    '<meta http-equiv="refresh" content="0; url=' + externalGameUrl + '"><script>location.replace(' + JSON.stringify(externalGameUrl) + ')</script>\n' +
+    '<style>html,body{margin:0;min-height:100%;background:#08324e;color:#e7faf5;font-family:system-ui,sans-serif}main{max-width:420px;margin:0 auto;padding:22vh 24px;text-align:center}h1{font-size:30px;margin:0 0 14px}p{line-height:1.7;color:#b5d7dd}a{color:#75f2c9}</style></head>\n' +
+    '<body><main><h1>해녀의 바당길</h1><p>' + intro + '</p><p><a href="' + externalGameUrl + '">게임 하러 가기 →</a></p><p><a href="../">바당소랑 웹진으로 돌아가기</a></p></main></body></html>\n';
+  await rm(output + 'api-proxy.php', { force: true });   // not used while forwarding (the server shows .php as plain text)
+}
 await writeFile(output + 'index.html', html);
-console.log('Built ' + basePath + ' into ' + output + ' (game binaries are already included; no Unity rebuild required).');
+console.log('Built ' + basePath + ' into ' + output + (externalGameUrl ? ' — forwarding to ' + externalGameUrl : ' (game binaries are already included; no Unity rebuild required).'));

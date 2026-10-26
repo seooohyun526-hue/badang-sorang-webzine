@@ -11,6 +11,11 @@ export const gameDir = fileURLToPath(new URL('../site/game/', import.meta.url));
 //  'path' — /2026-1/team6/game/api/{endpoint} (needs the Node proxy behind Apache)
 //  'php'  — /2026-1/team6/game/api-proxy.php?endpoint=… (Apache runs PHP 7.4+ with cURL; api-proxy.php is copied next to the game)
 export const apiMode = 'auto';
+// Where /game/ sends players while the webzine server cannot reach the game API.
+//  '' — play the game here (needs PHP or the Node proxy on the server; see WEBZINE-INTEGRATION-KO.md)
+//  a URL — game/index.html becomes a short page that forwards to that game. The Unity files stay in place, so switching back is this one line.
+// 2026-10-26: the Hankyung server serves api-proxy.php as plain text (no PHP), so nickname · score · ranking failed → use the existing Vercel game.
+export const externalGameUrl = 'https://haenyeo-ocean-online.vercel.app/';
 export const analytics = {
   // 'host': use the webzine's existing gtag or GTM. It must also be present on /game.
   // 'gtag': install ONE Google tag on this standalone page using measurementId.
