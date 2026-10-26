@@ -6,6 +6,11 @@ export const upstreamOrigin = 'https://haenyeo-ocean-online.vercel.app';
 // Build output, package check and local preview all use this folder (no second copy of the Unity binaries).
 import { fileURLToPath } from 'node:url';
 export const gameDir = fileURLToPath(new URL('../site/game/', import.meta.url));
+// How the game reaches the API on the webzine server:
+//  'path' — /2026-1/team6/game/api/{endpoint} (needs the Node proxy behind Apache)
+//  'php'  — /2026-1/team6/game/api-proxy.php?endpoint=… (Apache runs PHP 7.4+ with cURL; api-proxy.php is copied next to the game)
+// Switch to 'php' only after api-proxy.php?endpoint=profile returns JSON on the real server.
+export const apiMode = 'path';
 export const analytics = {
   // 'host': use the webzine's existing gtag or GTM. It must also be present on /game.
   // 'gtag': install ONE Google tag on this standalone page using measurementId.

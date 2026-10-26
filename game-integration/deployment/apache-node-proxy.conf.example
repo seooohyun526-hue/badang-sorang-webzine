@@ -1,0 +1,12 @@
+# Alternative ONLY if PHP is unavailable and the previous Node proxy is running.
+# Insert in the existing lxwebzine.hankyung.com HTTPS VirtualHost.
+# Required Apache modules: proxy, proxy_http. Requires server-admin access.
+# Start the previous integration package's Node server on 127.0.0.1:8787.
+# Do NOT install this patch's PHP bootstrap when choosing this Node path approach.
+
+ProxyPass "/2026-1/team6/game/api/" "http://127.0.0.1:8787/2026-1/team6/game/api/"
+ProxyPassReverse "/2026-1/team6/game/api/" "http://127.0.0.1:8787/2026-1/team6/game/api/"
+
+# Keep existing static game HTML/assets and all other webzine routes unchanged.
+# Do not rewrite Origin here: the existing Node handler validates the actual
+# browser origin before sending its own server-to-server request upstream.
