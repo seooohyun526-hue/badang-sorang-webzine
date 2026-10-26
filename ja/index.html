@@ -2718,7 +2718,7 @@ var ARTICLES = {
    · 게임은 '물질하러 출발' 버튼 하나로만 새 탭에서 열려요 (오른쪽 휴대폰 화면은 눌리지 않는 그림이에요)
    · how: 게임 시작 화면에 적힌 조작법과 같게 맞췄어요 (게임이 바뀌면 함께 고쳐 주세요) */
 var GAME = {
-  url: "https://haenyeo-ocean-online.vercel.app/",   // 게임 주소 — 한경 서버에서 PHP가 안 돌아 랭킹이 막혀 기존 Vercel 게임으로 (2026-10-26). 웹진 안 게임으로 돌릴 땐 "game/" (영어 · 일본어는 빌드가 ../game/ 으로 맞춰요) + game-integration/configuration.mjs 의 externalGameUrl 을 비워요
+  url: "../game/",                                  // 게임 주소 — 웹진 안 게임(site/game/ = 한경 /2026-1/team6/game/, API는 브라우저가 기존 Vercel 서버로 직접 · 2026-10-26). 영어 · 일본어 페이지는 빌드가 ../game/ 으로 맞춰요
                                                  //  (예전: https://haenyeo-ocean-online.vercel.app/ — 주소가 바뀌면 여기만 고치세요)
   poster: "../media/game-poster.jpg",               // (예전 게임 화면 사진 — 게임 상세 화면에서만 써요)
   shot: "../media/game-start.webp",                 // 오른쪽 휴대폰 틀에 들어가는 실제 게임 시작 화면
