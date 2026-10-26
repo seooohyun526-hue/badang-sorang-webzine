@@ -35,5 +35,7 @@
   .page__back{white-space:nowrap; padding:6px 12px; font-size:.84rem}
   .page__bar a:has(> .page__logo){display:none}   /* 휴대폰 상세 화면: 작은 로고는 숨겨요 (돌아가기 버튼이 같은 일을 해요) → 돌아가기 · 언어 줄이 한 줄에 */
 }
+/* 파도 소리 버튼: 왼쪽 아래에서 → 오른쪽 위, 언어 줄 바로 아래 (머리 메뉴 아래쪽이라 메뉴와 겹치지 않아요) */
+.sound{left:auto; bottom:auto; right:var(--gutter); top:calc(var(--hd) + 8px)}
 @media (prefers-reduced-motion:reduce){ .lang__opt{transition:none} }
 </style>

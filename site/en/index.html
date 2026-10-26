@@ -1837,6 +1837,8 @@ body{font-family:var(--sans)}
   .page__back{white-space:nowrap; padding:6px 12px; font-size:.84rem}
   .page__bar a:has(> .page__logo){display:none}   /* 휴대폰 상세 화면: 작은 로고는 숨겨요 (돌아가기 버튼이 같은 일을 해요) → 돌아가기 · 언어 줄이 한 줄에 */
 }
+/* 파도 소리 버튼: 왼쪽 아래에서 → 오른쪽 위, 언어 줄 바로 아래 (머리 메뉴 아래쪽이라 메뉴와 겹치지 않아요) */
+.sound{left:auto; bottom:auto; right:var(--gutter); top:calc(var(--hd) + 8px)}
 @media (prefers-reduced-motion:reduce){ .lang__opt{transition:none} }
 </style>
 <style id="i18n-style">
@@ -5516,7 +5518,23 @@ var SUB = (function () {
     if (has(MEDIA.waves)) {
       btn.hidden = false; setUI();
       btn.addEventListener('click', function () { if (playing) { off(); muted = true; } else { on(); muted = false; } try { localStorage.setItem(KEY, muted ? '1' : '0'); } catch (e) {} });
-      document.addEventListener('visibilitychange', function () { if (playing) level(document.hidden ? 0 : want, 0.6); });
+      document.addEventListener('visibilitychange', function () {
+        if (!playing) return;
+        if (document.hidden) level(0, 0.6);
+        else { away = false; level(want, 1.5); }                       // 돌아오면 천천히 다시
+      });
+      // 게임을 열면 파도 소리를 자연스럽게 줄여 꺼요 (게임 소리와 겹치지 않게)
+      //  · 게임은 새 탭에서 열려요 → 웹진으로 돌아오면(탭 · 창으로 돌아옴) 다시 천천히 켜져요
+      //  · 탭이 숨지 않는 환경(창 나란히 보기 · 앱 안 브라우저 등)도 게임 링크를 누르는 순간 꺼 둬요
+      //  · 내가 직접 끈 설정(muted)은 그대로예요
+      var away = false, gameUrl = '';
+      try { gameUrl = new URL(GAME.url, location.href).href.replace(/\/?$/, '/'); } catch (e) {}
+      document.addEventListener('click', function (e) {
+        var a = e.target && e.target.closest && e.target.closest('a[href]');
+        if (!a || !gameUrl || a.href.replace(/[?#].*$/, '').replace(/\/?$/, '/') !== gameUrl) return;
+        if (playing) { away = true; level(0, 0.8); }
+      }, true);
+      window.addEventListener('focus', function () { if (away && playing && !document.hidden) { away = false; level(want, 1.5); } });
     }
 
     return {
