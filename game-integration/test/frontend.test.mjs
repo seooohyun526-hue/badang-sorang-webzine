@@ -2,12 +2,12 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { runInNewContext } from 'node:vm';
-import { basePath, siteOrigin } from '../configuration.mjs';
+import { basePath, siteOrigin, upstreamOrigin } from '../configuration.mjs';
 const read = name => readFile(new URL('../integration/' + name, import.meta.url), 'utf8');
-test('client API URLs stay under the webzine subdirectory, including its no-slash entry URL', async () => {
+test('client API URLs go straight to the existing Vercel API, also from the no-slash entry URL', async () => {
   const window = { OCEAN_CONFIG: { basePath } };
-  runInNewContext(await read('integration-bootstrap.js'), { window, location: new URL(siteOrigin + basePath.slice(0, -1)), URL });
-  assert.equal(window.OceanIntegration.apiUrl('leaderboard?metric=score&period=all'), siteOrigin + basePath + 'api/leaderboard?metric=score&period=all');
+  runInNewContext(await read('integration-bootstrap.js'), { window, location: new URL(siteOrigin + basePath.slice(0, -1)), URL, Headers, AbortSignal, localStorage: { getItem: () => null } });
+  assert.equal(window.OceanIntegration.apiUrl('leaderboard?metric=score&period=all'), upstreamOrigin + '/api/leaderboard?metric=score&period=all');
   assert.throws(() => window.OceanIntegration.apiUrl('https://evil.example'));
   assert.throws(() => window.OceanIntegration.apiUrl('../event-maintenance'));
 });

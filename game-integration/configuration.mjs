@@ -6,16 +6,16 @@ export const upstreamOrigin = 'https://haenyeo-ocean-online.vercel.app';
 // Build output, package check and local preview all use this folder (no second copy of the Unity binaries).
 import { fileURLToPath } from 'node:url';
 export const gameDir = fileURLToPath(new URL('../site/game/', import.meta.url));
-// How the game reaches the API on the webzine server:
-//  'auto' — on each page load, ask api-proxy.php once: JSON → 'php', otherwise 'path' (one Hankyung deploy covers both cases)
-//  'path' — /2026-1/team6/game/api/{endpoint} (needs the Node proxy behind Apache)
-//  'php'  — /2026-1/team6/game/api-proxy.php?endpoint=… (Apache runs PHP 7.4+ with cURL; api-proxy.php is copied next to the game)
-export const apiMode = 'auto';
-// Where /game/ sends players while the webzine server cannot reach the game API.
-//  '' — play the game here (needs PHP or the Node proxy on the server; see WEBZINE-INTEGRATION-KO.md)
+// How the game reaches the API: 'direct' — the browser calls the existing Vercel API (https://haenyeo-ocean-online.vercel.app/api/…)
+// with a signed player token (integration/integration-bootstrap.js · fetchApi). The Vercel server allows exactly https://lxwebzine.hankyung.com,
+// so the Hankyung server needs no PHP, Node or proxy (2026-10-26 direct-API patch; replaces the PHP/auto adapter, which Hankyung could not run).
+export const apiMode = 'direct';
+// Cache version added to the scripts that changed with the direct API (integration-bootstrap.js · online.js · event.js).
+export const scriptVersion = '20261026-direct1';
+// Where /game/ sends players instead of running the game here.
+//  '' — play the game here (the webzine's /game/)
 //  a URL — game/index.html becomes a short page that forwards to that game. The Unity files stay in place, so switching back is this one line.
-// 2026-10-26: the Hankyung server serves api-proxy.php as plain text (no PHP), so nickname · score · ranking failed → use the existing Vercel game.
-export const externalGameUrl = 'https://haenyeo-ocean-online.vercel.app/';
+export const externalGameUrl = '';
 export const analytics = {
   // 'host': use the webzine's existing gtag or GTM. It must also be present on /game.
   // 'gtag': install ONE Google tag on this standalone page using measurementId.

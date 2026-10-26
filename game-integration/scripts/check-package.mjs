@@ -21,7 +21,7 @@ async function scan(folder, prefix = '') {
 await scan(root);
 const publicRoot = gameDir;
 for (const name of ['Web.data.unityweb', 'Web.wasm.unityweb', 'Web.framework.js.unityweb', 'Web.loader.js']) if ((await stat(publicRoot + 'Build/' + name)).size < 1000) throw Error('Missing Unity build: ' + name);
-for (const name of ['online.js', 'event.js']) if ((await readFile(publicRoot + name, 'utf8')).includes("fetch('/api/")) throw Error('Root API path remains: ' + name);
+for (const name of ['online.js', 'event.js']) { const text = await readFile(publicRoot + name, 'utf8'); if (text.includes("fetch('/api/")) throw Error('Root API path remains: ' + name); if (!externalGameUrl && !text.includes('window.OceanIntegration.fetchApi(path,')) throw Error('Direct API transport missing: ' + name); }
 const html = await readFile(publicRoot + 'index.html', 'utf8');
 if (externalGameUrl) { if (!html.includes('location.replace(' + JSON.stringify(externalGameUrl) + ')')) throw Error('Missing forward to ' + externalGameUrl); }
 else if (!html.includes('<base href="' + basePath + '">')) throw Error('Missing base href');

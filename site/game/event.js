@@ -45,7 +45,7 @@ const policies={
  <h3>동의 거부·철회</h3><p>체크하지 않으면 국외 이전에 동의하지 않은 것이며 응모 정보가 제출되지 않습니다. 이 경우 이벤트 응모만 제한됩니다. 철회·삭제 요청은 바당소랑 @badang_sorang DM으로 문의해 주세요.</p>`
 };
 async function api(path,body){
- const r=await fetch(window.OceanIntegration.apiUrl(path),{method:body?'POST':'GET',headers:body?{'Content-Type':'application/json'}:{},body:body?JSON.stringify(body):undefined,signal:AbortSignal.timeout(12000)});
+ const r=await window.OceanIntegration.fetchApi(path,{method:body?'POST':'GET',headers:body?{'Content-Type':'application/json'}:{},body:body?JSON.stringify(body):undefined,signal:AbortSignal.timeout(12000)});
  const data=await r.json();if(!r.ok)throw Error(data.error||'잠시 후 다시 시도해 주세요.');return data;
 }
 function paint(){

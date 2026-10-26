@@ -1,16 +1,17 @@
 import { cp, mkdir, readFile, writeFile, rm } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
-import { basePath, analytics, gameDir, apiMode, externalGameUrl } from '../configuration.mjs';
+import { basePath, analytics, gameDir, apiMode, externalGameUrl, scriptVersion } from '../configuration.mjs';
 const root = fileURLToPath(new URL('../', import.meta.url));
 if (!/^\/[a-zA-Z0-9/_-]+\/$/.test(basePath)) throw Error('Invalid deployment path');
 const output = gameDir;   // configuration.mjs gives it with a trailing separator
 await mkdir(output, { recursive: true });
 await cp(root + 'source/frontend/web', output, { recursive: true, filter: path => !path.endsWith('.meta') && !/(google-analytics|analytics-init)\.js$/.test(path) });
-for (const name of ['integration-bootstrap.js', 'game-analytics.js', 'api-proxy.php']) await cp(root + 'integration/' + name, output + name);   // api-proxy.php: Apache/PHP API adapter (used when apiMode is 'php')
+for (const name of ['integration-bootstrap.js', 'game-analytics.js']) await cp(root + 'integration/' + name, output + name);
+await rm(output + 'api-proxy.php', { force: true });   // the old PHP adapter is not used with the direct API (Hankyung served it as plain text)
 for (const name of ['online.js', 'event.js']) {
   let text = await readFile(output + name, 'utf8');
   if (!text.includes("fetch('/api/'+path,")) throw Error('API source changed: ' + name);
-  text = text.replace("fetch('/api/'+path,", 'fetch(window.OceanIntegration.apiUrl(path),');
+  text = text.replace("fetch('/api/'+path,", 'window.OceanIntegration.fetchApi(path,');   // signed player token + Vercel API (integration-bootstrap.js)
   await writeFile(output + name, text);
 }
 const strings = JSON.parse(await readFile(root + 'source/frontend/ocean-strings.json', 'utf8'));
@@ -22,8 +23,9 @@ let html = await readFile(root + 'source/frontend/index.html', 'utf8');
 // The base stays basePath on the webzine. When the same files are opened from another folder
 // (e.g. the GitHub Pages preview .../badang-sorang-webzine/game/), use the folder the page was opened from.
 const baseFix = "<script>(function(){var p=location.pathname,d=/\\/$/.test(p)?p:/\\/game$/.test(p)?p+'/':p.replace(/[^\\/]*$/,'');if(d!=='" + basePath + "')document.querySelector('base').setAttribute('href',d);})();</script>";
-html = html.replace('<head>', '<head><base href="' + basePath + '">' + baseFix + '\n<!-- WEBZINE_ANALYTICS_HEAD: insert the webzine tag here in host mode. -->\n<script src="integration-config.js"></script><script src="integration-bootstrap.js"></script><script defer src="game-analytics.js"></script><link rel="stylesheet" href="language.css"><script src="translations.js"></script><script src="language.js"></script>\n');
-html = html.replace('</head>', '<link rel="stylesheet" href="event.css"><script type="module" src="event.js"></script></head>');
+html = html.replace('<head>', '<head><base href="' + basePath + '">' + baseFix + '\n<!-- WEBZINE_ANALYTICS_HEAD: insert the webzine tag here in host mode. -->\n<script src="integration-config.js"></script><script src="integration-bootstrap.js?v=' + scriptVersion + '"></script><script defer src="game-analytics.js"></script><link rel="stylesheet" href="language.css"><script src="translations.js"></script><script src="language.js"></script>\n');
+html = html.replace('</head>', '<link rel="stylesheet" href="event.css"><script type="module" src="event.js?v=' + scriptVersion + '"></script></head>');
+html = html.replace('<script src="online.js"></script>', '<script src="online.js?v=' + scriptVersion + '"></script>');
 html = html.replace('window.unityInstance=instance;', 'window.unityInstance=instance;window.dispatchEvent(new Event("ocean-unity-ready"));');
 if (analytics.mode === 'gtm' && /^GTM-[A-Z0-9]+$/.test(analytics.gtmContainerId || '')) html = html.replace('<body>', '<body><noscript><iframe src="https://www.googletagmanager.com/ns.html?id=' + analytics.gtmContainerId + '" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>');
 if (externalGameUrl) {
@@ -36,7 +38,6 @@ if (externalGameUrl) {
     '<meta http-equiv="refresh" content="0; url=' + externalGameUrl + '"><script>location.replace(' + JSON.stringify(externalGameUrl) + ')</script>\n' +
     '<style>html,body{margin:0;min-height:100%;background:#08324e;color:#e7faf5;font-family:system-ui,sans-serif}main{max-width:420px;margin:0 auto;padding:22vh 24px;text-align:center}h1{font-size:30px;margin:0 0 14px}p{line-height:1.7;color:#b5d7dd}a{color:#75f2c9}</style></head>\n' +
     '<body><main><h1>해녀의 바당길</h1><p>' + intro + '</p><p><a href="' + externalGameUrl + '">게임 하러 가기 →</a></p><p><a href="../">바당소랑 웹진으로 돌아가기</a></p></main></body></html>\n';
-  await rm(output + 'api-proxy.php', { force: true });   // not used while forwarding (the server shows .php as plain text)
 }
 await writeFile(output + 'index.html', html);
 console.log('Built ' + basePath + ' into ' + output + (externalGameUrl ? ' — forwarding to ' + externalGameUrl : ' (game binaries are already included; no Unity rebuild required).'));
