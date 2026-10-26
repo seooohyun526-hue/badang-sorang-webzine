@@ -22,3 +22,27 @@ test('path mode (default) keeps /game/api/{endpoint}', () => {
     assert.equal(load(mode).OceanIntegration.apiUrl('profile'), 'https://lxwebzine.hankyung.com/2026-1/team6/game/api/profile');
   }
 });
+test('auto mode: a JSON answer from api-proxy.php switches every game API request to PHP', async () => {
+  const calls = [];
+  const fetch = async (url) => { calls.push(String(url)); return { headers: new Map([['content-type', 'application/json; charset=utf-8']]) }; };
+  const window = { fetch, OCEAN_CONFIG: { basePath: '/2026-1/team6/game/', apiMode: 'auto', analytics: { mode: 'gtm', gtmContainerId: 'GTM-M2LF732B' } } };
+  runInNewContext(source, { window, location: new URL('https://lxwebzine.hankyung.com/2026-1/team6/game/'), URL });
+  assert.equal(await window.OceanIntegration.apiMode(), 'php');
+  await window.fetch(window.OceanIntegration.apiUrl('leaderboard?metric=score&period=all'));
+  await window.fetch('https://www.googletagmanager.com/gtm.js?id=GTM-M2LF732B');
+  assert.deepEqual(calls, [
+    'https://lxwebzine.hankyung.com/2026-1/team6/game/api-proxy.php?endpoint=__probe',
+    'https://lxwebzine.hankyung.com/2026-1/team6/game/api-proxy.php?endpoint=leaderboard&metric=score&period=all',
+    'https://www.googletagmanager.com/gtm.js?id=GTM-M2LF732B']);
+});
+test('auto mode: no PHP (404 HTML, PHP source, network error) keeps the /api/ path routes', async () => {
+  for (const answer of [async () => ({ headers: new Map([['content-type', 'text/html; charset=iso-8859-1']]) }),
+    async () => ({ headers: new Map([['content-type', 'application/x-httpd-php']]) }), async () => { throw Error('offline'); }]) {
+    const calls = [];
+    const window = { fetch: async (url) => { calls.push(String(url)); return answer(); }, OCEAN_CONFIG: { basePath: '/2026-1/team6/game/', apiMode: 'auto' } };
+    runInNewContext(source, { window, location: new URL('https://lxwebzine.hankyung.com/2026-1/team6/game/'), URL });
+    assert.equal(await window.OceanIntegration.apiMode(), 'path');
+    await window.fetch(window.OceanIntegration.apiUrl('profile')).catch(() => {});
+    assert.equal(calls.at(-1), 'https://lxwebzine.hankyung.com/2026-1/team6/game/api/profile');
+  }
+});

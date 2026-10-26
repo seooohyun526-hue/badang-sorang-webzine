@@ -19,6 +19,19 @@
 | DB | 기존 Vercel 서버 → 기존 Neon 그대로. DB 주소 · 키 · 비밀은 저장소에 없어요. DB · 스키마는 손대지 않았어요. |
 | 웹진의 게임 버튼 | 아직 기존 Vercel 게임 주소 그대로예요. API 연결(3번)이 끝나기 전에 바꾸면 닉네임 · 점수 저장이 안 되는 게임으로 보내게 돼서요. |
 
+## 3-0. (2026-10-26 추가) Apache 에서 PHP 를 실행할 수 있으면 — 배포 한 번으로 끝
+
+랭킹 오류("온라인 랭킹 서버에 연결하지 못했어요")의 원인은 `/2026-1/team6/game/api/…` 가 404 인 것이었어요.
+`site/game/api-proxy.php` (PHP 7.4+ · cURL) 가 같은 출처에서 기존 Vercel API(→ 기존 Neon)로 전달해요. DB 비밀은 없어요.
+
+- 게임은 `apiMode: 'auto'` 예요. 열릴 때 `api-proxy.php?endpoint=__probe` 에 한 번 물어보고 (Vercel 로 요청하지 않음)
+  - JSON 으로 답하면 → 모든 게임 API 를 `api-proxy.php?endpoint=…` 로
+  - 아니면(404 · PHP 소스 그대로 · 오류) → 지금처럼 `/game/api/…` (아래 3번의 Node 프록시가 있으면 그걸로)
+- 그래서 한경 담당자는 **site/ 최신본을 한 번만 배포**하면 돼요.
+- 배포 후 확인: `…/game/api-proxy.php?endpoint=profile` · `…/game/api-proxy.php?endpoint=leaderboard&metric=score&period=all` 이 HTTP 200 `application/json`
+  - 503 `CURL_REQUIRED`: PHP 는 되지만 cURL 확장이 없음 · 502 `UPSTREAM_UNAVAILABLE`: 서버 → Vercel HTTPS 연결 확인 (TLS 검증은 끄지 않기)
+  - PHP 소스가 그대로 보이면 PHP 실행 설정이 없는 것 → 아래 3번(Node 프록시)
+
 ## 3. 서버 담당자가 해야 할 일 (이게 있어야 닉네임 · 점수 · 랭킹 · 응모가 동작해요)
 
 1. 서버에 Node 22 이상을 두고, 이 `game-integration/` 폴더를 **공개 폴더 밖**에 둬요.
