@@ -5,13 +5,14 @@
 -- · 표는 잠가 둬요(RLS): 웹진(공개 키 anon)은 표를 직접 읽거나 쓸 수 없고, 아래 4개 함수로만 응원을 다뤄요
 --     cheer_state()                      → { likes, commentCount, comments:[{ id, t, at }] }  최근 응원 50개
 --     cheer_comment(p_id, p_body)        → 응원 한 마디 (p_id: 브라우저가 만든 UUID — 같은 id 는 한 번만 저장)
---     cheer_like()                       → 좋아요
+--     cheer_like(p_who)                  → 좋아요 (p_who: 브라우저가 만든 UUID — 한 사람당 5번까지 세는 이름표)
 --     cheer_import(p_comments)           → 예전에 브라우저에만 남긴 응원 옮기기 (한 번에 20개까지)
 -- · 규칙 (웹진이 예전부터 쓰던 것과 같아요)
 --     글 1~100자 · 보이지 않는 제어 문자 빼기 · 빈칸 하나로 · 앞뒤 빈칸 빼기
---     같은 접속 주소: 응원은 8초에 한 번 · 1시간 30개 / 좋아요는 0.8초에 한 번 · 하루 1000번
---     접속 주소(IP)는 그대로 저장하지 않고 섞어서(해시) 연달아 쓰기 제한에만 써요
--- · 문제가 생기면 함수는 { error: 'text' | 'id' | 'too_fast' } 를 돌려줘요 (웹진이 안내 문구로 바꿔 보여 줘요)
+--     좋아요: 한 사람(브라우저)당 5번까지 (이름표가 없으면 접속 주소로 세요) · 같은 접속 주소는 하루 1000번까지 (이름표를 지워 가며 누르는 것 막기)
+--     응원 한 마디: 횟수 · 시간 제한 없음 (욕설 · 비속어만 막아요)
+--     접속 주소(IP)는 그대로 저장하지 않고 섞어서(해시) 세기에만 써요
+-- · 문제가 생기면 함수는 { error: 'text' | 'id' | 'bad' | 'limit' | 'too_fast' } 를 돌려줘요 (웹진이 안내 문구로 바꿔 보여 줘요)
 -- =========================================================
 
 -- ── 표 ──
@@ -31,6 +32,8 @@ create table if not exists public.cheer_likes (
   ip_hash text not null
 );
 create index if not exists cheer_likes_ip on public.cheer_likes (ip_hash, created_at desc);
+alter table public.cheer_likes add column if not exists who text;               -- 누른 사람 이름표 (브라우저 UUID 또는 접속 주소 · 5번까지 세기)
+create index if not exists cheer_likes_who on public.cheer_likes (who);
 
 create table if not exists public.cheer_config (       -- 접속 주소를 섞을 때 쓰는 비밀 글자 (처음 한 번 저절로 만들어져요)
   id int primary key default 1 check (id = 1),
@@ -91,21 +94,26 @@ language sql stable security definer set search_path = public as $$
       from (select id, body, created_at from public.cheer_comments where not hidden and not public.cheer__bad(body) order by created_at desc, id limit 50) x), '[]'::jsonb))
 $$;
 
-create or replace function public.cheer_like() returns jsonb
+drop function if exists public.cheer_like();                                   -- 예전 모양(이름표 없음) 지우기
+create or replace function public.cheer_like(p_who text default null) returns jsonb
 language plpgsql volatile security definer set search_path = public as $$
-declare who text := public.cheer__who(); n int; last timestamptz;
+declare ip text := public.cheer__who(); me text; mine int; n int;
 begin
-  select count(*), max(created_at) into n, last from public.cheer_likes where ip_hash = who and created_at > now() - interval '1 day';
-  if n >= 1000 or (last is not null and clock_timestamp() - last < interval '800 milliseconds') then
-    return public.cheer_state() || jsonb_build_object('error', 'too_fast');       -- 너무 빨리 누름 → 지금 숫자 그대로
+  me := case when p_who ~* '^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$' then 'b:' || lower(p_who) else 'ip:' || ip end;
+  perform pg_advisory_xact_lock(hashtext('cheer_like|' || me));                -- 한 사람이 동시에 여러 번 눌러도 차례로 세요
+  select count(*) into mine from public.cheer_likes where who = me;
+  if mine >= 5 then                                                              -- 한 사람당 5번까지
+    return public.cheer_state() || jsonb_build_object('error', 'limit', 'mine', mine);
   end if;
-  insert into public.cheer_likes (ip_hash, created_at) values (who, clock_timestamp());
-  return public.cheer_state();
+  select count(*) into n from public.cheer_likes where ip_hash = ip and created_at > now() - interval '1 day';
+  if n >= 1000 then return public.cheer_state() || jsonb_build_object('error', 'too_fast', 'mine', mine); end if;
+  insert into public.cheer_likes (ip_hash, who, created_at) values (ip, me, clock_timestamp());
+  return public.cheer_state() || jsonb_build_object('mine', mine + 1);
 end $$;
 
 create or replace function public.cheer_comment(p_id text, p_body text) returns jsonb
 language plpgsql volatile security definer set search_path = public as $$
-declare who text := public.cheer__who(); t text := public.cheer__clean(p_body); uid uuid; n int; last timestamptz;
+declare who text := public.cheer__who(); t text := public.cheer__clean(p_body); uid uuid;
 begin
   if t is null then return jsonb_build_object('error', 'text'); end if;
   if public.cheer__bad(t) then return jsonb_build_object('error', 'bad'); end if;   -- 욕설 · 비속어는 저장하지 않아요
@@ -115,11 +123,6 @@ begin
   uid := p_id::uuid;
   if exists (select 1 from public.cheer_comments where id = uid) then           -- 같은 응원을 두 번 보내도 한 번만
     return public.cheer_state() || jsonb_build_object('duplicate', true);
-  end if;
-  select count(*), max(created_at) into n, last from public.cheer_comments where ip_hash = who and created_at > now() - interval '1 hour';
-  if n >= 30 or (last is not null and clock_timestamp() - last < interval '8 seconds') then
-    return jsonb_build_object('error', 'too_fast', 'retryAfter',
-      greatest(1, ceil(8 - extract(epoch from clock_timestamp() - coalesce(last, clock_timestamp() - interval '8 seconds'))))::int);
   end if;
   insert into public.cheer_comments (id, body, ip_hash, created_at) values (uid, t, who, clock_timestamp()) on conflict (id) do nothing;
   return public.cheer_state() || jsonb_build_object('created', true);
@@ -146,5 +149,5 @@ end $$;
 
 -- ── 누가 부를 수 있나: 웹진(anon)은 위 4개만 ──
 revoke execute on function public.cheer__who(), public.cheer__clean(text), public.cheer__bad(text) from public, anon, authenticated;
-revoke execute on function public.cheer_state(), public.cheer_like(), public.cheer_comment(text, text), public.cheer_import(jsonb) from public;
-grant execute on function public.cheer_state(), public.cheer_like(), public.cheer_comment(text, text), public.cheer_import(jsonb) to anon, authenticated;
+revoke execute on function public.cheer_state(), public.cheer_like(text), public.cheer_comment(text, text), public.cheer_import(jsonb) from public;
+grant execute on function public.cheer_state(), public.cheer_like(text), public.cheer_comment(text, text), public.cheer_import(jsonb) to anon, authenticated;

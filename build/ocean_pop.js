@@ -4,7 +4,10 @@
        온도 = base + 좋아요 × likeStep + 한 마디 × commentStep (goal 에서 멈춰요) · 온도계 눈금은 min ℃ ~ goal ℃
      · 응원 저장: CLEAN.cheer.supabase 에 주소(url) · 공개 키(anonKey)가 있으면 모두가 함께 보는 공용 저장소(Supabase · cheer-supabase/schema.sql)에
        — 좋아요 · 응원이 한 온도계에 모여요. 비어 있으면 예전처럼 이 브라우저(localStorage 'bs-cheer')에만 저장해요
-       · Supabase 의 표는 잠겨 있고, 정해진 함수 4개(cheer_state · cheer_like · cheer_comment · cheer_import)로만 다뤄요 — 글 검사 · 연달아 쓰기 제한도 그 안에서
+       · Supabase 의 표는 잠겨 있고, 정해진 함수 4개(cheer_state · cheer_like · cheer_comment · cheer_import)로만 다뤄요 — 글 검사 · 좋아요 횟수도 그 안에서
+     · 좋아요: 한 사람(브라우저)당 P.likeMax(5)번까지 — 누를 때마다 하트가 뿅뿅 튀어 올라요 · 응원 한 마디는 횟수 제한 없음
+       (브라우저 이름표 'bs-cheer-me' · 내가 누른 수 'bs-cheer-mylikes' — 서버도 같은 이름표로 5번까지 세요)
+     · 욕설 · 비속어: 남기기 전에 여기서 먼저 막고(bad), 목록에서도 빼요 — 최종 판단은 서버(schema.sql 의 cheer__bad · 같은 낱말 목록)
        · 예전에 이 브라우저에만 남긴 응원은 공용 저장소에 처음 닿을 때 한 번 옮겨요 (같은 응원은 두 번 올라가지 않아요 · 'bs-cheer-moved')
        · 보내는 동안 버튼을 잠가 두 번 저장되지 않게 · 실패하면 창 안에 안내 · 남이 쓴 글은 글자 그대로(esc)만 보여요
      · 오늘 하루 보지 않기: 닫고, 오늘이 끝날 때까지 이 칸에서 저절로 뜨지 않아요 (localStorage 'bs-ocean-pop-hide' = 오늘 날짜)
@@ -40,12 +43,15 @@
     }
     // 공용 저장소(Supabase 함수)에 묻기 — 8초 넘게 답이 없으면 실패로 봐요
     //  api('GET') → cheer_state · api('POST', { type: 'like' | 'comment' | 'import', … }) → cheer_like · cheer_comment · cheer_import
-    //  답: { status, data } — 함수가 { error } 를 돌려주면 too_fast → 429, text · id → 400, 새로 저장 → 201, 나머지 → 200 으로 맞춰요
+    //  답: { status, data } — 함수가 { error } 를 돌려주면 too_fast → 429, text · id · bad · limit → 400, 새로 저장 → 201, 나머지 → 200 으로 맞춰요
     function api(method, body) {
-      var fn = 'cheer_state', args = {};
-      if (body && body.type === 'like') fn = 'cheer_like';
-      else if (body && body.type === 'comment') { fn = 'cheer_comment'; args = { p_id: body.id, p_body: body.t }; }
-      else if (body && body.type === 'import') { fn = 'cheer_import'; args = { p_comments: body.comments }; }
+      if (body && body.type === 'like')                              // 서버 규칙을 새로 Run 하기 전(이름표를 모르는 예전 cheer_like)이면 이름표 없이 한 번 더
+        return rpc('cheer_like', { p_who: me() }).then(function (res) { return res.status === 404 ? rpc('cheer_like', {}) : res; });
+      if (body && body.type === 'comment') return rpc('cheer_comment', { p_id: body.id, p_body: body.t });
+      if (body && body.type === 'import') return rpc('cheer_import', { p_comments: body.comments });
+      return rpc('cheer_state', {});
+    }
+    function rpc(fn, args) {
       var ctl = window.AbortController ? new AbortController() : null, tm = setTimeout(function () { if (ctl) ctl.abort(); }, 8000);
       return fetch(SB_URL + '/rest/v1/rpc/' + fn, {
         method: 'POST', cache: 'no-store', signal: ctl ? ctl.signal : undefined,
@@ -69,7 +75,24 @@
       var h = [].map.call(b, function (x) { return (x + 256).toString(16).slice(1); }).join('');
       return h.slice(0, 8) + '-' + h.slice(8, 12) + '-' + h.slice(12, 16) + '-' + h.slice(16, 20) + '-' + h.slice(20);
     }
+    // 이 브라우저의 이름표 (좋아요를 한 사람당 몇 번 눌렀는지 서버가 세는 데만 써요) · 내가 누른 좋아요 수
+    var ME = 'bs-cheer-me', MINE = 'bs-cheer-mylikes', memMe = '', memMine = 0;
+    function me() { var v = memMe; try { v = localStorage.getItem(ME) || memMe; } catch (e) {} if (!v) { v = uuid(); memMe = v; try { localStorage.setItem(ME, v); } catch (e) {} } return v; }
+    function myLikes() { var v = memMine; try { v = +localStorage.getItem(MINE) || memMine; } catch (e) {} return Math.max(0, v || 0); }
+    function setMyLikes(n) { memMine = n; try { localStorage.setItem(MINE, String(n)); } catch (e) {} }
+    // 욕설 · 비속어인지 — schema.sql 의 cheer__bad 와 같은 낱말 · 같은 방법 (대소문자 · 전각 · 문장부호 · 띄어쓰기를 바꿔 써도 같게 봐요)
+    var BAD_TIGHT = ['씨발', '씨빨', '씨팔', '씨바', '씨부랄', 'ㅆㅂ', 'ㅅㅂ', 'ㅂㅅ', 'ㅄ', 'ㅈㄴ', 'ㅈㄹ', 'ㅅㄲ', 'ㅁㅊ', 'ㅗㅗ', '좆', '존나', '개새끼', '개새기', '개색끼', '개쉐이', '지랄', '미친놈', '미친년', '또라이', '엿먹', '엠창', '느금', '니애미', '니애비', '썅', '쌍년', '쌍놈', '씹새', '씹할', '씹창', '씹년', '염병', '육시랄', '후레자식', '호로자식', '창녀', '섹스', 'fuck', 'shit', 'bitch', 'asshole', 'motherfucker', 'tlqkf', 'qudtls', '死ね', 'くたばれ', 'ファック'];
+    var BAD_SPACED = ['시발', '시팔', '병신', '븅신', '빙신', '닥쳐', '니미', '등신'];   // 띄어쓰기는 두고 봐요 (예: '다시 발견' 은 괜찮게)
+    function bad(t) {
+      t = String(t || '');
+      return [t.normalize ? t.normalize('NFC') : t, t.normalize ? t.normalize('NFKC') : t].some(function (n) {
+        n = n.toLowerCase();
+        var tight = n.replace(/[^0-9a-z가-힣ㄱ-ㅎㅏ-ㅣ぀-ヿ一-鿿]/g, ''), spaced = n.replace(/[^0-9a-z가-힣ㄱ-ㅎㅏ-ㅣ぀-ヿ一-鿿 ]/g, '');
+        return BAD_TIGHT.some(function (w) { return tight.indexOf(w) > -1; }) || BAD_SPACED.some(function (w) { return spaced.indexOf(w) > -1; });
+      });
+    }
     var goal = +P.goal || 100, base = +P.base || 0, min = Math.min(+P.min || 0, base), likeStep = +P.likeStep || 3, comStep = +P.commentStep || 7, maxLen = +P.maxLen || 100;
+    var likeMax = +P.likeMax || 5;                                  // 좋아요: 한 사람(브라우저)당 이만큼까지
     function level(t) { return Math.max(0, Math.min(1, (t - min) / (goal - min))).toFixed(4); }   // 온도계 눈금 높이 (0 = 맨 아래 min ℃ · 1 = goal ℃)
     function tempOf(d) { return Math.min(goal, base + d.likes * likeStep + d.commentCount * comStep); }
     var fmt = function (t) { return (Math.round(t * 10) / 10).toFixed(1); };
@@ -124,7 +147,9 @@
       var t = tempOf(d);
       root.style.setProperty('--lv', level(t));
       scene.setAttribute('aria-valuenow', fmt(t)); scene.setAttribute('aria-valuetext', fmt(t) + '℃ / ' + goal + '℃');
-      $('.chr-likes', root).textContent = d.likes; $('.chr-coms', root).textContent = d.commentCount;
+      var cs = d.comments.filter(function (c) { return !bad(c.t); });   // 욕설 · 비속어가 든 응원은 목록에서 빼요
+      $('.chr-likes', root).textContent = d.likes; $('.chr-coms', root).textContent = Math.max(0, d.commentCount - (d.comments.length - cs.length));
+      likeBtn.classList.toggle('is-max', myLikes() >= likeMax);
       root.classList.toggle('is-goal', t >= goal);
       // 숫자는 올라가는 만큼 살짝 세어 올라가요
       cancelAnimationFrame(tween);
@@ -138,7 +163,7 @@
         live.textContent = (P.tempLabel || '') + ' ' + fmt(t) + '℃' + (t >= goal ? ' · ' + (P.reached || '') : '');
       }
       var none = listState === 'loading' ? P.loading : listState === 'error' ? P.loadError : P.empty;
-      list.innerHTML = d.comments.length ? d.comments.map(function (c) {
+      list.innerHTML = cs.length ? cs.map(function (c) {
         var at = new Date(c.at || 0), when = isNaN(at) ? '' : (at.getMonth() + 1) + '.' + at.getDate();
         return '<li><span>' + esc(c.t) + '</span><time>' + esc(when) + '</time></li>';   // 남이 쓴 글은 글자 그대로만 (HTML 로 읽지 않아요)
       }).join('') : '<li class="is-empty">' + esc(none || '') + '</li>';
@@ -165,19 +190,39 @@
       });
     }
     function setBusy(on) { busy = on; likeBtn.disabled = on; sendBtn.disabled = on; text.readOnly = on; form.setAttribute('aria-busy', String(on)); }
+    // 하트 뿅뿅: 좋아요 버튼에서 작은 하트들이 위로 튀어 올라 사라져요 (움직임 줄이기 설정이면 제자리에서 잠깐 떴다 사라져요)
+    var HEART_COLORS = ['#FF3D68', '#FF6F91', '#E62E5C', '#FF5FA2', '#F7456E', '#FF8A3D'];
+    function hearts() {
+      var wrap = document.createElement('span'); wrap.className = 'chr-hearts'; wrap.setAttribute('aria-hidden', 'true');
+      for (var i = 0; i < 7; i++) {
+        var h = document.createElement('i');
+        h.style.cssText = '--x:' + Math.round(Math.random() * 120 - 60) + 'px;--y:' + Math.round(-90 - Math.random() * 70) + 'px;--r:' + Math.round(Math.random() * 50 - 25) + 'deg;' +
+          '--s:' + (0.7 + Math.random() * 0.7).toFixed(2) + ';--d:' + Math.round(i * 45 + Math.random() * 40) + 'ms;color:' + HEART_COLORS[i % HEART_COLORS.length];
+        h.innerHTML = heart; wrap.appendChild(h);
+      }
+      likeBtn.appendChild(wrap);
+      setTimeout(function () { wrap.remove(); }, 1400);
+    }
     likeBtn.addEventListener('click', function () {
       var d = state(); if (tempOf(d) >= goal) { draw(d); return; }
-      likeBtn.classList.remove('is-pop'); void likeBtn.offsetWidth; likeBtn.classList.add('is-pop');
+      var n = myLikes();
+      if (n >= likeMax) { say(P.likeLimit || ''); return; }                   // 한 사람당 5번까지
+      likeBtn.classList.remove('is-pop'); void likeBtn.offsetWidth; likeBtn.classList.add('is-pop'); hearts();
       var before = tempOf(d);
+      setMyLikes(n + 1);
+      say(n + 1 >= likeMax ? (P.likeDone || '') : '');
       if (!shared) { d.likes += 1; save(d); draw(d, tempOf(d) - before); return; }
-      if (busy) return;
-      // 공용: 눌렀다는 느낌은 바로(먼저 +1), 저장소 답을 받으면 모두의 숫자로 맞춰요
-      cur = { likes: d.likes + 1, comments: d.comments, commentCount: d.commentCount }; draw(cur, tempOf(cur) - before); say('');
-      setBusy(true);
+      // 공용: 눌렀다는 느낌은 바로(먼저 +1), 저장소 답을 받으면 모두의 숫자로 맞춰요 (빨리 여러 번 눌러도 하나씩 다 세요)
+      cur = { likes: d.likes + 1, comments: d.comments, commentCount: d.commentCount }; draw(cur, tempOf(cur) - before);
       api('POST', { type: 'like' }).then(function (res) {
-        setBusy(false);
-        if (res.status === 200 || res.status === 429) { cur = fromServer(res.data); draw(cur); }   // 429: 너무 빨리 누름 → 저장소 숫자 그대로
-        else { cur = d; draw(cur); say(P.sendError); }
+        var s = cur || d;
+        if (res.status === 200 || ((res.status === 400 || res.status === 429) && res.data.error)) {
+          var x = fromServer(res.data);
+          cur = { likes: Math.max(x.likes, res.data.error ? 0 : s.likes), comments: x.comments, commentCount: x.commentCount };   // 답이 늦게 온 순서로 숫자가 줄어 보이지 않게
+          if (res.data.error === 'limit') setMyLikes(likeMax); else if (typeof res.data.mine === 'number') setMyLikes(Math.max(myLikes(), res.data.mine));
+          if (res.data.error === 'limit') say(P.likeLimit || '');
+          draw(cur);
+        } else { cur = { likes: Math.max(0, s.likes - 1), comments: s.comments, commentCount: s.commentCount }; setMyLikes(Math.max(0, myLikes() - 1)); draw(cur); say(P.sendError); }
       });
     });
     talkBtn.addEventListener('click', function () {
@@ -192,6 +237,7 @@
       if (busy) return;                                              // 보내는 중에 또 누르면 무시
       var t = text.value.replace(/\s+/g, ' ').trim().slice(0, maxLen);
       if (!t) { hint.textContent = P.tooShort || ''; text.focus(); return; }
+      if (bad(t)) { hint.textContent = P.badWord || ''; text.focus(); return; }   // 욕설 · 비속어는 보내지 않아요 (서버도 한 번 더 막아요)
       var d = state(), before = tempOf(d);
       if (!shared) {
         d.comments.unshift({ t: t, at: Date.now() }); d.comments = d.comments.slice(0, 50); d.commentCount = d.comments.length; save(d);

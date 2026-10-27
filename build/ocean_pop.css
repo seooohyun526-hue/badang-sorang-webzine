@@ -64,6 +64,21 @@ html.ocp-lock{overflow:hidden; scrollbar-gutter:stable}
 .chr-btn--like:active{transform:translateY(2px); box-shadow:0 2px 0 #B83652}
 .chr-btn--like.is-pop svg{animation:chrPop .45s ease-out}
 @keyframes chrPop{0%{transform:scale(1)} 40%{transform:scale(1.35)} 100%{transform:scale(1)}}
+/* 하트 뿅뿅: 좋아요를 누르면 버튼에서 작은 하트들이 위로 튀어 올라 사라져요 (ocean_pop.js 의 hearts) */
+.chr-btn--like{position:relative}
+.chr-hearts{position:absolute; left:50%; top:50%; width:0; height:0; pointer-events:none; z-index:3}
+.chr-hearts i{position:absolute; left:-15px; top:-15px; width:30px; height:30px; opacity:0; filter:drop-shadow(0 3px 4px rgba(150,30,60,.35));
+  animation:chrHeart 1.1s cubic-bezier(.2,.7,.3,1) var(--d,0ms) forwards}
+.chr-hearts svg path{stroke:#fff; stroke-width:1.6px; paint-order:stroke}
+.chr-hearts svg{display:block; width:100%; height:100%}
+@keyframes chrHeart{
+  0%{opacity:0; transform:translate(0,0) scale(.2) rotate(0deg)}
+  12%{opacity:1; transform:translate(calc(var(--x) * .15), calc(var(--y) * .2)) scale(calc(var(--s) * 1.25)) rotate(var(--r))}
+  25%{transform:translate(calc(var(--x) * .3), calc(var(--y) * .4)) scale(var(--s)) rotate(var(--r))}
+  75%{opacity:1}
+  100%{opacity:0; transform:translate(var(--x), var(--y)) scale(calc(var(--s) * .8)) rotate(var(--r))}}
+/* 5번 다 누른 뒤: 버튼을 조금 옅게 (누르면 안내만 나와요) */
+.chr-btn--like.is-max{filter:saturate(.55); opacity:.8}
 .chr-btn--talk{--dot:#3474D6; border:0; background:linear-gradient(180deg, #62A2F2 0%, #3474D6 100%); color:#fff; box-shadow:0 4px 0 #2556A8, 0 10px 18px -10px rgba(52,116,214,.7)}
 .chr-btn--talk svg{color:#fff}
 .chr-btn--talk:hover{background:linear-gradient(180deg, #6DAAF4 0%, #3B7CDD 100%)}
@@ -107,5 +122,7 @@ html.ocp-lock{overflow:hidden; scrollbar-gutter:stable}
   .chr-btn{min-height:48px; font-size:.9rem}
   .ocp__x{top:10px; right:10px; width:38px; height:38px}
 }
-@media (prefers-reduced-motion:reduce){ .ocp__dim,.ocp__box,.chr-merc{transition:none} .chr-temp__up.is-on,.chr-btn--like.is-pop svg{animation:none} }
+@media (prefers-reduced-motion:reduce){ .ocp__dim,.ocp__box,.chr-merc{transition:none} .chr-temp__up.is-on,.chr-btn--like.is-pop svg{animation:none}
+  .chr-hearts i{animation:chrHeartStill .9s ease-out var(--d,0ms) forwards} }
+@keyframes chrHeartStill{0%{opacity:0; transform:translate(calc(var(--x) * .4), -34px) scale(var(--s))} 25%{opacity:1} 100%{opacity:0; transform:translate(calc(var(--x) * .4), -34px) scale(var(--s))}}
 </style>

@@ -21,9 +21,9 @@ ok('응원 저장 · 바로 목록에');
 r = await rpc('cheer_comment', { p_id: id1, p_body: '해녀님 힘내세요!' }, H('1.1.1.1'));
 assert.equal(r.duplicate, true); assert.equal(r.commentCount, 1); ok('같은 응원 두 번 → 한 번만 저장');
 
-// 4) 같은 접속 주소에서 바로 또 → 잠깐 기다리게 · 다른 사람은 바로
+// 4) 응원 한 마디는 제한 없음 — 같은 접속 주소에서 바로 또 남겨도 저장
 r = await rpc('cheer_comment', { p_id: randomUUID(), p_body: '또 응원해요' }, H('1.1.1.1'));
-assert.equal(r.error, 'too_fast'); assert.ok(r.retryAfter >= 1); ok('연달아 남기기 제한');
+assert.equal(r.created, true); assert.equal(r.commentCount, 2); ok('연달아 남겨도 저장 (제한 없음)');
 r = await rpc('cheer_comment', { p_id: randomUUID(), p_body: '<script>alert(1)</script> 바다 최고' }, H('2.2.2.2'));
 assert.equal(r.created, true); assert.equal(r.comments[0].t, '<script>alert(1)</script> 바다 최고'); ok('다른 방문자 응원 · 글자 그대로 저장');
 
@@ -35,10 +35,15 @@ for (const [args, err, why] of [[{ p_id: randomUUID(), p_body: '   ' }, 'text', 
 ok('빈 글 · 긴 글 · 이상한 id 거절');
 r = await rpc('cheer_comment', { p_id: randomUUID(), p_body: 'ㄱ'.repeat(100) }, H('4.4.4.4')); assert.equal(r.created, true); ok('100자 딱 맞으면 저장');
 
-// 6) 좋아요 — 모두의 숫자 · 연타 제한
-r = await rpc('cheer_like', {}, H('5.5.5.5')); assert.equal(r.likes, 1); assert.equal(r.error, undefined);
-r = await rpc('cheer_like', {}, H('5.5.5.5')); assert.equal(r.error, 'too_fast'); assert.equal(r.likes, 1);
-r = await rpc('cheer_like', {}, H('6.6.6.6')); assert.equal(r.likes, 2); ok('좋아요 공용 숫자 · 연타 제한');
+// 6) 좋아요 — 모두의 숫자 · 한 사람(브라우저 이름표)당 5번까지 · 빨리 눌러도 5번은 다 세요
+const me = randomUUID();
+for (let i = 1; i <= 5; i++) { r = await rpc('cheer_like', { p_who: me }, H('5.5.5.5')); assert.equal(r.error, undefined); assert.equal(r.likes, i); assert.equal(r.mine, i); }
+r = await rpc('cheer_like', { p_who: me }, H('5.5.5.5')); assert.equal(r.error, 'limit'); assert.equal(r.likes, 5); assert.equal(r.mine, 5);
+r = await rpc('cheer_like', { p_who: me.toUpperCase() }, H('9.9.9.1')); assert.equal(r.error, 'limit', '대문자로 바꿔도 같은 사람');
+ok('좋아요 한 사람당 5번까지');
+r = await rpc('cheer_like', { p_who: randomUUID() }, H('5.5.5.5')); assert.equal(r.likes, 6); assert.equal(r.mine, 1); ok('같은 와이파이의 다른 사람은 따로 5번');
+for (let i = 1; i <= 5; i++) { r = await rpc('cheer_like', {}, H('6.6.6.6')); assert.equal(r.error, undefined); }
+r = await rpc('cheer_like', { p_who: 'abc' }, H('6.6.6.6')); assert.equal(r.error, 'limit'); assert.equal(r.likes, 11); ok('이름표가 없거나 이상하면 접속 주소로 5번');
 
 // 7) 예전 응원 옮기기 — 두 번 해도 한 번만 · 미래 시각은 지금으로 · 이상한 것은 건너뛰기
 const old = [{ id: randomUUID(), t: '예전 응원 1', at: Date.now() - 864e5 }, { id: randomUUID(), t: '예전 응원 2', at: Date.now() + 9e9 }, { id: 'x', t: '이상한 것' }, { id: randomUUID(), t: '' }];
@@ -49,7 +54,7 @@ r = await rpc('cheer_import', { p_comments: Array.from({ length: 30 }, (_, i) =>
 assert.equal(r.imported, 20); ok('예전 응원 옮기기 (중복 없음 · 시각 보정 · 한 번에 20개)');
 
 // 8) 다시 조회해도 그대로 (새로고침 · 다른 기기)
-r = await rpc('cheer_state', {}, H('9.9.9.9')); assert.equal(r.commentCount, 25); assert.equal(r.likes, 2); assert.equal(r.comments.length, 25);
+r = await rpc('cheer_state', {}, H('9.9.9.9')); assert.equal(r.commentCount, 26); assert.equal(r.likes, 11); assert.equal(r.comments.length, 26);
 ok('다시 조회해도 모두의 응원 그대로');
 
 // 9) 공개 키(anon)로는 표를 직접 못 읽고 · 못 쓰고 · 도우미 함수도 못 불러요
@@ -61,11 +66,11 @@ ok('공개 키로 표 직접 접근 · 도우미 함수 차단');
 
 // 10) 숨긴 응원은 안 보여요
 await db.query('update public.cheer_comments set hidden = true where id = $1', [id1]);
-r = await rpc('cheer_state'); assert.equal(r.commentCount, 24); assert.ok(!r.comments.some((c) => c.id === id1)); ok('숨긴 응원은 목록에서 빠짐');
+r = await rpc('cheer_state'); assert.equal(r.commentCount, 25); assert.ok(!r.comments.some((c) => c.id === id1)); ok('숨긴 응원은 목록에서 빠짐');
 
 // 11) 50개 넘으면 최근 50개만 · 숫자는 전체
 for (let i = 0; i < 40; i++) await db.query("insert into public.cheer_comments (id, body, ip_hash) values (gen_random_uuid(), $1, 'seed')", ['더미 ' + i]);
-r = await rpc('cheer_state'); assert.equal(r.comments.length, 50); assert.equal(r.commentCount, 64); ok('목록은 최근 50개 · 숫자는 전체');
+r = await rpc('cheer_state'); assert.equal(r.comments.length, 50); assert.equal(r.commentCount, 65); ok('목록은 최근 50개 · 숫자는 전체');
 
 // 12) 욕설 · 비속어는 저장하지 않아요 (바꿔 써도) · 보통 말은 그대로 · 옮기기 · 목록에서도 걸러요
 let ipN = 20;
