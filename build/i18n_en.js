@@ -227,8 +227,6 @@ I18N.en = {
     "좋아요와 응원의 한 마디가 모일수록 바다의 온도가 올라가요.": "The more likes and kind words gather, the warmer the sea gets.",
     "바다의 온도": "Sea temperature",
     "좋아요": "Like",
-    "좋아요를 5번 모두 눌렀어요. 응원 고마워요!": "You've used all 5 likes. Thank you for cheering!",
-    "좋아요는 한 사람당 5번까지 누를 수 있어요. 응원의 한 마디도 남겨 주세요!": "You can like up to 5 times. Please leave a message of support too!",
     "응원의 한 마디": "A word of support",
     "해녀들에게 응원의 한 마디를 남겨 주세요": "Leave a word of support for the haenyeo",
     "남기기": "Post",

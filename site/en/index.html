@@ -677,11 +677,16 @@ body.in-sub .gfab{display:none}
 .foot__friends{position:absolute; left:0; right:0; bottom:0; z-index:2; height:clamp(110px,16vw,220px); pointer-events:none}
 .foot__friends > *{position:absolute; bottom:0; transform:translateY(var(--ty,30%)); transition:transform 1.2s var(--ease-out)}
 .foot.is-in .foot__friends > *{transform:translateY(var(--ty2,8%))}
-.fr-a{left:6%; width:clamp(90px,13vw,190px); --ty:100%; --ty2:22%}
-.fr-b{left:30%; width:clamp(50px,6vw,90px); --ty:120%; --ty2:-20%; transition-delay:.15s!important}
-.fr-c{right:24%; width:clamp(60px,8vw,120px); --ty:120%; --ty2:6%; transition-delay:.3s!important}
-.fr-d{right:5%; width:clamp(100px,14vw,200px); --ty:100%; --ty2:18%; transition-delay:.1s!important}
-.fr-b svg,.fr-c svg{width:100%; height:auto}
+/* 마지막 칸 친구들: 헤엄치는 해녀(왼쪽) · 거북이(가운데) · 돌고래 탄 해녀(오른쪽) — 아래에서 올라와 물에 뜬 듯 살랑살랑 */
+.foot__friends{bottom:46px}   /* 아래 글씨 줄(© 2026 …) 바로 위에 떠 있어요 — 어느 화면 너비에서도 가리지 않게 */
+.fr-a{left:4%; width:clamp(150px,19vw,290px); --ty:150%; --ty2:-2%}
+.fr-b{left:41%; width:clamp(90px,10vw,160px); --ty:220%; --ty2:-34%; transition-delay:.2s!important}
+.fr-d{right:4%; width:clamp(120px,15vw,230px); --ty:140%; --ty2:6%; transition-delay:.1s!important}
+.foot__friends i{display:block}
+.foot__friends img{display:block; width:100%; height:auto; filter:drop-shadow(0 10px 14px rgba(6,44,53,.28)); animation:ftBob 3.8s ease-in-out infinite}
+.fr-b img{animation-duration:4.6s; animation-delay:-1.4s}
+.fr-d img{animation-duration:3.2s; animation-delay:-.8s}
+@keyframes ftBob{0%,100%{transform:translate(0,0) rotate(-1.5deg)} 50%{transform:translate(4px,-8px) rotate(1.5deg)}}
 .foot__copy{position:relative; z-index:3; padding:14px 0 18px; text-align:center; font-size:.74rem; color:rgba(234,247,245,.6); background:var(--abyss); margin:0 calc(var(--gutter) * -1)}
 
 /* =========================================================
@@ -763,7 +768,7 @@ body.is-game .sound{display:none}
 .sound.is-on .sound__bars i:nth-child(3){animation-delay:-.6s}
 .sound.is-on .sound__bars i:nth-child(4){animation-delay:-.85s}
 @keyframes bar{0%,100%{height:25%}50%{height:100%}}
-@media (max-width:560px){ .sound__label{display:none} .sound{padding:12px} }
+@media (max-width:560px){ .sound{gap:7px; padding:9px 13px 9px 11px; font-size:.74rem} }   /* 휴대폰도 '파도 소리 끄기' 글자를 보여 줘요 */
 
 /* 반응형 공통 */
 @media (max-width:860px){
@@ -774,7 +779,8 @@ body.is-game .sound{display:none}
 }
 @media (max-width:520px){
   .why__list li{grid-template-columns:48px 1fr}
-  .foot__friends .fr-b,.foot__friends .fr-c{display:none}
+  .foot__friends .fr-b{display:none}
+  .foot__big{margin-top:96px}   /* 휴대폰: 캐릭터가 위 글씨와 겹치지 않게 자리를 넉넉히 */
 }
 
 /* 움직임 줄이기 설정 */
@@ -1718,8 +1724,7 @@ html.ocp-lock{overflow:hidden; scrollbar-gutter:stable}
   25%{transform:translate(calc(var(--x) * .3), calc(var(--y) * .4)) scale(var(--s)) rotate(var(--r))}
   75%{opacity:1}
   100%{opacity:0; transform:translate(var(--x), var(--y)) scale(calc(var(--s) * .8)) rotate(var(--r))}}
-/* 5번 다 누른 뒤: 버튼을 조금 옅게 (누르면 안내만 나와요) */
-.chr-btn--like.is-max{filter:saturate(.55); opacity:.8}
+
 .chr-btn--talk{--dot:#3474D6; border:0; background:linear-gradient(180deg, #62A2F2 0%, #3474D6 100%); color:#fff; box-shadow:0 4px 0 #2556A8, 0 10px 18px -10px rgba(52,116,214,.7)}
 .chr-btn--talk svg{color:#fff}
 .chr-btn--talk:hover{background:linear-gradient(180deg, #6DAAF4 0%, #3B7CDD 100%)}
@@ -2320,10 +2325,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         </div>
         <p class="foot__big" aria-hidden="true" data-t="ENDING.big"></p>
         <div class="foot__friends" aria-hidden="true">
-          <div class="fr-a" data-art="char"></div>
-          <div class="fr-b"><svg viewBox="0 0 100 100"><use href="#tewak"/></svg></div>
-          <div class="fr-c"><svg viewBox="0 0 80 80"><use href="#conch"/></svg></div>
-          <div class="fr-d" data-art="char"></div>
+          <div class="fr-a" data-foot="footSwim"><i></i></div>
+          <div class="fr-b" data-foot="footTurtle"><i></i></div>
+          <div class="fr-d" data-foot="footDolphin"><i></i></div>
         </div>
         <p class="foot__copy" id="copyright"></p>
       </footer>
@@ -2688,9 +2692,7 @@ var CLEAN = {
     likeStep: 3,            // 좋아요 한 번에 올라가는 온도 (눈에 보이게 쑥 오르도록)
     commentStep: 7,         // 응원의 한 마디 하나에 올라가는 온도
     like: "좋아요",
-    likeMax: 5,             // 좋아요는 한 사람(브라우저)당 이만큼까지 (서버 규칙 schema.sql 도 5번 — 바꾸려면 둘 다)
-    likeDone: "좋아요를 5번 모두 눌렀어요. 응원 고마워요!",
-    likeLimit: "좋아요는 한 사람당 5번까지 누를 수 있어요. 응원의 한 마디도 남겨 주세요!",
+    likeMax: 5,             // 좋아요 저장은 한 사람(브라우저)당 이만큼까지 (서버 규칙 schema.sql 도 5번 — 바꾸려면 둘 다) · 보는 사람에게는 제한이 보이지 않아요
     comment: "응원의 한 마디",
     placeholder: "해녀들에게 응원의 한 마디를 남겨 주세요",
     maxLen: 100,
@@ -3048,8 +3050,6 @@ I18N.en = {
     "좋아요와 응원의 한 마디가 모일수록 바다의 온도가 올라가요.": "The more likes and kind words gather, the warmer the sea gets.",
     "바다의 온도": "Sea temperature",
     "좋아요": "Like",
-    "좋아요를 5번 모두 눌렀어요. 응원 고마워요!": "You've used all 5 likes. Thank you for cheering!",
-    "좋아요는 한 사람당 5번까지 누를 수 있어요. 응원의 한 마디도 남겨 주세요!": "You can like up to 5 times. Please leave a message of support too!",
     "응원의 한 마디": "A word of support",
     "해녀들에게 응원의 한 마디를 남겨 주세요": "Leave a word of support for the haenyeo",
     "남기기": "Post",
@@ -3385,8 +3385,6 @@ I18N.ja = {
     "좋아요와 응원의 한 마디가 모일수록 바다의 온도가 올라가요.": "いいねと応援のひとことが集まるほど、海の温度が上がります。",
     "바다의 온도": "海の温度",
     "좋아요": "いいね",
-    "좋아요를 5번 모두 눌렀어요. 응원 고마워요!": "いいねを5回すべて押しました。応援ありがとうございます！",
-    "좋아요는 한 사람당 5번까지 누를 수 있어요. 응원의 한 마디도 남겨 주세요!": "いいねはお一人様5回までです。応援のひと言もぜひ残してください！",
     "응원의 한 마디": "応援のひとこと",
     "해녀들에게 응원의 한 마디를 남겨 주세요": "海女たちへ応援のひとことを残してください",
     "남기기": "送る",
@@ -3614,6 +3612,10 @@ INTERVIEWS[3].photo = "../media/interviews-3-photo-543564a6.webp";
 /* 오른쪽 미니 팝업 캐릭터 (../media/float-game.webp · float-support.webp 를 이 파일 안에 담음) */
 MEDIA.floatGame = "../media/floatgame-13f0603a.webp";
 MEDIA.floatSupport = "../media/floatsupport-7a6dd0db.webp";
+/* 마지막 칸 캐릭터 (헤엄치는 해녀 · 거북이 · 돌고래 탄 해녀) */
+MEDIA.footSwim = "../media/footswim-54726558.webp";
+MEDIA.footTurtle = "../media/footturtle-f3636ea0.webp";
+MEDIA.footDolphin = "../media/footdolphin-72ab35b6.webp";
 /* 해양정화 응원 온도 창의 온도계 그림 (../media/cheer-thermo.webp 를 이 파일 안에 담음) */
 MEDIA.cheerThermo = "../media/cheerthermo-244112b1.webp";
 MEDIA.gameHead = "../media/gamehead-990b9829.webp";
@@ -3963,7 +3965,7 @@ var SUB = (function () {
           '<p class="kicker">' + esc(STORIES.kicker) + ' · ' + esc(it.label) + '</p>' +
           '<h2 class="sp-title">' + esc(it.name) + '의 이야기</h2>' +
           vh +
-          (has(it.theme) ? '<p class="sp-meta"><span class="sp-tag">' + esc(it.theme) + '</span>' + (has(it.title) ? '<span>' + esc(it.title) + '</span>' : '') + '</p>' : '') +
+          // (영상 아래 주제 태그 칸은 2026-10-27 사용자 요청으로 뺐어요 — INTERVIEWS 의 theme 은 그대로 남겨 둬요)
           (has(it.credit) ? '<p class="sp-meta sp-credit">' + esc(it.credit) + '</p>' : '') +   // 인터뷰 정보 (날짜 · 장소 · 진행 · 촬영) — 비어 있으면 안 보여요
         '</section>' +
         '<section class="sp-more">' +
@@ -4223,6 +4225,8 @@ var SUB = (function () {
     if (has(v)) el.innerHTML = nl(v);
   });
   $$('[data-art]').forEach(function (el) { el.innerHTML = artHTML(el.getAttribute('data-art')); });
+  // 마지막 칸 캐릭터 그림 (MEDIA.footSwim · footTurtle · footDolphin — 없으면 예전 해녀 그림)
+  $$('[data-foot]').forEach(function (el) { var u = MEDIA[el.getAttribute('data-foot')]; el.firstChild.innerHTML = has(u) ? '<img src="' + u + '" alt="" decoding="async" draggable="false">' : artHTML('char'); });
 
   /* ───────── 해녀 수 계산 (첫 화면 · 사라지는 해녀가 함께 써요) ───────── */
   var SERIES = (STATS.byYear || []).filter(function (r) { return has(r[0]) && has(r[1]); })
@@ -5011,8 +5015,9 @@ var SUB = (function () {
      · 응원 저장: CLEAN.cheer.supabase 에 주소(url) · 공개 키(anonKey)가 있으면 모두가 함께 보는 공용 저장소(Supabase · cheer-supabase/schema.sql)에
        — 좋아요 · 응원이 한 온도계에 모여요. 비어 있으면 예전처럼 이 브라우저(localStorage 'bs-cheer')에만 저장해요
        · Supabase 의 표는 잠겨 있고, 정해진 함수 4개(cheer_state · cheer_like · cheer_comment · cheer_import)로만 다뤄요 — 글 검사 · 좋아요 횟수도 그 안에서
-     · 좋아요: 한 사람(브라우저)당 P.likeMax(5)번까지 — 누를 때마다 하트가 뿅뿅 튀어 올라요 · 응원 한 마디는 횟수 제한 없음
-       (브라우저 이름표 'bs-cheer-me' · 내가 누른 수 'bs-cheer-mylikes' — 서버도 같은 이름표로 5번까지 세요)
+     · 좋아요: 저장은 한 사람(브라우저)당 P.likeMax(5)번까지 — 하지만 보는 사람에게는 제한이 보이지 않아요 (2026-10-27 사용자 요청)
+       누를 때마다 하트가 뿅뿅 · 숫자 +1 · '+℃' 가 계속 나오고, 5번이 넘은 것은 서버에 보내지 않고 이 브라우저 화면에만 더해요 ('bs-cheer-extra')
+       (브라우저 이름표 'bs-cheer-me' · 서버에 보낸 수 'bs-cheer-mylikes' — 서버도 같은 이름표로 5번까지 세요) · 응원 한 마디는 횟수 제한 없음
      · 욕설 · 비속어: 남기기 전에 여기서 먼저 막고(bad), 목록에서도 빼요 — 최종 판단은 서버(schema.sql 의 cheer__bad · 같은 낱말 목록)
        · 예전에 이 브라우저에만 남긴 응원은 공용 저장소에 처음 닿을 때 한 번 옮겨요 (같은 응원은 두 번 올라가지 않아요 · 'bs-cheer-moved')
        · 보내는 동안 버튼을 잠가 두 번 저장되지 않게 · 실패하면 창 안에 안내 · 남이 쓴 글은 글자 그대로(esc)만 보여요
@@ -5086,6 +5091,10 @@ var SUB = (function () {
     function me() { var v = memMe; try { v = localStorage.getItem(ME) || memMe; } catch (e) {} if (!v) { v = uuid(); memMe = v; try { localStorage.setItem(ME, v); } catch (e) {} } return v; }
     function myLikes() { var v = memMine; try { v = +localStorage.getItem(MINE) || memMine; } catch (e) {} return Math.max(0, v || 0); }
     function setMyLikes(n) { memMine = n; try { localStorage.setItem(MINE, String(n)); } catch (e) {} }
+    // 5번이 넘은 좋아요: 서버에는 안 보내고 이 브라우저 화면에만 더해 보여요 (누른 사람은 제한을 모르게)
+    var EXTRA = 'bs-cheer-extra', memExtra = 0;
+    function extraLikes() { var v = memExtra; try { v = +localStorage.getItem(EXTRA) || memExtra; } catch (e) {} return Math.max(0, v || 0); }
+    function addExtra() { memExtra = extraLikes() + 1; try { localStorage.setItem(EXTRA, String(memExtra)); } catch (e) {} }
     // 욕설 · 비속어인지 — schema.sql 의 cheer__bad 와 같은 낱말 · 같은 방법 (대소문자 · 전각 · 문장부호 · 띄어쓰기를 바꿔 써도 같게 봐요)
     var BAD_TIGHT = ['씨발', '씨빨', '씨팔', '씨바', '씨부랄', 'ㅆㅂ', 'ㅅㅂ', 'ㅂㅅ', 'ㅄ', 'ㅈㄴ', 'ㅈㄹ', 'ㅅㄲ', 'ㅁㅊ', 'ㅗㅗ', '좆', '존나', '개새끼', '개새기', '개색끼', '개쉐이', '지랄', '미친놈', '미친년', '또라이', '엿먹', '엠창', '느금', '니애미', '니애비', '썅', '쌍년', '쌍놈', '씹새', '씹할', '씹창', '씹년', '염병', '육시랄', '후레자식', '호로자식', '창녀', '섹스', 'fuck', 'shit', 'bitch', 'asshole', 'motherfucker', 'tlqkf', 'qudtls', '死ね', 'くたばれ', 'ファック'];
     var BAD_SPACED = ['시발', '시팔', '병신', '븅신', '빙신', '닥쳐', '니미', '등신'];   // 띄어쓰기는 두고 봐요 (예: '다시 발견' 은 괜찮게)
@@ -5100,7 +5109,7 @@ var SUB = (function () {
     var goal = +P.goal || 100, base = +P.base || 0, min = Math.min(+P.min || 0, base), likeStep = +P.likeStep || 3, comStep = +P.commentStep || 7, maxLen = +P.maxLen || 100;
     var likeMax = +P.likeMax || 5;                                  // 좋아요: 한 사람(브라우저)당 이만큼까지
     function level(t) { return Math.max(0, Math.min(1, (t - min) / (goal - min))).toFixed(4); }   // 온도계 눈금 높이 (0 = 맨 아래 min ℃ · 1 = goal ℃)
-    function tempOf(d) { return Math.min(goal, base + d.likes * likeStep + d.commentCount * comStep); }
+    function tempOf(d) { return Math.min(goal, base + (d.likes + extraLikes()) * likeStep + d.commentCount * comStep); }
     var fmt = function (t) { return (Math.round(t * 10) / 10).toFixed(1); };
 
     var heart = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.8 6.6 4.8c2.1 0 3.6 1.2 5.4 3.2 1.8-2 3.3-3.2 5.4-3.2 3.6 0 5.7 3.6 4.2 7C19.5 16.4 12 21 12 21z" fill="currentColor"/></svg>';
@@ -5154,8 +5163,7 @@ var SUB = (function () {
       root.style.setProperty('--lv', level(t));
       scene.setAttribute('aria-valuenow', fmt(t)); scene.setAttribute('aria-valuetext', fmt(t) + '℃ / ' + goal + '℃');
       var cs = d.comments.filter(function (c) { return !bad(c.t); });   // 욕설 · 비속어가 든 응원은 목록에서 빼요
-      $('.chr-likes', root).textContent = d.likes; $('.chr-coms', root).textContent = Math.max(0, d.commentCount - (d.comments.length - cs.length));
-      likeBtn.classList.toggle('is-max', myLikes() >= likeMax);
+      $('.chr-likes', root).textContent = d.likes + extraLikes(); $('.chr-coms', root).textContent = Math.max(0, d.commentCount - (d.comments.length - cs.length));
       root.classList.toggle('is-goal', t >= goal);
       // 숫자는 올라가는 만큼 살짝 세어 올라가요
       cancelAnimationFrame(tween);
@@ -5210,22 +5218,20 @@ var SUB = (function () {
       setTimeout(function () { wrap.remove(); }, 1400);
     }
     likeBtn.addEventListener('click', function () {
-      var d = state(), n = myLikes();                                // 목표 온도(goal)에 닿은 뒤에도 좋아요는 눌러져요 (온도는 goal 에서 멈춰요)
-      if (n >= likeMax) { say(P.likeLimit || ''); return; }                   // 한 사람당 5번까지
-      likeBtn.classList.remove('is-pop'); void likeBtn.offsetWidth; likeBtn.classList.add('is-pop'); hearts();
-      var before = tempOf(d);
+      var d = state(), n = myLikes();                                // 목표 온도(goal)에 닿은 뒤에도 좋아요는 눌러져요 (온도 숫자는 goal 에서 멈춰요)
+      likeBtn.classList.remove('is-pop'); void likeBtn.offsetWidth; likeBtn.classList.add('is-pop'); hearts(); say('');
+      if (n >= likeMax) { addExtra(); draw(d, likeStep); return; }     // 5번 넘음: 서버에 안 보내고 화면에만 +1 (하트 · '+℃' 는 그대로)
       setMyLikes(n + 1);
-      say(n + 1 >= likeMax ? (P.likeDone || '') : '');
-      if (!shared) { d.likes += 1; save(d); draw(d, tempOf(d) - before); return; }
+      if (!shared) { d.likes += 1; save(d); draw(d, likeStep); return; }
       // 공용: 눌렀다는 느낌은 바로(먼저 +1), 저장소 답을 받으면 모두의 숫자로 맞춰요 (빨리 여러 번 눌러도 하나씩 다 세요)
-      cur = { likes: d.likes + 1, comments: d.comments, commentCount: d.commentCount }; draw(cur, tempOf(cur) - before);
+      cur = { likes: d.likes + 1, comments: d.comments, commentCount: d.commentCount }; draw(cur, likeStep);
       api('POST', { type: 'like' }).then(function (res) {
         var s = cur || d;
         if (res.status === 200 || ((res.status === 400 || res.status === 429) && res.data.error)) {
           var x = fromServer(res.data);
           cur = { likes: Math.max(x.likes, res.data.error ? 0 : s.likes), comments: x.comments, commentCount: x.commentCount };   // 답이 늦게 온 순서로 숫자가 줄어 보이지 않게
-          if (res.data.error === 'limit') setMyLikes(likeMax); else if (typeof res.data.mine === 'number') setMyLikes(Math.max(myLikes(), res.data.mine));
-          if (res.data.error === 'limit') say(P.likeLimit || '');
+          if (res.data.error === 'limit') { setMyLikes(likeMax); addExtra(); }   // 서버가 이미 5번이라고 하면: 이번 것도 화면에만 (안내 없이)
+          else if (typeof res.data.mine === 'number') setMyLikes(Math.max(myLikes(), res.data.mine));
           draw(cur);
         } else { cur = { likes: Math.max(0, s.likes - 1), comments: s.comments, commentCount: s.commentCount }; setMyLikes(Math.max(0, myLikes() - 1)); draw(cur); say(P.sendError); }
       });

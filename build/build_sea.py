@@ -622,6 +622,9 @@ if True:
     _fl = lambda n: 'data:image/webp;base64,' + _b64f.b64encode(open(os.path.join(os.path.dirname(os.path.abspath(hnsvg)), n), 'rb').read()).decode()
     one('MEDIA.gameHead = "data:', '/* 오른쪽 미니 팝업 캐릭터 (media/float-game.webp · float-support.webp 를 이 파일 안에 담음) */' + nl +
         'MEDIA.floatGame = "' + _fl('float-game.webp') + '";' + nl + 'MEDIA.floatSupport = "' + _fl('float-support.webp') + '";' + nl + 'MEDIA.gameHead = "data:')
+    # 마지막 칸(푸터) 캐릭터 3개 — media/foot-swim · foot-turtle · foot-dolphin.webp (2026-10-27 사용자가 준 그림 · 배경 지움: scratchpad 의 cut_foot.py)
+    one('MEDIA.gameHead = "data:', '/* 마지막 칸 캐릭터 (헤엄치는 해녀 · 거북이 · 돌고래 탄 해녀) */' + nl + 'MEDIA.footSwim = "' + _fl('foot-swim.webp') + '";' + nl +
+        'MEDIA.footTurtle = "' + _fl('foot-turtle.webp') + '";' + nl + 'MEDIA.footDolphin = "' + _fl('foot-dolphin.webp') + '";' + nl + 'MEDIA.gameHead = "data:')
     one('var ABOUT = {', N(open(sp + '/float_data.js', encoding='utf-8').read()) + 'var ABOUT = {')
     # 게임 팝업 그림: 새 게임 캐릭터 (없으면 예전 해녀 얼굴 → 그림)
     one(N("""    $('.gfab__art', fab).innerHTML = has(MEDIA.gameHead)

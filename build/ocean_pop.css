@@ -77,8 +77,7 @@ html.ocp-lock{overflow:hidden; scrollbar-gutter:stable}
   25%{transform:translate(calc(var(--x) * .3), calc(var(--y) * .4)) scale(var(--s)) rotate(var(--r))}
   75%{opacity:1}
   100%{opacity:0; transform:translate(var(--x), var(--y)) scale(calc(var(--s) * .8)) rotate(var(--r))}}
-/* 5번 다 누른 뒤: 버튼을 조금 옅게 (누르면 안내만 나와요) */
-.chr-btn--like.is-max{filter:saturate(.55); opacity:.8}
+
 .chr-btn--talk{--dot:#3474D6; border:0; background:linear-gradient(180deg, #62A2F2 0%, #3474D6 100%); color:#fff; box-shadow:0 4px 0 #2556A8, 0 10px 18px -10px rgba(52,116,214,.7)}
 .chr-btn--talk svg{color:#fff}
 .chr-btn--talk:hover{background:linear-gradient(180deg, #6DAAF4 0%, #3B7CDD 100%)}

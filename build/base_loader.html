@@ -649,11 +649,16 @@ body.in-sub .gfab{display:none}
 .foot__friends{position:absolute; left:0; right:0; bottom:0; z-index:2; height:clamp(110px,16vw,220px); pointer-events:none}
 .foot__friends > *{position:absolute; bottom:0; transform:translateY(var(--ty,30%)); transition:transform 1.2s var(--ease-out)}
 .foot.is-in .foot__friends > *{transform:translateY(var(--ty2,8%))}
-.fr-a{left:6%; width:clamp(90px,13vw,190px); --ty:100%; --ty2:22%}
-.fr-b{left:30%; width:clamp(50px,6vw,90px); --ty:120%; --ty2:-20%; transition-delay:.15s!important}
-.fr-c{right:24%; width:clamp(60px,8vw,120px); --ty:120%; --ty2:6%; transition-delay:.3s!important}
-.fr-d{right:5%; width:clamp(100px,14vw,200px); --ty:100%; --ty2:18%; transition-delay:.1s!important}
-.fr-b svg,.fr-c svg{width:100%; height:auto}
+/* 마지막 칸 친구들: 헤엄치는 해녀(왼쪽) · 거북이(가운데) · 돌고래 탄 해녀(오른쪽) — 아래에서 올라와 물에 뜬 듯 살랑살랑 */
+.foot__friends{bottom:46px}   /* 아래 글씨 줄(© 2026 …) 바로 위에 떠 있어요 — 어느 화면 너비에서도 가리지 않게 */
+.fr-a{left:4%; width:clamp(150px,19vw,290px); --ty:150%; --ty2:-2%}
+.fr-b{left:41%; width:clamp(90px,10vw,160px); --ty:220%; --ty2:-34%; transition-delay:.2s!important}
+.fr-d{right:4%; width:clamp(120px,15vw,230px); --ty:140%; --ty2:6%; transition-delay:.1s!important}
+.foot__friends i{display:block}
+.foot__friends img{display:block; width:100%; height:auto; filter:drop-shadow(0 10px 14px rgba(6,44,53,.28)); animation:ftBob 3.8s ease-in-out infinite}
+.fr-b img{animation-duration:4.6s; animation-delay:-1.4s}
+.fr-d img{animation-duration:3.2s; animation-delay:-.8s}
+@keyframes ftBob{0%,100%{transform:translate(0,0) rotate(-1.5deg)} 50%{transform:translate(4px,-8px) rotate(1.5deg)}}
 .foot__copy{position:relative; z-index:3; padding:14px 0 18px; text-align:center; font-size:.74rem; color:rgba(234,247,245,.6); background:var(--abyss); margin:0 calc(var(--gutter) * -1)}
 
 /* =========================================================
@@ -735,7 +740,7 @@ body.is-game .sound{display:none}
 .sound.is-on .sound__bars i:nth-child(3){animation-delay:-.6s}
 .sound.is-on .sound__bars i:nth-child(4){animation-delay:-.85s}
 @keyframes bar{0%,100%{height:25%}50%{height:100%}}
-@media (max-width:560px){ .sound__label{display:none} .sound{padding:12px} }
+@media (max-width:560px){ .sound{gap:7px; padding:9px 13px 9px 11px; font-size:.74rem} }   /* 휴대폰도 '파도 소리 끄기' 글자를 보여 줘요 */
 
 /* 반응형 공통 */
 @media (max-width:860px){
@@ -746,7 +751,8 @@ body.is-game .sound{display:none}
 }
 @media (max-width:520px){
   .why__list li{grid-template-columns:48px 1fr}
-  .foot__friends .fr-b,.foot__friends .fr-c{display:none}
+  .foot__friends .fr-b{display:none}
+  .foot__big{margin-top:96px}   /* 휴대폰: 캐릭터가 위 글씨와 겹치지 않게 자리를 넉넉히 */
 }
 
 /* 움직임 줄이기 설정 */
@@ -1087,10 +1093,9 @@ body.is-game .sound{display:none}
         </div>
         <p class="foot__big" aria-hidden="true" data-t="ENDING.big"></p>
         <div class="foot__friends" aria-hidden="true">
-          <div class="fr-a" data-art="char"></div>
-          <div class="fr-b"><svg viewBox="0 0 100 100"><use href="#tewak"/></svg></div>
-          <div class="fr-c"><svg viewBox="0 0 80 80"><use href="#conch"/></svg></div>
-          <div class="fr-d" data-art="char"></div>
+          <div class="fr-a" data-foot="footSwim"><i></i></div>
+          <div class="fr-b" data-foot="footTurtle"><i></i></div>
+          <div class="fr-d" data-foot="footDolphin"><i></i></div>
         </div>
         <p class="foot__copy" id="copyright"></p>
       </footer>
@@ -1666,7 +1671,7 @@ var SUB = (function () {
           '<p class="kicker">' + esc(STORIES.kicker) + ' · ' + esc(it.label) + '</p>' +
           '<h2 class="sp-title">' + esc(it.name) + '의 이야기</h2>' +
           vh +
-          (has(it.theme) ? '<p class="sp-meta"><span class="sp-tag">' + esc(it.theme) + '</span>' + (has(it.title) ? '<span>' + esc(it.title) + '</span>' : '') + '</p>' : '') +
+          // (영상 아래 주제 태그 칸은 2026-10-27 사용자 요청으로 뺐어요 — INTERVIEWS 의 theme 은 그대로 남겨 둬요)
           (has(it.credit) ? '<p class="sp-meta sp-credit">' + esc(it.credit) + '</p>' : '') +   // 인터뷰 정보 (날짜 · 장소 · 진행 · 촬영) — 비어 있으면 안 보여요
         '</section>' +
         '<section class="sp-more">' +
@@ -1823,6 +1828,8 @@ var SUB = (function () {
     if (has(v)) el.innerHTML = nl(v);
   });
   $$('[data-art]').forEach(function (el) { el.innerHTML = artHTML(el.getAttribute('data-art')); });
+  // 마지막 칸 캐릭터 그림 (MEDIA.footSwim · footTurtle · footDolphin — 없으면 예전 해녀 그림)
+  $$('[data-foot]').forEach(function (el) { var u = MEDIA[el.getAttribute('data-foot')]; el.firstChild.innerHTML = has(u) ? '<img src="' + u + '" alt="" decoding="async" draggable="false">' : artHTML('char'); });
 
   /* ───────── 해녀 수 계산 (첫 화면 · 사라지는 해녀가 함께 써요) ───────── */
   var SERIES = (STATS.byYear || []).filter(function (r) { return has(r[0]) && has(r[1]); })

@@ -5,8 +5,9 @@
      · 응원 저장: CLEAN.cheer.supabase 에 주소(url) · 공개 키(anonKey)가 있으면 모두가 함께 보는 공용 저장소(Supabase · cheer-supabase/schema.sql)에
        — 좋아요 · 응원이 한 온도계에 모여요. 비어 있으면 예전처럼 이 브라우저(localStorage 'bs-cheer')에만 저장해요
        · Supabase 의 표는 잠겨 있고, 정해진 함수 4개(cheer_state · cheer_like · cheer_comment · cheer_import)로만 다뤄요 — 글 검사 · 좋아요 횟수도 그 안에서
-     · 좋아요: 한 사람(브라우저)당 P.likeMax(5)번까지 — 누를 때마다 하트가 뿅뿅 튀어 올라요 · 응원 한 마디는 횟수 제한 없음
-       (브라우저 이름표 'bs-cheer-me' · 내가 누른 수 'bs-cheer-mylikes' — 서버도 같은 이름표로 5번까지 세요)
+     · 좋아요: 저장은 한 사람(브라우저)당 P.likeMax(5)번까지 — 하지만 보는 사람에게는 제한이 보이지 않아요 (2026-10-27 사용자 요청)
+       누를 때마다 하트가 뿅뿅 · 숫자 +1 · '+℃' 가 계속 나오고, 5번이 넘은 것은 서버에 보내지 않고 이 브라우저 화면에만 더해요 ('bs-cheer-extra')
+       (브라우저 이름표 'bs-cheer-me' · 서버에 보낸 수 'bs-cheer-mylikes' — 서버도 같은 이름표로 5번까지 세요) · 응원 한 마디는 횟수 제한 없음
      · 욕설 · 비속어: 남기기 전에 여기서 먼저 막고(bad), 목록에서도 빼요 — 최종 판단은 서버(schema.sql 의 cheer__bad · 같은 낱말 목록)
        · 예전에 이 브라우저에만 남긴 응원은 공용 저장소에 처음 닿을 때 한 번 옮겨요 (같은 응원은 두 번 올라가지 않아요 · 'bs-cheer-moved')
        · 보내는 동안 버튼을 잠가 두 번 저장되지 않게 · 실패하면 창 안에 안내 · 남이 쓴 글은 글자 그대로(esc)만 보여요
@@ -80,6 +81,10 @@
     function me() { var v = memMe; try { v = localStorage.getItem(ME) || memMe; } catch (e) {} if (!v) { v = uuid(); memMe = v; try { localStorage.setItem(ME, v); } catch (e) {} } return v; }
     function myLikes() { var v = memMine; try { v = +localStorage.getItem(MINE) || memMine; } catch (e) {} return Math.max(0, v || 0); }
     function setMyLikes(n) { memMine = n; try { localStorage.setItem(MINE, String(n)); } catch (e) {} }
+    // 5번이 넘은 좋아요: 서버에는 안 보내고 이 브라우저 화면에만 더해 보여요 (누른 사람은 제한을 모르게)
+    var EXTRA = 'bs-cheer-extra', memExtra = 0;
+    function extraLikes() { var v = memExtra; try { v = +localStorage.getItem(EXTRA) || memExtra; } catch (e) {} return Math.max(0, v || 0); }
+    function addExtra() { memExtra = extraLikes() + 1; try { localStorage.setItem(EXTRA, String(memExtra)); } catch (e) {} }
     // 욕설 · 비속어인지 — schema.sql 의 cheer__bad 와 같은 낱말 · 같은 방법 (대소문자 · 전각 · 문장부호 · 띄어쓰기를 바꿔 써도 같게 봐요)
     var BAD_TIGHT = ['씨발', '씨빨', '씨팔', '씨바', '씨부랄', 'ㅆㅂ', 'ㅅㅂ', 'ㅂㅅ', 'ㅄ', 'ㅈㄴ', 'ㅈㄹ', 'ㅅㄲ', 'ㅁㅊ', 'ㅗㅗ', '좆', '존나', '개새끼', '개새기', '개색끼', '개쉐이', '지랄', '미친놈', '미친년', '또라이', '엿먹', '엠창', '느금', '니애미', '니애비', '썅', '쌍년', '쌍놈', '씹새', '씹할', '씹창', '씹년', '염병', '육시랄', '후레자식', '호로자식', '창녀', '섹스', 'fuck', 'shit', 'bitch', 'asshole', 'motherfucker', 'tlqkf', 'qudtls', '死ね', 'くたばれ', 'ファック'];
     var BAD_SPACED = ['시발', '시팔', '병신', '븅신', '빙신', '닥쳐', '니미', '등신'];   // 띄어쓰기는 두고 봐요 (예: '다시 발견' 은 괜찮게)
@@ -94,7 +99,7 @@
     var goal = +P.goal || 100, base = +P.base || 0, min = Math.min(+P.min || 0, base), likeStep = +P.likeStep || 3, comStep = +P.commentStep || 7, maxLen = +P.maxLen || 100;
     var likeMax = +P.likeMax || 5;                                  // 좋아요: 한 사람(브라우저)당 이만큼까지
     function level(t) { return Math.max(0, Math.min(1, (t - min) / (goal - min))).toFixed(4); }   // 온도계 눈금 높이 (0 = 맨 아래 min ℃ · 1 = goal ℃)
-    function tempOf(d) { return Math.min(goal, base + d.likes * likeStep + d.commentCount * comStep); }
+    function tempOf(d) { return Math.min(goal, base + (d.likes + extraLikes()) * likeStep + d.commentCount * comStep); }
     var fmt = function (t) { return (Math.round(t * 10) / 10).toFixed(1); };
 
     var heart = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.8 6.6 4.8c2.1 0 3.6 1.2 5.4 3.2 1.8-2 3.3-3.2 5.4-3.2 3.6 0 5.7 3.6 4.2 7C19.5 16.4 12 21 12 21z" fill="currentColor"/></svg>';
@@ -148,8 +153,7 @@
       root.style.setProperty('--lv', level(t));
       scene.setAttribute('aria-valuenow', fmt(t)); scene.setAttribute('aria-valuetext', fmt(t) + '℃ / ' + goal + '℃');
       var cs = d.comments.filter(function (c) { return !bad(c.t); });   // 욕설 · 비속어가 든 응원은 목록에서 빼요
-      $('.chr-likes', root).textContent = d.likes; $('.chr-coms', root).textContent = Math.max(0, d.commentCount - (d.comments.length - cs.length));
-      likeBtn.classList.toggle('is-max', myLikes() >= likeMax);
+      $('.chr-likes', root).textContent = d.likes + extraLikes(); $('.chr-coms', root).textContent = Math.max(0, d.commentCount - (d.comments.length - cs.length));
       root.classList.toggle('is-goal', t >= goal);
       // 숫자는 올라가는 만큼 살짝 세어 올라가요
       cancelAnimationFrame(tween);
@@ -204,22 +208,20 @@
       setTimeout(function () { wrap.remove(); }, 1400);
     }
     likeBtn.addEventListener('click', function () {
-      var d = state(), n = myLikes();                                // 목표 온도(goal)에 닿은 뒤에도 좋아요는 눌러져요 (온도는 goal 에서 멈춰요)
-      if (n >= likeMax) { say(P.likeLimit || ''); return; }                   // 한 사람당 5번까지
-      likeBtn.classList.remove('is-pop'); void likeBtn.offsetWidth; likeBtn.classList.add('is-pop'); hearts();
-      var before = tempOf(d);
+      var d = state(), n = myLikes();                                // 목표 온도(goal)에 닿은 뒤에도 좋아요는 눌러져요 (온도 숫자는 goal 에서 멈춰요)
+      likeBtn.classList.remove('is-pop'); void likeBtn.offsetWidth; likeBtn.classList.add('is-pop'); hearts(); say('');
+      if (n >= likeMax) { addExtra(); draw(d, likeStep); return; }     // 5번 넘음: 서버에 안 보내고 화면에만 +1 (하트 · '+℃' 는 그대로)
       setMyLikes(n + 1);
-      say(n + 1 >= likeMax ? (P.likeDone || '') : '');
-      if (!shared) { d.likes += 1; save(d); draw(d, tempOf(d) - before); return; }
+      if (!shared) { d.likes += 1; save(d); draw(d, likeStep); return; }
       // 공용: 눌렀다는 느낌은 바로(먼저 +1), 저장소 답을 받으면 모두의 숫자로 맞춰요 (빨리 여러 번 눌러도 하나씩 다 세요)
-      cur = { likes: d.likes + 1, comments: d.comments, commentCount: d.commentCount }; draw(cur, tempOf(cur) - before);
+      cur = { likes: d.likes + 1, comments: d.comments, commentCount: d.commentCount }; draw(cur, likeStep);
       api('POST', { type: 'like' }).then(function (res) {
         var s = cur || d;
         if (res.status === 200 || ((res.status === 400 || res.status === 429) && res.data.error)) {
           var x = fromServer(res.data);
           cur = { likes: Math.max(x.likes, res.data.error ? 0 : s.likes), comments: x.comments, commentCount: x.commentCount };   // 답이 늦게 온 순서로 숫자가 줄어 보이지 않게
-          if (res.data.error === 'limit') setMyLikes(likeMax); else if (typeof res.data.mine === 'number') setMyLikes(Math.max(myLikes(), res.data.mine));
-          if (res.data.error === 'limit') say(P.likeLimit || '');
+          if (res.data.error === 'limit') { setMyLikes(likeMax); addExtra(); }   // 서버가 이미 5번이라고 하면: 이번 것도 화면에만 (안내 없이)
+          else if (typeof res.data.mine === 'number') setMyLikes(Math.max(myLikes(), res.data.mine));
           draw(cur);
         } else { cur = { likes: Math.max(0, s.likes - 1), comments: s.comments, commentCount: s.commentCount }; setMyLikes(Math.max(0, myLikes() - 1)); draw(cur); say(P.sendError); }
       });
