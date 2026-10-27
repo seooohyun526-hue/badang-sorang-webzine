@@ -3816,8 +3816,8 @@ var SUB = (function () {
       var q = has(it.quote) ? '<p class="st-quote">“' + esc(it.quote) + '”</p>'
         : (guides ? '<p class="st-quote is-ph">인터뷰 핵심 문장이 들어갈 자리예요</p>' : '');   // 공개판: 핵심 문장이 없으면 아무것도 안 보여요
       return '<article class="st-card">' +
-        '<a class="st-frame" href="' + o.link(it) + '" style="--c1:' + c[0] + ';--c2:' + c[1] + '" aria-label="' + esc(it.label + ' · ' + it.name + ' 인터뷰 영상 보기') + '">' +
-          '<span class="st-media" data-photo="' + esc(o.up(it.photo || '')) + '"></span>' + WAVES +
+        '<a class="st-frame st-frame--interview-' + esc(it.id) + '" data-interview="' + esc(it.id) + '" href="' + o.link(it) + '" style="--c1:' + c[0] + ';--c2:' + c[1] + '" aria-label="' + esc(it.label + ' · ' + it.name + ' 인터뷰 영상 보기') + '">' +
+          '<span class="st-media st-media--interview-' + esc(it.id) + '" data-photo="' + esc(o.up(it.photo || '')) + '"></span>' + WAVES +   // 인터뷰마다 다른 이름 (언어가 바뀌어도 같아요 · GTM 클릭 집계용)
           '<span class="st-ph">' + ART.char({ shadow: false, pose: k % 2 ? 'dive' : 'hug' }) + '</span>' +
           '<span class="st-no">' + String(k + 1).padStart(2, '0') + '</span>' +
           '<span class="st-play"><b>' + PLAY + '</b>인터뷰 영상</span>' +
@@ -4471,8 +4471,8 @@ var SUB = (function () {
         ? '<p class="st-quote">“' + esc(it.quote) + '”</p>'
         : (guides ? '<p class="st-quote is-ph">인터뷰 핵심 문장이 들어갈 자리예요</p>' : '');   // 공개판: 핵심 문장이 없으면 아무것도 안 보여요
       return '<article class="st-card" data-i="' + i + '">' +
-        '<button class="st-frame" type="button" data-open="' + i + '" style="--c1:' + c[0] + ';--c2:' + c[1] + '" aria-label="' + esc(it.label + ' · ' + it.name + ' 인터뷰 영상 보기') + '">' +
-          '<span class="st-media" data-photo="' + esc(it.photo || '') + '"></span>' + WAVES +
+        '<button class="st-frame st-frame--interview-' + esc(it.id) + '" data-interview="' + esc(it.id) + '" type="button" data-open="' + i + '" style="--c1:' + c[0] + ';--c2:' + c[1] + '" aria-label="' + esc(it.label + ' · ' + it.name + ' 인터뷰 영상 보기') + '">' +
+          '<span class="st-media st-media--interview-' + esc(it.id) + '" data-photo="' + esc(it.photo || '') + '"></span>' + WAVES +   // 인터뷰마다 다른 이름 (언어가 바뀌어도 같아요 · GTM 클릭 집계용)
           '<span class="st-ph">' + ART.char({ shadow: false, pose: i % 2 ? 'dive' : 'hug' }) + '</span>' +
           '<span class="st-no">' + String(i + 1).padStart(2, '0') + '</span>' +
           '<span class="st-play"><b>' + PLAY + '</b>인터뷰 영상</span>' +
