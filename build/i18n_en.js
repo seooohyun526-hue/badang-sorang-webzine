@@ -89,6 +89,8 @@ I18N.en = {
     "바당은 바다,": "Badang means sea,",
     "소랑은 사랑.": "Sorang means love.",
     "제주 바다와, 그 바다를 살아온 해녀를 아끼는 마음으로 이 웹진을 만듭니다.": "We make this webzine out of love for the Jeju sea and the haenyeo who have lived by it.",
+    "바당소랑은 제주어 ‘바당(바다)’과 ‘소랑(사랑)’을 합친 이름으로, 제주 해녀를 직접 만나 그 이야기를 기록하는 인터뷰 웹진이에요.\n제주 바다와, 그 바다를 살아온 해녀를 아끼는 마음으로 이 웹진을 만듭니다.": "Badang Sorang joins two Jeju words, 'badang' (sea) and 'sorang' (love) — an interview webzine that meets Jeju's haenyeo in person and records their stories.\nWe make this webzine out of love for the Jeju sea and the haenyeo who have lived by it.",
+    "바당소랑은 제주어 ‘바당(바다)’과 ‘소랑(사랑)’을 합친 이름으로, 제주 해녀를 직접 만나 그 이야기를 기록하는 인터뷰 웹진이에요.": "Badang Sorang joins two Jeju words, 'badang' (sea) and 'sorang' (love) — an interview webzine that meets Jeju's haenyeo in person and records their stories.",
     "BADANG ✦ SORANG ✦ 바당은 바다 ✦ 소랑은 사랑 ✦ ": "BADANG MEANS SEA ✦ SORANG MEANS LOVE ✦ ",
     "같이 잇다,\n가치를 잇다": "Connecting Together,\nCarrying Values On",
     "우리가 만난 해녀들은 줄어드는 숫자가 아니라,\n지금도 밝게 바다에 드는 사람들이었습니다.": "The haenyeo we met were not a shrinking number,\nbut people who still head into the sea with bright spirits.",
@@ -123,6 +125,9 @@ I18N.en = {
     "바닷속 탐험하러 갈래?": "Want to explore the sea?",
     "새 창에서 크게 하기": "Play full-size in a new window",
     "바당 소랑 HIGH SCORE": "BADANG SORANG HIGH SCORE",
+    // 유네스코 팝업 자료 출처 — 2026-10-27
+    "자료: 유네스코 인류무형문화유산 ‘제주해녀문화’(2016) · 한국민족문화대백과사전 ‘해녀’": "Sources: UNESCO Intangible Cultural Heritage 'Culture of Jeju Haenyeo (women divers)' (2016) · Encyclopedia of Korean Culture 'Haenyeo'",
+    "자료: 디지털제주문화대전 ‘잠수굿’ · 유네스코 인류무형문화유산 ‘제주해녀문화’(2016)": "Sources: Digital Jeju Culture Encyclopedia 'Jamsugut' · UNESCO Intangible Cultural Heritage 'Culture of Jeju Haenyeo (women divers)' (2016)",
     // 그림 설명(alt) — 2026-10-27
     "물안경을 쓰고 주황 테왁과 초록 망사리를 든 해녀 캐릭터": "A haenyeo character in diving goggles holding an orange float (tewak) and a green net bag (mangsari)",
     "주황 테왁이 달린 초록 그물 망사리": "A green net bag (mangsari) with an orange float (tewak)",

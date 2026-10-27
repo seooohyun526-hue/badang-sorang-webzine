@@ -685,6 +685,7 @@ body.sub{background:var(--cream)}
 .sp-title{margin:8px 0 clamp(14px,2.4vh,26px); font-family:var(--serif); font-size:clamp(1.5rem,min(3vw,5vh),2.5rem); line-height:1.3; letter-spacing:-.02em; color:var(--deep)}
 .sp-top .vframe{margin:0 auto; width:min(100%, calc((100svh - 60px - 190px) * 16 / 9)); min-width:min(100%,320px); border-radius:var(--r); box-shadow:0 30px 60px -34px rgba(6,44,53,.55)}
 .sp-meta{display:flex; justify-content:center; align-items:center; flex-wrap:wrap; gap:8px 12px; margin-top:16px; color:var(--muted); font-size:.9rem}
+.sp-credit{margin-top:8px; font-size:.78rem; text-align:center}   /* 인터뷰 정보 한 줄 (작은 글씨) */
 .sp-tag{display:inline-block; padding:5px 12px; border-radius:999px; background:var(--sea-xl); color:var(--deep); font-size:.8rem; font-weight:700}
 .sp-more{max-width:1100px; margin:0 auto; padding:clamp(28px,4vw,48px) var(--gutter) clamp(36px,5vw,60px); display:flex; flex-direction:column; align-items:center; gap:18px}
 .sp-more__btn{min-height:58px; padding:14px 34px; font-size:1.08rem}
@@ -1208,6 +1209,7 @@ var INTERVIEWS = [
     photo: "images/interview-1.jpg",   // 대표 사진 (없으면 일러스트가 보여요)
     video: "",                         // 인터뷰 영상
     poster: "",                        // 영상 재생 전 사진 (비우면 대표 사진)
+    credit: "",                        // 인터뷰 정보 — 예: "인터뷰 2026년 ○월 ○일 · ○○ · 진행 ○○○ · 촬영 ○○○" (확인된 것만, 비우면 안 보여요)
     color: ["#7fd6cf", "#14a3a0"]     // 사진이 없을 때 카드 바탕색
   },
   {
@@ -1220,6 +1222,7 @@ var INTERVIEWS = [
     photo: "images/interview-2.jpg",
     video: "",
     poster: "",
+    credit: "",
     color: ["#ffc59f", "#ff7a50"]
   },
   {
@@ -1232,6 +1235,7 @@ var INTERVIEWS = [
     photo: "",                         // (사진이 생기면 media/ 에 넣고 경로를 적어요)
     video: "",
     poster: "",
+    credit: "",
     color: ["#9fcbf2", "#2b7fd4"]
   },
   {
@@ -1244,6 +1248,7 @@ var INTERVIEWS = [
     photo: "",
     video: "",
     poster: "",
+    credit: "",
     color: ["#f7c6d3", "#e9879f"]
   }
 ];
@@ -1253,7 +1258,7 @@ var ABOUT = {
   kicker: "바당소랑",
   lineA: "바당은 바다,",
   lineB: "소랑은 사랑.",
-  lead: "제주 바다와, 그 바다를 살아온 해녀를 아끼는 마음으로 이 웹진을 만듭니다.",
+  lead: "바당소랑은 제주어 ‘바당(바다)’과 ‘소랑(사랑)’을 합친 이름으로, 제주 해녀를 직접 만나 그 이야기를 기록하는 인터뷰 웹진이에요.\n제주 바다와, 그 바다를 살아온 해녀를 아끼는 마음으로 이 웹진을 만듭니다.",   // 첫 줄: 바당소랑이 무엇인지 (검색 · AI 가 이름의 뜻을 바로 알도록 · 2026-10-27)
   badge: "BADANG ✦ SORANG ✦ 바당은 바다 ✦ 소랑은 사랑 ✦ ",
   whyTitle: "우리가 해녀를 만나는 이유",
   why: [
@@ -1660,6 +1665,7 @@ var SUB = (function () {
           '<h2 class="sp-title">' + esc(it.name) + '의 이야기</h2>' +
           vh +
           (has(it.theme) ? '<p class="sp-meta"><span class="sp-tag">' + esc(it.theme) + '</span>' + (has(it.title) ? '<span>' + esc(it.title) + '</span>' : '') + '</p>' : '') +
+          (has(it.credit) ? '<p class="sp-meta sp-credit">' + esc(it.credit) + '</p>' : '') +   // 인터뷰 정보 (날짜 · 장소 · 진행 · 촬영) — 비어 있으면 안 보여요
         '</section>' +
         '<section class="sp-more">' +
           '<a class="btn btn--coral sp-more__btn" href="#others">' + esc(STORIES.moreLabel || '다른 영상 보러 가기') + ' ↓</a>' +
