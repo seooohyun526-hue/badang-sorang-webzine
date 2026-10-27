@@ -204,6 +204,7 @@
         if (res.status === 201 || res.status === 200) {
           pending = null; listState = ''; cur = fromServer(res.data); draw(cur, Math.max(0, tempOf(cur) - before)); done(); say('');
         } else if (res.status === 429) { hint.textContent = P.tooFast || ''; text.focus(); }
+        else if (res.status === 400 && res.data && res.data.error === 'bad') { hint.textContent = P.badWord || ''; text.focus(); }   // 욕설 · 비속어 (서버가 판단)
         else if (res.status === 400) { hint.textContent = P.tooShort || ''; text.focus(); }
         else { hint.textContent = P.sendError || ''; text.focus(); }  // 글은 그대로 두어 다시 보낼 수 있어요
       });

@@ -67,4 +67,19 @@ r = await rpc('cheer_state'); assert.equal(r.commentCount, 24); assert.ok(!r.com
 for (let i = 0; i < 40; i++) await db.query("insert into public.cheer_comments (id, body, ip_hash) values (gen_random_uuid(), $1, 'seed')", ['더미 ' + i]);
 r = await rpc('cheer_state'); assert.equal(r.comments.length, 50); assert.equal(r.commentCount, 64); ok('목록은 최근 50개 · 숫자는 전체');
 
+// 12) 욕설 · 비속어는 저장하지 않아요 (바꿔 써도) · 보통 말은 그대로 · 옮기기 · 목록에서도 걸러요
+let ipN = 20;
+for (const bad of ['씨발 바다', '시.발', '씨 발 해녀', 'ㅅㅂ', '병신', '개새끼야', '존 나 별로', 'FUCK this', 'ｆｕｃｋ', '미친놈', '死ね']) {
+  r = await rpc('cheer_comment', { p_id: randomUUID(), p_body: bad }, H('10.0.0.' + ipN++)); assert.equal(r.error, 'bad', bad);
+}
+ok('욕설 · 비속어 거절 (띄어쓰기 · 문장부호 · 대소문자 · 전각 바꿔 써도)');
+for (const good of ['다시 발견한 제주 바다, 해녀님 고마워요', '새끼 거북이도 지켜 주셔서 감사해요', '바다 불빛이 꺼져도 응원할게요', '해녀님 힘내세요!', '보지 못했던 바다를 알게 됐어요', '이 미친 듯이 아름다운 바다']) {
+  r = await rpc('cheer_comment', { p_id: randomUUID(), p_body: good }, H('10.0.1.' + ipN++)); assert.equal(r.created, true, good);
+}
+ok('보통 말은 그대로 저장 (다시 발견 · 새끼 거북이 · 불빛이 꺼져도 …)');
+r = await rpc('cheer_import', { p_comments: [{ id: randomUUID(), t: '좋은 응원' }, { id: randomUUID(), t: '씨발' }] }, H('10.0.2.1')); assert.equal(r.imported, 1);
+await db.query("insert into public.cheer_comments (id, body, ip_hash) values (gen_random_uuid(), 'ㅅㅂ 예전 글', 'seed')");
+r = await rpc('cheer_state'); assert.ok(!r.comments.some((c) => /ㅅㅂ|씨발/.test(c.t))); ok('옛 응원 옮기기 · 목록에서도 욕설은 빠짐');
+await assert.rejects(db.transaction(async (tx) => { await tx.exec('set local role anon'); await tx.query("select public.cheer__bad('x')"); }), /permission denied/, '비속어 도우미');
+
 console.log(`\n모두 통과 (${n}개)`);

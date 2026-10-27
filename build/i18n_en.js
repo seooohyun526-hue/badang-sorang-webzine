@@ -231,6 +231,7 @@ I18N.en = {
     "해녀들에게 응원의 한 마디를 남겨 주세요": "Leave a word of support for the haenyeo",
     "남기기": "Post",
     "한 글자 이상 적어 주세요": "Please write at least one character",
+    "고운 말로 응원을 남겨 주세요. 욕설 · 비속어는 남길 수 없어요.": "Please leave your message in kind words. Profanity and slurs are not allowed.",
     "내가 남긴 응원": "My messages of support",
     "아직 남긴 응원이 없어요. 첫 응원을 남겨 주세요!": "No messages yet. Leave the first one!",
     "목표 온도에 닿았어요! 응원 고마워요": "We reached the goal temperature! Thank you for cheering",

@@ -66,15 +66,29 @@ language sql immutable set search_path = public as $$
                  '\s+', ' ', 'g')) as c) s
 $$;
 
+-- 비속어 · 욕설인지 (응원 · 옛 응원 옮기기 · 목록 모두 이걸로 걸러요) — 대소문자 · 전각 글자 · 문장부호로 바꿔 써도 같게 봐요
+--   목록을 늘리려면 아래 두 array 에 말을 더하고 이 파일을 다시 Run 하세요
+create or replace function public.cheer__bad(t text) returns boolean
+language sql immutable set search_path = public as $$
+  select exists (
+    select 1
+    from (select lower(normalize(coalesce(t, ''), NFC)) as n                 -- ㅅㅂ 같은 자음은 이 모양 그대로
+          union all select lower(normalize(coalesce(t, ''), NFKC))) a,        -- 전각 글자(ｆｕｃｋ)는 보통 글자로
+         lateral (select regexp_replace(a.n, '[^0-9a-z가-힣ㄱ-ㅎㅏ-ㅣ぀-ヿ一-鿿]', '', 'g') as tight,
+                         regexp_replace(a.n, '[^0-9a-z가-힣ㄱ-ㅎㅏ-ㅣ぀-ヿ一-鿿 ]', '', 'g') as spaced) x
+    where exists (select 1 from unnest(array['씨발', '씨빨', '씨팔', '씨바', '씨부랄', 'ㅆㅂ', 'ㅅㅂ', 'ㅂㅅ', 'ㅄ', 'ㅈㄴ', 'ㅈㄹ', 'ㅅㄲ', 'ㅁㅊ', 'ㅗㅗ', '좆', '존나', '개새끼', '개새기', '개색끼', '개쉐이', '지랄', '미친놈', '미친년', '또라이', '엿먹', '엠창', '느금', '니애미', '니애비', '썅', '쌍년', '쌍놈', '씹새', '씹할', '씹창', '씹년', '염병', '육시랄', '후레자식', '호로자식', '창녀', '섹스', 'fuck', 'shit', 'bitch', 'asshole', 'motherfucker', 'tlqkf', 'qudtls', '死ね', 'くたばれ', 'ファック']) w where x.tight like '%' || w || '%')      -- 띄어쓰기까지 빼고 봐요
+       or exists (select 1 from unnest(array['시발', '시팔', '병신', '븅신', '빙신', '닥쳐', '니미', '등신']) w where x.spaced like '%' || w || '%'))      -- 띄어쓰기는 두고 봐요
+$$;
+
 -- ── 웹진이 부르는 함수 ──
 create or replace function public.cheer_state() returns jsonb
 language sql stable security definer set search_path = public as $$
   select jsonb_build_object(
     'likes', (select count(*) from public.cheer_likes),
-    'commentCount', (select count(*) from public.cheer_comments where not hidden),
+    'commentCount', (select count(*) from public.cheer_comments where not hidden and not public.cheer__bad(body)),
     'comments', coalesce((
       select jsonb_agg(jsonb_build_object('id', x.id, 't', x.body, 'at', (extract(epoch from x.created_at) * 1000)::bigint) order by x.created_at desc, x.id)
-      from (select id, body, created_at from public.cheer_comments where not hidden order by created_at desc, id limit 50) x), '[]'::jsonb))
+      from (select id, body, created_at from public.cheer_comments where not hidden and not public.cheer__bad(body) order by created_at desc, id limit 50) x), '[]'::jsonb))
 $$;
 
 create or replace function public.cheer_like() returns jsonb
@@ -94,6 +108,7 @@ language plpgsql volatile security definer set search_path = public as $$
 declare who text := public.cheer__who(); t text := public.cheer__clean(p_body); uid uuid; n int; last timestamptz;
 begin
   if t is null then return jsonb_build_object('error', 'text'); end if;
+  if public.cheer__bad(t) then return jsonb_build_object('error', 'bad'); end if;   -- 욕설 · 비속어는 저장하지 않아요
   if p_id is null or p_id !~* '^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$' then
     return jsonb_build_object('error', 'id');
   end if;
@@ -119,7 +134,7 @@ begin
   for c in select value from jsonb_array_elements(p_comments) loop
     k := k + 1; exit when k > 20;                                               -- 한 번에 20개까지
     t := public.cheer__clean(c->>'t');
-    continue when t is null or coalesce(c->>'id', '') !~* '^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$';
+    continue when t is null or public.cheer__bad(t) or coalesce(c->>'id', '') !~* '^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$';
     at_ms := case when jsonb_typeof(c->'at') = 'number' then (c->>'at')::double precision else now_ms end;
     at_ms := least(now_ms, greatest(now_ms - 2 * 365 * 86400000.0, at_ms));     -- 미래 · 너무 옛날 시각은 고쳐서
     insert into public.cheer_comments (id, body, ip_hash, created_at)
@@ -130,6 +145,6 @@ begin
 end $$;
 
 -- ── 누가 부를 수 있나: 웹진(anon)은 위 4개만 ──
-revoke execute on function public.cheer__who(), public.cheer__clean(text) from public, anon, authenticated;
+revoke execute on function public.cheer__who(), public.cheer__clean(text), public.cheer__bad(text) from public, anon, authenticated;
 revoke execute on function public.cheer_state(), public.cheer_like(), public.cheer_comment(text, text), public.cheer_import(jsonb) from public;
 grant execute on function public.cheer_state(), public.cheer_like(), public.cheer_comment(text, text), public.cheer_import(jsonb) to anon, authenticated;
