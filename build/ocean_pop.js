@@ -204,8 +204,7 @@
       setTimeout(function () { wrap.remove(); }, 1400);
     }
     likeBtn.addEventListener('click', function () {
-      var d = state(); if (tempOf(d) >= goal) { draw(d); return; }
-      var n = myLikes();
+      var d = state(), n = myLikes();                                // 목표 온도(goal)에 닿은 뒤에도 좋아요는 눌러져요 (온도는 goal 에서 멈춰요)
       if (n >= likeMax) { say(P.likeLimit || ''); return; }                   // 한 사람당 5번까지
       likeBtn.classList.remove('is-pop'); void likeBtn.offsetWidth; likeBtn.classList.add('is-pop'); hearts();
       var before = tempOf(d);
