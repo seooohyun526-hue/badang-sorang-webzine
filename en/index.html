@@ -713,6 +713,7 @@ body.sub{background:var(--cream)}
 .sp-title{margin:8px 0 clamp(14px,2.4vh,26px); font-family:var(--serif); font-size:clamp(1.5rem,min(3vw,5vh),2.5rem); line-height:1.3; letter-spacing:-.02em; color:var(--deep)}
 .sp-top .vframe{margin:0 auto; width:min(100%, calc((100svh - 60px - 190px) * 16 / 9)); min-width:min(100%,320px); border-radius:var(--r); box-shadow:0 30px 60px -34px rgba(6,44,53,.55)}
 .sp-meta{display:flex; justify-content:center; align-items:center; flex-wrap:wrap; gap:8px 12px; margin-top:16px; color:var(--muted); font-size:.9rem}
+.sp-credit{margin-top:8px; font-size:.78rem; text-align:center}   /* 인터뷰 정보 한 줄 (작은 글씨) */
 .sp-tag{display:inline-block; padding:5px 12px; border-radius:999px; background:var(--sea-xl); color:var(--deep); font-size:.8rem; font-weight:700}
 .sp-more{max-width:1100px; margin:0 auto; padding:clamp(28px,4vw,48px) var(--gutter) clamp(36px,5vw,60px); display:flex; flex-direction:column; align-items:center; gap:18px}
 .sp-more__btn{min-height:58px; padding:14px 34px; font-size:1.08rem}
@@ -2271,7 +2272,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <svg class="ring" viewBox="0 0 120 120"><defs><path id="badgePath" d="M60 60 m-48 0 a48 48 0 1 1 96 0 a48 48 0 1 1 -96 0"/></defs><text><textPath href="#badgePath" id="badgeText"></textPath></text></svg>
             <div class="badge__c"><svg viewBox="0 0 100 100"><use href="#tewak"/></svg></div>
           </div>
-          <p class="about__lead rv" style="--d:.1s" data-t="ABOUT.lead"></p>
+          <p class="about__lead rv" style="--d:.1s" data-t="ABOUT.lead">Badang Sorang joins two Jeju words, 'badang' (sea) and 'sorang' (love) — an interview webzine that meets Jeju's haenyeo in person and records their stories.<br>We make this webzine out of love for the Jeju sea and the haenyeo who have lived by it.</p>
         </div>
         <div class="why">
           <h3 class="why__title rv" data-t="ABOUT.whyTitle">Connecting Together,<br>Carrying Values On</h3>
@@ -2439,6 +2440,7 @@ var INTERVIEWS = [
     photo: "../media/interview-1.webp",   // 대표 사진 (영상 썸네일 · 없으면 일러스트가 보여요)
     video: "",                         // 인터뷰 영상
     poster: "",                        // 영상 재생 전 사진 (비우면 대표 사진)
+    credit: "",                        // 인터뷰 정보 — 예: "인터뷰 2026년 ○월 ○일 · ○○ · 진행 ○○○ · 촬영 ○○○" (확인된 것만, 비우면 안 보여요)
     color: ["#7fd6cf", "#14a3a0"]     // 사진이 없을 때 카드 바탕색
   },
   {
@@ -2451,6 +2453,7 @@ var INTERVIEWS = [
     photo: "../media/interview-2.webp",
     video: "",
     poster: "",
+    credit: "",
     color: ["#ffc59f", "#ff7a50"]
   },
   {
@@ -2463,6 +2466,7 @@ var INTERVIEWS = [
     photo: "",                         // (사진이 생기면 media/ 에 넣고 경로를 적어요)
     video: "",
     poster: "",
+    credit: "",
     color: ["#9fcbf2", "#2b7fd4"]
   },
   {
@@ -2475,6 +2479,7 @@ var INTERVIEWS = [
     photo: "",
     video: "",
     poster: "",
+    credit: "",
     color: ["#f7c6d3", "#e9879f"]
   }
 ];
@@ -2497,7 +2502,7 @@ var ABOUT = {
   kicker: "바당소랑",
   lineA: "바당은 바다,",
   lineB: "소랑은 사랑.",
-  lead: "제주 바다와, 그 바다를 살아온 해녀를 아끼는 마음으로 이 웹진을 만듭니다.",
+  lead: "바당소랑은 제주어 ‘바당(바다)’과 ‘소랑(사랑)’을 합친 이름으로, 제주 해녀를 직접 만나 그 이야기를 기록하는 인터뷰 웹진이에요.\n제주 바다와, 그 바다를 살아온 해녀를 아끼는 마음으로 이 웹진을 만듭니다.",   // 첫 줄: 바당소랑이 무엇인지 (검색 · AI 가 이름의 뜻을 바로 알도록 · 2026-10-27)
   badge: "BADANG ✦ SORANG ✦ 바당은 바다 ✦ 소랑은 사랑 ✦ ",
   whyTitle: "같이 잇다,\n가치를 잇다",
   why: [
@@ -2581,14 +2586,14 @@ var SEA = {
       body: "해녀는 공기통 같은 호흡 장비 없이 숨을 참고 바다에 들어가요. 한 번에 1분 안팎, 수심 10m 안팎까지 내려가 소라·전복·미역을 캐고, 물 위로 올라오며 ‘숨비소리’를 내요. “물숨을 먹지 마라”, 욕심을 경계하는 말처럼 숨이 허락하는 만큼만 가져와요.",
       photos: [["01_물질_대표.jpg", "문어를 들어 보이는 해녀"]],
       values: { tags: ["친환경 어업", "바다를 읽는 지식"], text: "필요한 만큼만 가져오는 물질이 오랫동안 제주 바다를 지켜 왔어요." },
-      credit: "" },
+      credit: "자료: 유네스코 인류무형문화유산 ‘제주해녀문화’(2016) · 한국민족문화대백과사전 ‘해녀’" },
     { id: "muneo", name: "문어", topic: "잠수굿", art: "muneo", alt: "웃는 얼굴의 주황색 털실 문어 인형 — 해녀의 굿, 잠수굿 이야기", tint: "#F3DED5", pos: [46, 49.5, 39, -3, 2],
       sub: "바다에 드는 해녀들의 안녕과 풍요를 비는 마을의 굿.",
       body: "음력 1~3월, 마을마다 날을 정해 해녀들이 함께 바다의 신 용왕(요왕)께 한 해의 안전과 풍요를 비는 굿이에요. 굿 끝 무렵에는 바닷가를 돌며 좁씨(조의 씨앗)를 뿌리는 ‘씨드림’으로 해산물이 잘 자라기를 빌어요.",
       // ※ 자유 이용할 수 있는 '잠수굿' 사진이 없어 같은 해녀·어부의 굿인 '제주칠머리당영등굿' 사진으로 대신했어요
       photos: [["02_잠수굿_대표.jpg", "바닷가에 차려진 굿판"]],
       values: { tags: ["공동체 결속", "제주의 정체성"], text: "같은 바다에 목숨을 맡긴 해녀들을 하나로 묶는 끈이에요." },
-      credit: "" },
+      credit: "자료: 디지털제주문화대전 ‘잠수굿’ · 유네스코 인류무형문화유산 ‘제주해녀문화’(2016)" },
     { id: "miyeok", name: "미역", topic: "해녀노래", art: "miyeok", alt: "웃는 얼굴의 초록 털실 미역 인형 — 해녀노래 이야기", tint: "#E1E8D2", pos: [23, 58, 28, -4, 3],
       sub: "노를 저으며 부르던 바다의 노래, “이어도사나”.",
       body: "물질을 나가는 배 위에서 노를 저으며 부르던 노동요예요. “이어도사나” 후렴이 노 젓는 박자를 맞춰 줬고, 노랫말에는 고된 바다 일과 가족을 향한 마음이 담겼어요. 1971년 제주도 무형문화재 제1호로 지정됐어요.",
@@ -2602,7 +2607,7 @@ var SEA = {
       // ※ 첫 사진은 제주해녀박물관에 재현된 '불턱' 전시예요
       photos: [["04_공동체와전승_대표.jpg", "물질 전 서로 해녀복을 챙겨 주는 해녀들", "", "50% 30%"]],
       values: { tags: ["세대 간 전승", "여성의 지위"], text: "직접 번 돈으로 가족과 마을을 지켜 온 여성들의 공동체예요." },
-      credit: "" }
+      credit: "자료: 유네스코 인류무형문화유산 ‘제주해녀문화’(2016) · 한국민족문화대백과사전 ‘해녀’" }
   ]
 };
 /* ───────── 2-1. 해녀들의 해양정화 이야기 ('목적' 다음 · '해녀의 바당길' 앞) ─────────
@@ -2883,6 +2888,8 @@ I18N.en = {
     "바당은 바다,": "Badang means sea,",
     "소랑은 사랑.": "Sorang means love.",
     "제주 바다와, 그 바다를 살아온 해녀를 아끼는 마음으로 이 웹진을 만듭니다.": "We make this webzine out of love for the Jeju sea and the haenyeo who have lived by it.",
+    "바당소랑은 제주어 ‘바당(바다)’과 ‘소랑(사랑)’을 합친 이름으로, 제주 해녀를 직접 만나 그 이야기를 기록하는 인터뷰 웹진이에요.\n제주 바다와, 그 바다를 살아온 해녀를 아끼는 마음으로 이 웹진을 만듭니다.": "Badang Sorang joins two Jeju words, 'badang' (sea) and 'sorang' (love) — an interview webzine that meets Jeju's haenyeo in person and records their stories.\nWe make this webzine out of love for the Jeju sea and the haenyeo who have lived by it.",
+    "바당소랑은 제주어 ‘바당(바다)’과 ‘소랑(사랑)’을 합친 이름으로, 제주 해녀를 직접 만나 그 이야기를 기록하는 인터뷰 웹진이에요.": "Badang Sorang joins two Jeju words, 'badang' (sea) and 'sorang' (love) — an interview webzine that meets Jeju's haenyeo in person and records their stories.",
     "BADANG ✦ SORANG ✦ 바당은 바다 ✦ 소랑은 사랑 ✦ ": "BADANG MEANS SEA ✦ SORANG MEANS LOVE ✦ ",
     "같이 잇다,\n가치를 잇다": "Connecting Together,\nCarrying Values On",
     "우리가 만난 해녀들은 줄어드는 숫자가 아니라,\n지금도 밝게 바다에 드는 사람들이었습니다.": "The haenyeo we met were not a shrinking number,\nbut people who still head into the sea with bright spirits.",
@@ -2917,6 +2924,9 @@ I18N.en = {
     "바닷속 탐험하러 갈래?": "Want to explore the sea?",
     "새 창에서 크게 하기": "Play full-size in a new window",
     "바당 소랑 HIGH SCORE": "BADANG SORANG HIGH SCORE",
+    // 유네스코 팝업 자료 출처 — 2026-10-27
+    "자료: 유네스코 인류무형문화유산 ‘제주해녀문화’(2016) · 한국민족문화대백과사전 ‘해녀’": "Sources: UNESCO Intangible Cultural Heritage 'Culture of Jeju Haenyeo (women divers)' (2016) · Encyclopedia of Korean Culture 'Haenyeo'",
+    "자료: 디지털제주문화대전 ‘잠수굿’ · 유네스코 인류무형문화유산 ‘제주해녀문화’(2016)": "Sources: Digital Jeju Culture Encyclopedia 'Jamsugut' · UNESCO Intangible Cultural Heritage 'Culture of Jeju Haenyeo (women divers)' (2016)",
     // 그림 설명(alt) — 2026-10-27
     "물안경을 쓰고 주황 테왁과 초록 망사리를 든 해녀 캐릭터": "A haenyeo character in diving goggles holding an orange float (tewak) and a green net bag (mangsari)",
     "주황 테왁이 달린 초록 그물 망사리": "A green net bag (mangsari) with an orange float (tewak)",
@@ -3212,6 +3222,8 @@ I18N.ja = {
     "바당은 바다,": "Badangは「海」、",
     "소랑은 사랑.": "Sorangは「愛」。",
     "제주 바다와, 그 바다를 살아온 해녀를 아끼는 마음으로 이 웹진을 만듭니다.": "済州の海と、その海とともに生きてきた海女を大切に思う気持ちで、このウェブマガジンをつくっています。",
+    "바당소랑은 제주어 ‘바당(바다)’과 ‘소랑(사랑)’을 합친 이름으로, 제주 해녀를 직접 만나 그 이야기를 기록하는 인터뷰 웹진이에요.\n제주 바다와, 그 바다를 살아온 해녀를 아끼는 마음으로 이 웹진을 만듭니다.": "Badang Sorangは、済州語の「バダン(海)」と「ソラン(愛)」を合わせた名前で、済州の海女に直接会い、その物語を記録するインタビュー・ウェブマガジンです。\n済州の海と、その海とともに生きてきた海女を大切に思う気持ちで、このウェブマガジンをつくっています。",
+    "바당소랑은 제주어 ‘바당(바다)’과 ‘소랑(사랑)’을 합친 이름으로, 제주 해녀를 직접 만나 그 이야기를 기록하는 인터뷰 웹진이에요.": "Badang Sorangは、済州語の「バダン(海)」と「ソラン(愛)」を合わせた名前で、済州の海女に直接会い、その物語を記録するインタビュー・ウェブマガジンです。",
     "BADANG ✦ SORANG ✦ 바당은 바다 ✦ 소랑은 사랑 ✦ ": "BADANG ✦ SORANG ✦ BADANGは海 ✦ SORANGは愛 ✦ ",
     "같이 잇다,\n가치를 잇다": "ともにつなぐ、\n価値をつなぐ",
     "우리가 만난 해녀들은 줄어드는 숫자가 아니라,\n지금도 밝게 바다에 드는 사람들이었습니다.": "私たちが出会った海女たちは、減り続ける数字ではなく、\n今も明るく海に入っていく人たちでした。",
@@ -3246,6 +3258,9 @@ I18N.ja = {
     "바닷속 탐험하러 갈래?": "海の中を探検しに行く？",
     "새 창에서 크게 하기": "新しいウィンドウで大きく遊ぶ",
     "바당 소랑 HIGH SCORE": "BADANG SORANG HIGH SCORE",
+    // 유네스코 팝업 자료 출처 — 2026-10-27
+    "자료: 유네스코 인류무형문화유산 ‘제주해녀문화’(2016) · 한국민족문화대백과사전 ‘해녀’": "出典：ユネスコ無形文化遺産「済州海女文化」(2016) · 韓国民族文化大百科事典「海女」",
+    "자료: 디지털제주문화대전 ‘잠수굿’ · 유네스코 인류무형문화유산 ‘제주해녀문화’(2016)": "出典：デジタル済州文化大典「チャムスクッ」 · ユネスコ無形文化遺産「済州海女文化」(2016)",
     // 그림 설명(alt) — 2026-10-27
     "물안경을 쓰고 주황 테왁과 초록 망사리를 든 해녀 캐릭터": "水中メガネをかけ、オレンジのテワク(浮き)と緑の網袋(マンサリ)を持つ海女のキャラクター",
     "주황 테왁이 달린 초록 그물 망사리": "オレンジのテワクがついた緑の網袋(マンサリ)",
@@ -3918,6 +3933,7 @@ var SUB = (function () {
           '<h2 class="sp-title">' + esc(it.name) + '의 이야기</h2>' +
           vh +
           (has(it.theme) ? '<p class="sp-meta"><span class="sp-tag">' + esc(it.theme) + '</span>' + (has(it.title) ? '<span>' + esc(it.title) + '</span>' : '') + '</p>' : '') +
+          (has(it.credit) ? '<p class="sp-meta sp-credit">' + esc(it.credit) + '</p>' : '') +   // 인터뷰 정보 (날짜 · 장소 · 진행 · 촬영) — 비어 있으면 안 보여요
         '</section>' +
         '<section class="sp-more">' +
           '<a class="btn btn--coral sp-more__btn" href="#others">' + esc(STORIES.moreLabel || '다른 영상 보러 가기') + ' ↓</a>' +
@@ -5902,7 +5918,7 @@ var SUB = (function () {
 <p>Under the sea, one step at a time Become a haenyeo, explore the sea, and set your own record alongside sea creatures.</p>
 <h3>How to Play</h3><ul><li>Move forward one space</li><li>Swipe to change direction</li><li>Game over — don't get pushed off the bottom of the screen</li><li>Ocean current warning</li></ul>
 <h2>Badang means sea, Sorang means love.</h2>
-<p>We make this webzine out of love for the Jeju sea and the haenyeo who have lived by it.</p>
+<p>Badang Sorang joins two Jeju words, 'badang' (sea) and 'sorang' (love) — an interview webzine that meets Jeju's haenyeo in person and records their stories. We make this webzine out of love for the Jeju sea and the haenyeo who have lived by it.</p>
 <h3>Connecting Together, Carrying Values On</h3>
 <p>The haenyeo we met were not a shrinking number, but people who still head into the sea with bright spirits. A heart that never lets go of the sea, even alongside other work — we share that heart with more people. Hands that cared for the sea, hearts that looked after one another — we pass those values on to the next generation.</p>
 <p>The sea is still right where it was, remembering the stories of those who lived by it.</p>
