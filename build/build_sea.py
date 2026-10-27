@@ -577,7 +577,7 @@ if os.environ.get('BS_OCEAN') == 'v2':
     ocss = open(sp + '/clean.css', encoding='utf-8').read().strip()
     one('</style>' + nl + '<script>document.documentElement', '</style>' + nl + N(ocss) + nl + '<script>document.documentElement')
 
-# 17) 인터뷰 카드 썸네일 · 이름 (1번 김은영 해녀 · 2번 조은별 해녀 · 3번 카일리 해녀 · 4번 전 해녀 학교 강사 최명수 & 박신혜 해녀) — 사진은 이 파일 안에 담아 둬요
+# 17) 인터뷰 카드 썸네일 (build/interview-1~4.webp · 2026-10-27 영상 장면 4장으로 바꿈) · 이름 (1번 김은영 해녀 · 2번 조은별 해녀 · 3번 카일리 해녀 · 4번 전 해녀 학교 강사 최명수 & 박신혜 해녀) — 사진은 이 파일 안에 담아 둬요
 if True:
     import base64 as _b64i
     one('    name: "○○○ 해녀",                 // 이름 또는 공개 가능한 호칭\n    title: "",                         // 한 줄 소개 (예: "○○마을 해녀") — 확인된 내용만\n    theme: "해녀의 하루",'.replace('\n', nl),
@@ -588,8 +588,8 @@ if True:
     one('    label: "이야기 셋",' + nl + '    name: "○○○ 해녀",', '    label: "이야기 셋",' + nl + '    name: "카일리 해녀",')
     one('    label: "이야기 넷",' + nl + '    name: "○○○ 선생님",', '    label: "이야기 넷",' + nl + '    name: "전 해녀 학교 강사 최명수 & 박신혜 해녀",')
     one('    photo: "images/interview-2.jpg",', '    photo: "media/interview-2.webp",')
-    emb = ''.join('INTERVIEWS[%d].photo = "data:image/webp;base64,%s";' % (k, _b64i.b64encode(open(sp + '/interview-%d.webp' % (k + 1), 'rb').read()).decode()) + nl for k in (0, 1))
-    one('MEDIA.gameHead = "data:', '/* 인터뷰 카드 썸네일 (media/interview-1.webp · interview-2.webp 를 이 파일 안에 담음) */' + nl + emb + 'MEDIA.gameHead = "data:')
+    emb = ''.join('INTERVIEWS[%d].photo = "data:image/webp;base64,%s";' % (k, _b64i.b64encode(open(sp + '/interview-%d.webp' % (k + 1), 'rb').read()).decode()) + nl for k in (0, 1, 2, 3))
+    one('MEDIA.gameHead = "data:', '/* 인터뷰 카드 썸네일 (media/interview-1~4.webp 를 이 파일 안에 담음) */' + nl + emb + 'MEDIA.gameHead = "data:')
 
 # 19) 바당소랑 칸(#about) 아래쪽 '우리가 해녀를 만나는 이유' → '같이 잇다, 가치를 잇다' (사용자가 준 문구 그대로)
 #     왼쪽 제목은 굵은 명조 함렛(Hahmlet 700 — 목적 · 바다 지키기 칸과 같은 글꼴, 글자는 hahmlet_subset.py 로 담아요)
