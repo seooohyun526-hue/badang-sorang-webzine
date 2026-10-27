@@ -106,7 +106,7 @@
     // 후원 · 박물관 버튼: 누르면 그 페이지가 새 탭으로 열려요 (주소가 없는 버튼은 숨겨요)
     var A = C.cta || {}, S = A.support || {}, M = A.museum || {};
     var link = function (o, cls) { return has(o.url) ? '<a class="oc-cta__btn' + cls + '" href="' + esc(o.url) + '" target="_blank" rel="noopener">' + esc(o.button) + '<span class="sr-only"> (새 탭에서 열려요)</span></a>' : ''; };
-    html += '<div class="oc-cta oc-rv"><div class="oc-cta__row oc-r" style="--at:0">' + link(S, '') + link(M, ' oc-cta__btn--line') + '</div></div>';
+    html += '<div class="oc-cta oc-rv"><div class="oc-cta__row oc-r" style="--at:0">' + link(S, ' oc-cta__btn--support') + link(M, ' oc-cta__btn--line oc-cta__btn--museum')   // --support · --museum: 버튼마다 다른 이름 (GTM 클릭 집계용) + '</div></div>';
     $('.oc-paper__rows', sec).innerHTML = html;
 
     // ── BEFORE / AFTER 손잡이: 끌기(마우스 · 손가락) · 키보드 ← → ──
