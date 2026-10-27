@@ -1185,6 +1185,7 @@ var STATS = {
    · 해녀를 추가하려면 { ... } 묶음 하나를 통째로 복사해 붙이고 id 를 새 번호로 바꾸세요.
    · quote 에는 인터뷰에서 실제로 하신 말만 넣어 주세요. 비워 두면 '자리표시'가 보여요.
    · video: 직접 찍은 영상이면 "media/interview-1.mp4", 유튜브면 "https://youtu.be/영상주소"
+     언어마다 다른 영상이면 { ko: "한국어 주소", en: "영어 주소", ja: "일본어 주소" } (없는 언어는 한국어 영상)
    · 카드를 누르면 story/1.html 같은 상세 페이지가 열려요. 해녀를 추가하면 story 폴더의 4.html 을 복사해
      5.html 로 이름을 바꾸고, 그 안의 data-id="4" 를 data-id="5" 로 고쳐 주세요. */
 var STORIES = {
@@ -1207,7 +1208,7 @@ var INTERVIEWS = [
     theme: "해녀의 하루",              // 이 이야기의 주제 (일상 · 자부심 · 바다에 대한 애정 · 다음 세대)
     quote: "",                         // 인터뷰 핵심 문장 (실제로 하신 말만)
     photo: "images/interview-1.jpg",   // 대표 사진 (없으면 일러스트가 보여요)
-    video: "",                         // 인터뷰 영상
+    video: { ko: "https://youtu.be/bg6r-0XSvTI", en: "https://youtu.be/DM8ffwiJ6i4", ja: "https://youtu.be/yt68e5O1XQg" },   // 인터뷰 영상 — 언어마다 (한국어 · 영어 · 일본어)
     poster: "",                        // 영상 재생 전 사진 (비우면 대표 사진)
     credit: "",                        // 인터뷰 정보 — 예: "인터뷰 2026년 ○월 ○일 · ○○ · 진행 ○○○ · 촬영 ○○○" (확인된 것만, 비우면 안 보여요)
     color: ["#7fd6cf", "#14a3a0"]     // 사진이 없을 때 카드 바탕색
@@ -1220,7 +1221,7 @@ var INTERVIEWS = [
     theme: "물질의 자부심",
     quote: "",
     photo: "images/interview-2.jpg",
-    video: "",
+    video: { ko: "https://youtu.be/lKxaP1jXyH4", en: "https://youtu.be/FSEyrWXbpb0", ja: "https://youtu.be/1XewZ7cNs2g" },
     poster: "",
     credit: "",
     color: ["#ffc59f", "#ff7a50"]
@@ -1233,7 +1234,7 @@ var INTERVIEWS = [
     theme: "바다에 대한 애정",
     quote: "",
     photo: "",                         // (사진이 생기면 media/ 에 넣고 경로를 적어요)
-    video: "",
+    video: { ko: "https://youtu.be/86cBfvBSpAs", en: "https://youtu.be/8mvgTVBzoJI", ja: "https://youtu.be/UgB5MLUGhVY" },
     poster: "",
     credit: "",
     color: ["#9fcbf2", "#2b7fd4"]
@@ -1246,7 +1247,7 @@ var INTERVIEWS = [
     theme: "다음 세대에게",
     quote: "",
     photo: "",
-    video: "",
+    video: { ko: "https://youtu.be/H1uYqmxom8g", en: "https://youtu.be/pEji_aS4sFk", ja: "https://youtu.be/4kXKmj_OSuQ" },
     poster: "",
     credit: "",
     color: ["#f7c6d3", "#e9879f"]
@@ -1638,6 +1639,7 @@ var SUB = (function () {
 
     // 영상: 파일 · 유튜브 · 비메오 (없으면 자리표시)
     var src = it.video, v = null, m;
+    if (src && typeof src === 'object') src = src[(window.BSI18N && BSI18N.lang) || 'ko'] || src.ko;   // 언어마다 다른 영상
     if (has(src)) {
       m = String(src).match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?(?:.*&)?v=|embed\/|shorts\/|live\/))([\w-]{11})/);
       if (m) v = { k: 'youtube', id: m[1] };
@@ -1699,7 +1701,7 @@ var SUB = (function () {
       if (video) {
         video.controls = true; cover.remove();
         var p = video.play(); if (p && p.catch) p.catch(function () {});
-        video.addEventListener('error', function () { fr.innerHTML = '<div class="vframe__empty"><p>영상 파일을 찾을 수 없어요</p><small>' + esc(it.video) + ' 경로를 확인해 주세요</small></div>'; });
+        video.addEventListener('error', function () { fr.innerHTML = '<div class="vframe__empty"><p>영상 파일을 찾을 수 없어요</p><small>' + esc(src) + ' 경로를 확인해 주세요</small></div>'; });
       } else {
         var url = cover.getAttribute('data-k') === 'youtube'
           ? 'https://www.youtube-nocookie.com/embed/' + cover.getAttribute('data-id') + '?autoplay=1&rel=0&playsinline=1'
