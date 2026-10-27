@@ -39,7 +39,7 @@
     var html = '', frontHtml = '', tagHtml = '', base = SEA.base && SeaArt.get(SEA.base);
     // 망사리 뒤쪽 (그림만)
     if (base && SEA.base.pos) {
-      var bs = pos(SEA.base.pos, base), im = '<img src="' + esc(base.src) + '" alt="" decoding="async" draggable="false"';
+      var bs = pos(SEA.base.pos, base), im = '<img src="' + esc(base.src) + '" alt="' + esc(SEA.base.alt || '') + '" decoding="async" draggable="false"';
       html += '<span class="sx-base" aria-hidden="true" style="' + bs + '">' + im + '></span>';
       // 망사리 앞쪽: 해산물 아랫부분을 감싸요 (그물 구멍은 반쯤 비쳐서 안에 담긴 몸이 보여요)
       var fr = SEA.base.front && SeaArt.get({ art: SEA.base.front });
@@ -52,7 +52,7 @@
       // 오브젝트 = 상세 팝업을 여는 버튼
       html += '<button type="button" class="sx-obj' + (it.shadow ? ' has-sh' : '') + '" data-i="' + i + '" style="' + pos(p, a) + shade(it.shadow) + '"' +
         ' aria-haspopup="dialog" aria-controls="sxDialog" aria-label="' + esc(fill(SEA.objLabel || '{name}', { name: it.name, topic: it.topic || it.name })) + '">' +
-        '<img src="' + esc(a.src) + '" alt="" decoding="async" draggable="false">' +
+        '<img src="' + esc(a.src) + '" alt="' + esc(it.alt || '') + '" decoding="async" draggable="false">' +
         '<span class="sx-obj__hit"' + (a.hit ? ' style="clip-path:' + esc(a.hit) + '"' : '') + '></span></button>';
     });
     // 미리보기 창 (PC: 마우스 · 키보드 초점)

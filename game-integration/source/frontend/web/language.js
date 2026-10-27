@@ -37,7 +37,7 @@
   }
  }
  function apply(){
-  document.documentElement.lang=language;document.title=language==='en'?'Haenyeo Ocean Path':'해녀의 바당길 · 온라인 해양 정화';
+  document.documentElement.lang=language;document.title=language==='en'?'Haenyeo Ocean Path':'해녀의 바당길 · 온라인 해양 정화 | 바당소랑';
   window.oceanLanguage=language;update(document.body);
   document.querySelector('#language-choice').value=language;
   sendLanguage();

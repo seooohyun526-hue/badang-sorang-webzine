@@ -22,7 +22,7 @@ scene = f'''      <figure class="sea" id="gSea">
              위 그림이 위에서부터 잘려 나가며 색이 빠지고 선만 남아요. 그림을 바꾸려면 두 src 를 파일 경로로 바꿔요 -->
         <div class="drain" role="img" aria-label="테왁을 안은 해녀 그림. 그림 속 색이 위에서부터 빠져나가 선만 남아요">
           <img class="drain__line" alt="" decoding="async" src="{line_uri}">
-          <span class="drain__clip"><img class="drain__fill" id="gFill" alt="" decoding="async" src="{fill_uri}"></span>
+          <span class="drain__clip"><img class="drain__fill" id="gFill" alt="물안경을 쓰고 주황 테왁과 초록 망사리를 든 해녀 캐릭터" decoding="async" src="{fill_uri}"></span>
         </div>
         <figcaption class="sea__cap"><span class="sea__cap-l">해녀 그림 속 색이 빠져나가는 모습은 줄어드는 해녀의 수를 빗댄 표현이에요.</span><span class="sea__cap-s">색이 빠지는 그림은 줄어드는 해녀 수를 빗댄 표현이에요.</span></figcaption>
       </figure>
@@ -810,7 +810,7 @@ if os.environ.get('BS_ORDER') == 'purpose-first':
 # 24) (사이트로 내보내기) 사진 · 영상 · 소리 · 글꼴을 HTML 안에 담지 않고, 결과 파일 옆 media/ · fonts/ 에 따로 두고 상대 경로로 불러와요
 #     · 서버(한경닷컴 lxwebzine)는 저장소의 site/ 폴더만 올리고 첫 화면은 site/index.html → 결과를 site/index.html 로 내보내요
 #     · 사진은 webp · 한 장 500KB 이하 (jpg · png 도 webp 로 바꿔요) · 2KB 이하의 아주 작은 그림은 그대로 둬요
-#     · 탭 제목은 '바당소랑 — 사라지는 해녀들을 만나다'(BS_SITE_NAME 으로 바꿀 수 있어요) · 공유 미리보기(og · twitter) · canonical 을 넣어요 (og:image = site/og.jpg, make_cards.py 가 만들어요)
+#     · 탭 제목은 '바당소랑 — 제주 해녀 인터뷰 웹진'(BS_SITE_NAME 으로 바꿀 수 있어요) · 공유 미리보기(og · twitter) · canonical 을 넣어요 (og:image = site/og.jpg, make_cards.py 가 만들어요)
 #     · BS_SPLIT=0 이면 예전처럼 한 파일에 모두 담아요
 if os.environ.get('BS_SPLIT', '1') != '0':
     import hashlib as _hl, io as _io
@@ -870,7 +870,7 @@ if os.environ.get('BS_SPLIT', '1') != '0':
     s = re.sub(r'data:([\w/+.-]+);base64,([A-Za-z0-9+/=]+)', _rep, _src)
     # (3) 제목 · 공유 미리보기
     _SITE = 'https://lxwebzine.hankyung.com/2026-1/team6/'
-    _t = os.environ.get('BS_SITE_NAME', '바당소랑 — 사라지는 해녀들을 만나다')   # 브라우저 탭 · 공유 미리보기 제목 (2026-10-26 점검: 작업용 이름 '바당소랑_웹진_1' 대신 실제 제목)
+    _t = os.environ.get('BS_SITE_NAME', '바당소랑 — 제주 해녀 인터뷰 웹진')   # 브라우저 탭 · 공유 미리보기 제목 (2026-10-27 SEO: 웹진이 무엇인지 드러나게 · 영어 · 일본어 제목은 사전에서 예전 그대로)
     s = re.sub(r'<title>.*?</title>', lambda m: '<title>' + _t + '</title>', s, count=1)
     _dm = re.search(r'<meta name="description" content="([^"]*)">', s)
     _de = _dm.group(1)
@@ -969,7 +969,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 _pages = {}
 if os.environ.get('BS_SPLIT', '1') == '0':
     s = s.replace('  url: "game/",', '  url: "https://lxwebzine.hankyung.com/2026-1/team6/game/",', 1)
-    s = re.sub(r'<title>[^<]*</title>', '<title>%s</title>' % os.environ.get('BS_SITE_NAME', '바당소랑 — 사라지는 해녀들을 만나다'), s, count=1)   # 시안 이름 '(배경 추가)' 대신 실제 제목
+    s = re.sub(r'<title>[^<]*</title>', '<title>%s</title>' % os.environ.get('BS_SITE_NAME', '바당소랑 — 제주 해녀 인터뷰 웹진'), s, count=1)   # 시안 이름 '(배경 추가)' 대신 실제 제목
 else:
     import json as _js
     _LANGS = (('ko', 'ko_KR', ''), ('en', 'en_US', 'en/'), ('ja', 'ja_JP', 'ja/'))
@@ -1006,8 +1006,8 @@ else:
         _sp = '' if _c == 'ja' else ' '                           # 줄바꿈 자리: 일본어는 붙여 쓰고, 한국어 · 영어는 한 칸
         _x = lambda t: _esc(_w(t)).replace(chr(10), _sp)
         _brand = _w('바당소랑')
-        _ld = {'@context': 'https://schema.org', '@type': 'Article', 'headline': _w(_koT), 'description': _w(_koD), 'inLanguage': _c,
-               'url': _SITE + _sub, 'image': _SITE + 'og.jpg', 'datePublished': '2026-10-22', 'dateModified': __import__('datetime').date.today().isoformat(),
+        _ld = {'@context': 'https://schema.org', '@type': 'Article', 'headline': _w('사라지는 해녀들을\n만나다').replace(chr(10), _sp), 'description': _w(_koD), 'inLanguage': _c,
+               'url': _SITE + _sub, 'image': _SITE + 'og.jpg',   # 날짜(작성 · 수정일)는 화면에 없어서 넣지 않아요 (2026-10-27)
                'author': {'@type': 'Organization', 'name': _brand}, 'publisher': {'@type': 'Organization', 'name': _brand}}
         _ldt = '<script type="application/ld+json">' + _js.dumps(_ld, ensure_ascii=False).replace('</', '<\\/') + '</script>'
         _p = _p.replace('<link rel="canonical" href="%s%s">' % (_SITE, _sub), _ldt + nl + '<link rel="canonical" href="%s%s">' % (_SITE, _sub), 1)
@@ -1038,12 +1038,31 @@ else:
                '바다를 돌보던 손길과 서로를 지키던 마음,\n그 가치를 다음 세대로 잇습니다.'),
             _P('바다는 여전히 그 자리에,\n그 바다를 살아온 사람들의 이야기를 기억합니다.'),
             '</article></noscript>']) + nl
+        if _c != 'ko':   # 첫 화면 그림 설명(alt)도 그 언어로 (코드가 만드는 다른 그림은 화면 번역이 바꿔요)
+            _A1 = '물안경을 쓰고 주황 테왁과 초록 망사리를 든 해녀 캐릭터'
+            _p = _p.replace('id="gFill" alt="' + _esc(_A1) + '"', 'id="gFill" alt="' + _esc(_w(_A1)) + '"', 1)
         _h1 = '<h1 class="gate__title" id="gateTitle"></h1>'
         assert _p.count(_h1) == 1
         _p = _p.replace(_h1, '<h1 class="gate__title" id="gateTitle">%s</h1>' % ''.join('<span class="ln"><span>%s</span></span>' % _esc(l) for l in _w('사라지는 해녀들을\n만나다').split(chr(10))), 1)
-        _gm = '<!-- End Google Tag Manager (noscript) -->' + nl
-        assert _p.count(_gm) == 1
-        _p = _p.replace(_gm, _gm + _about, 1)
+        # 빈 제목 자리에 화면 코드가 넣는 것과 같은 글자 · 같은 모양을 미리 적어요 → 검색 · AI 가 칸 제목을 읽어요 (화면은 그대로 · 코드가 덮어써요)
+        _br = lambda t: _esc(_w(t)).replace(chr(10), '<br>')
+        _pp = []
+        for _ln in _w('바다를 품은 해녀 {a}의 숨,\n이제 {b}만 남았습니다.').split(chr(10)):
+            _ln = _esc(_ln).replace('{a}', '<em class="sx-pp__num sx-pp__num--was">%s</em>' % _esc(_w('14,000명'))).replace('{b}', '<em class="sx-pp__num sx-pp__num--now">%s</em>' % _esc(_w('2,300여 명')))
+            _pp.append('<span class="sx-pp__line">' + re.sub(r'(<em class="sx-pp__num[^>]*>[^<]*</em>[^\s<]*(?:\s[^\s<]+,)?)', r'<span class="sx-pp__keep">\1</span>', _ln) + '</span>')
+        for _a, _b in (('<h2 class="stories__title" id="stTitle" data-t="STORIES.title"></h2>', _br('바다에서 만난 사람들')),
+                       ('<h2 class="sx__big" id="sxTitle"><span></span></h2>', '<span>' + ''.join('<span class="sx__big-line">%s</span>' % _esc(l) for l in _w('유네스코\n인류무형문화유산').split(chr(10))) + '</span>'),
+                       ('<h3 class="sx-pp__title" id="sxPurposeTitle"></h3>', ''.join(_pp)),
+                       ('<h2 class="sr-only" id="ocTitle"></h2>', _x('해녀의 바다 지키기 — 갯닦기 · 금채 · 바다 쓰레기 수거')),
+                       ('<h2 class="game__title rv" id="gmTitle" data-t="GAME.title"></h2>', _br('해녀의\n바당길')),
+                       ('<h3 class="grank__title" id="grankTitle"></h3>', _x('바당 소랑 HIGH SCORE')),
+                       ('<h3 class="why__title rv" data-t="ABOUT.whyTitle"></h3>', _br('같이 잇다,\n가치를 잇다')),
+                       ('<h2 class="sr-only" id="enTitle">제주 해녀의 이야기를 함께 기억하기</h2>', _x('제주 해녀의 이야기를 함께 기억하기'))):
+            assert _p.count(_a) == 1, _a
+            _p = _p.replace(_a, _a[:_a.index('>') + 1] + _b + _a[_a.rindex('</h'):], 1)   # 여는 태그 + 글자 + 닫는 태그
+        # 화면에 안 보이는 소개 글(화면 문장 그대로)은 맨 뒤에 — 원본에서도 큰 제목(h1)이 제일 먼저 나와요
+        assert _p.count('</body>') == 1
+        _p = _p.replace('</body>', _about + '</body>', 1)
         _pages[_sub] = _p
     s = _pages['']
 

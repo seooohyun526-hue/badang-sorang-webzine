@@ -11,7 +11,7 @@
     var br = function (s) { return String(s || '').split('\n').map(esc).join('<br>'); };
     $('.oc__kicker', sec).textContent = C.kicker || '';
     $('.oc__side', sec).textContent = C.nav || '';
-    $('#ocTitle').textContent = C.nav || '';                        // 큰 제목은 빼고(사용자 요청), 화면 읽기 프로그램용 이름만
+    $('#ocTitle').textContent = C.srTitle || C.nav || '';                        // 큰 제목은 빼고(사용자 요청), 화면 읽기 프로그램용 이름만
 
     // ── 그림: 같은 바다의 BEFORE / AFTER (이해를 돕기 위한 일러스트) ──
     var uid = 0;
@@ -26,7 +26,7 @@
     // 털실 인형 스타일 장면 그림(CLEAN_ART · media/ocean/)이 있으면 그 그림을, 없으면 아래 간단한 그림을 써요
     function scene(kind, after) {
       var key = kind + '-' + (after ? 'after' : 'before'), art = (typeof CLEAN_ART !== 'undefined') && CLEAN_ART[key];
-      if (art) return '<img src="' + esc(art) + '" alt="" decoding="async" loading="lazy" draggable="false">';
+      if (art) return '<img src="' + esc(art) + '" alt="' + esc((C.alts || {})[key] || '') + '" decoding="async" loading="lazy" draggable="false">';
       return flat(kind, after);
     }
     function flat(kind, after) {
