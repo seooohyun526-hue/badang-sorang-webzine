@@ -5242,7 +5242,10 @@ var SUB = (function () {
     });
     text.addEventListener('input', function () { count.textContent = text.value.length + ' / ' + maxLen; hint.textContent = ''; });
     var pending = null;                                              // 보내다 실패한 응원 { t, id } — 같은 글을 다시 보내면 같은 id 로 (두 번 저장되지 않게)
-    function done() { text.value = ''; count.textContent = '0 / ' + maxLen; form.hidden = true; talkBtn.setAttribute('aria-expanded', 'false'); talkBtn.focus(); }
+    function done() {                                                // 응원이 실제로 저장됐을 때만 불려요 (빈칸 · 욕설 · 429 · 400 · 서버 오류 때는 안 불려요)
+      try { (window.dataLayer = window.dataLayer || []).push({ event: 'message_save' }); } catch (e) {}   // GTM 댓글 수 세기 — 글 내용 같은 개인정보는 보내지 않아요
+      text.value = ''; count.textContent = '0 / ' + maxLen; form.hidden = true; talkBtn.setAttribute('aria-expanded', 'false'); talkBtn.focus();
+    }
     form.addEventListener('submit', function (e) {
       e.preventDefault();
       if (busy) return;                                              // 보내는 중에 또 누르면 무시
