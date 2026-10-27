@@ -2675,6 +2675,7 @@ var CLEAN = {
     maxLen: 100,
     submit: "남기기",
     tooShort: "한 글자 이상 적어 주세요",
+    badWord: "고운 말로 응원을 남겨 주세요. 욕설 · 비속어는 남길 수 없어요.",   // 욕설 · 비속어가 들어간 응원 (서버가 막아요)
     listTitle: "내가 남긴 응원",              // (브라우저에만 저장할 때)
     listTitleShared: "모두가 남긴 응원",       // (공용 저장소를 쓸 때)
     empty: "아직 남긴 응원이 없어요. 첫 응원을 남겨 주세요!",
@@ -3030,6 +3031,7 @@ I18N.en = {
     "해녀들에게 응원의 한 마디를 남겨 주세요": "Leave a word of support for the haenyeo",
     "남기기": "Post",
     "한 글자 이상 적어 주세요": "Please write at least one character",
+    "고운 말로 응원을 남겨 주세요. 욕설 · 비속어는 남길 수 없어요.": "Please leave your message in kind words. Profanity and slurs are not allowed.",
     "내가 남긴 응원": "My messages of support",
     "아직 남긴 응원이 없어요. 첫 응원을 남겨 주세요!": "No messages yet. Leave the first one!",
     "목표 온도에 닿았어요! 응원 고마워요": "We reached the goal temperature! Thank you for cheering",
@@ -3364,6 +3366,7 @@ I18N.ja = {
     "해녀들에게 응원의 한 마디를 남겨 주세요": "海女たちへ応援のひとことを残してください",
     "남기기": "送る",
     "한 글자 이상 적어 주세요": "1文字以上入力してください",
+    "고운 말로 응원을 남겨 주세요. 욕설 · 비속어는 남길 수 없어요.": "やさしい言葉で応援を残してください。悪口や下品な言葉は書き込めません。",
     "내가 남긴 응원": "わたしが残した応援",
     "아직 남긴 응원이 없어요. 첫 응원을 남겨 주세요!": "まだ応援がありません。最初の応援を残してください！",
     "목표 온도에 닿았어요! 응원 고마워요": "目標の温度に届きました！応援ありがとうございます",
@@ -5179,6 +5182,7 @@ var SUB = (function () {
         if (res.status === 201 || res.status === 200) {
           pending = null; listState = ''; cur = fromServer(res.data); draw(cur, Math.max(0, tempOf(cur) - before)); done(); say('');
         } else if (res.status === 429) { hint.textContent = P.tooFast || ''; text.focus(); }
+        else if (res.status === 400 && res.data && res.data.error === 'bad') { hint.textContent = P.badWord || ''; text.focus(); }   // 욕설 · 비속어 (서버가 판단)
         else if (res.status === 400) { hint.textContent = P.tooShort || ''; text.focus(); }
         else { hint.textContent = P.sendError || ''; text.focus(); }  // 글은 그대로 두어 다시 보낼 수 있어요
       });
