@@ -8,8 +8,9 @@ root.insertAdjacentHTML('beforeend',`
  <header><small>EVENT / 바당소랑</small><button type="button" id="event-close" aria-label="응모창 닫기">닫기</button></header>
  <label class="event-check event-hide"><input type="checkbox" id="event-hide-today">오늘 하루 안 보기 <small>한국 시간 자정까지</small></label>
  <h2 id="event-heading">물질하고, 제주로!</h2>
- <section class="event-prize"><small>조건 달성자 추첨</small><h3>제주 해녀 체험권 <em>2매</em></h3>
- <p>한 판에서 <b>500점 이상 · 정화 30개 이상</b><br>모두 달성하고 응모해 보세요.</p>
+ <section class="event-prize"><small>제주해녀문화체험365 제공</small><h3>제주 해녀 체험권 <em>1매</em></h3>
+ <p>응모자별 이벤트 기간 최고점수 <b>상위 10명 중 2명 추첨</b><br>점수·정화 수에 관계없이 게임 후 응모할 수 있어요.</p>
+ <p>해녀와 함께 제주 바다와 해녀 문화를 만나는 체험권입니다. 응모 후 더 높은 기록을 세우면 자동 반영돼요.</p>
  <small>2명 추첨 · 1인 1매 · 중복 응모·당첨 불가</small></section>
  <p class="event-dates">응모 2026.10.26~11.06<br>발표 11.08 · 한국 시간 기준</p>
  <div id="event-record">저장된 기록을 확인하고 있어요.</div>
@@ -36,7 +37,7 @@ const policies={
  <h3>이용 목적</h3><p>이벤트 응모 접수, 조건 및 중복 확인, 무작위 추첨, 당첨자 연락과 체험권 지급. 광고·홍보 메일 발송에는 사용하지 않습니다.</p>
  <h3>보관 및 파기</h3><p>${retention}</p><p>이메일은 암호화해 보관하고 공개 랭킹이나 방문 통계로 전송하지 않습니다. 운영 데이터는 삭제하며, 복구용 백업은 서비스 보존주기에 따라 소멸하고 복원 시 삭제 대상을 다시 제거합니다.</p>
  <h3>동의 거부</h3><p>동의를 거부할 수 있습니다. 거부하면 이벤트 응모는 할 수 없지만 게임과 랭킹은 이용할 수 있습니다. 만 14세 미만은 이번 이벤트에 응모할 수 없습니다.</p>
- <h3>응모·추첨 기준</h3><p>2026년 10월 26일 00:00부터 11월 6일 23:59:59까지 저장된 한 판에서 500점 이상, 정화 30개 이상을 모두 달성하고 기간 내 접수해야 합니다. 조건 충족 응모자 중 2명을 추첨해 각 1매를 지급합니다. 발표일은 11월 8일입니다. 동일 이메일 및 동일 플레이어는 1회만 응모할 수 있습니다. 이메일 소유권은 접수 단계에서 인증하지 않으므로 본인 주소를 정확히 입력해 주세요.</p>`,
+ <h3>응모·추첨 기준</h3><p>2026년 10월 26일 00:00부터 11월 6일 23:59:59까지 완료·저장된 본인 게임 기록으로 기간 내 응모해야 합니다. 최소 점수 및 정화 수 조건은 없습니다. 응모자마다 이벤트 기간의 최고점수 한 건만 비교해 상위 10명 중 2명을 무작위 추첨합니다. 응모 후 세운 기간 내 최고기록도 자동 반영합니다. 동점이면 해당 점수를 먼저 저장한 기록이 우선하며, 상위 10명은 마감 후 확정합니다. 응모자가 10명 미만이면 전원이 추첨 대상이며 2명 미만이면 실제 인원만 선정합니다. 제주해녀문화체험365가 제공하는 제주 해녀 체험권을 당첨자마다 1매 지급합니다. 발표일은 11월 8일입니다. 기존 응모는 유지하며 변경된 추첨 기준을 적용합니다. 동일 이메일 및 동일 플레이어는 1회만 응모할 수 있습니다. 이메일 소유권은 접수 단계에서 인증하지 않으므로 본인 주소를 정확히 입력해 주세요.</p>`,
  overseas:`<h3>국외 이전에 대한 별도 동의</h3><p>응모 처리와 저장을 위해 다음 사업자에게 정보를 처리위탁·보관합니다.</p>
  <h3>Neon, LLC (Databricks 계열)</h3><p>국가: 싱가포르(데이터베이스), 미국(사업자 운영·지원)<br>연락처: privacy@databricks.com<br>목적: 응모 데이터베이스 보관·운영<br>항목: 암호화한 이메일, 중복 확인값, 플레이어·게임 기록 식별값, 응모·동의 내역.</p>
  <h3>Vercel Inc.</h3><p>국가: 대한민국(서울 처리 리전), 미국(사업자 운영·지원)<br>연락처: privacy@vercel.com<br>목적: 웹 호스팅·응모 요청 처리<br>항목: 입력 이메일, 게임 기록 식별값, 동의 내역 등 응모 요청 정보.</p>
@@ -45,15 +46,17 @@ const policies={
  <h3>동의 거부·철회</h3><p>체크하지 않으면 국외 이전에 동의하지 않은 것이며 응모 정보가 제출되지 않습니다. 이 경우 이벤트 응모만 제한됩니다. 철회·삭제 요청은 바당소랑 @badang_sorang DM으로 문의해 주세요.</p>`
 };
 async function api(path,body){
- const r=await window.OceanIntegration.fetchApi(path,{method:body?'POST':'GET',headers:body?{'Content-Type':'application/json'}:{},body:body?JSON.stringify(body):undefined,signal:AbortSignal.timeout(12000)});
+ const options={method:body?'POST':'GET',headers:body?{'Content-Type':'application/json'}:{},body:body?JSON.stringify(body):undefined,signal:AbortSignal.timeout(12000)};
+ const r=await (window.OceanIntegration?.fetchApi?window.OceanIntegration.fetchApi(path,options):window.OceanIntegration.fetchApi(path,options));
  const data=await r.json();if(!r.ok)throw Error(data.error||'잠시 후 다시 시도해 주세요.');return data;
 }
 function paint(){
  const allowed=status?.phase==='open'&&status.run&&!status.entered;
+ $('event-refresh').disabled=busy;
  $('event-submit').disabled=busy||!allowed;
  $('event-email').disabled=busy||!allowed;
  for(const id of ['event-age','event-consent','event-overseas'])$(id).disabled=busy||!allowed;
- $('event-record').textContent=status?.run?`${status.run.nickname} · ${status.run.score}점 · 정화 ${status.run.cleaned}개`:'기간 내 한 판에서 500점·정화 30개를 모두 달성해 주세요.';
+ $('event-record').textContent=status?.run?`${status.run.nickname} · ${status.run.score}점 · 정화 ${status.run.cleaned}개`:'이벤트 기간에 게임을 한 판 완료하고 기록을 저장해 주세요.';
  if(status?.entered)$('event-status').textContent='응모 완료! 11월 8일 발표를 기다려 주세요. 중복 응모는 불가해요.';
  else if(status?.phase==='before')$('event-status').textContent='10월 26일부터 응모할 수 있어요. 지금은 이벤트 안내만 볼 수 있어요.';
  else if(status?.phase==='closed')$('event-status').textContent='응모가 마감됐어요. 발표일은 11월 8일이에요.';
@@ -78,10 +81,14 @@ for(const b of panel.querySelectorAll('[data-policy]'))b.onclick=()=>{
 $('policy-close').onclick=() => policy.close();$('policy-back').onclick=() => policy.close();
 $('event-form').onsubmit=async e=>{
  e.preventDefault();if(busy||!status?.run||status.phase!=='open'||status.entered)return;
+ const submittedStatus=status;
  busy=true;paint();$('event-status').textContent='응모를 접수하고 있어요…';
  try{
-  await api('event-entry',{runId:status.run.id,email:$('event-email').value,consent:$('event-consent').checked,overseas:$('event-overseas').checked,age14:$('event-age').checked,version:status.consentVersion});
-  status.entered=true;$('event-email').value='';busy=false;paint();
+  const result=await api('event-entry',{runId:status.run.id,email:$('event-email').value,consent:$('event-consent').checked,overseas:$('event-overseas').checked,age14:$('event-age').checked,version:status.consentVersion});
+  if(result.entered!==true)throw Error('응모 저장을 확인하지 못했어요. 기록 다시 확인을 눌러 주세요.');
+  // Only a newly inserted prize_entries row returns success. Never send applicant data.
+  try{window.dataLayer=window.dataLayer||[];window.dataLayer.push({event:'event_save'});}catch{}
+  ++ticket;status={...(status||submittedStatus),entered:true};$('event-email').value='';busy=false;paint();
  }catch(error){busy=false;paint();$('event-status').textContent=error.message;}
 };
 window.addEventListener('ocean-run-started',e=>{currentRunId=e.detail.runId;});

@@ -1,0 +1,5 @@
+#game .game-to-stories{position:absolute;z-index:4;transform:translateX(-50%);display:flex;align-items:center;justify-content:center;max-width:calc(100% - 28px);padding:0 6px;border:2px solid #64d9f4;border-radius:0;background:#1f4759;color:#ebfaf7;box-shadow:0 5px 0 #071d40;font-family:Mona,system-ui,sans-serif;text-align:center;text-decoration:none;line-height:1.2;touch-action:manipulation}
+#game .game-to-stories[hidden]{display:none}
+#game .game-to-stories:hover{background:#285d70}
+#game .game-to-stories:active{background:#173c50}
+#game .game-to-stories:focus-visible{outline:3px solid #ffe59c;outline-offset:3px}
