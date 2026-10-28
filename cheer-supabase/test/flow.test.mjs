@@ -1,6 +1,7 @@
 // schema.sql 규칙 시험 (Supabase 와 같은 Postgres 를 컴퓨터 안에서):  npm test
 import assert from 'node:assert/strict';
 import { randomUUID } from 'node:crypto';
+import { readFile } from 'node:fs/promises';
 import { makeDb } from './pg.mjs';
 
 const { db, rpc } = await makeDb();
@@ -9,7 +10,7 @@ let n = 0; const ok = (name) => console.log('  ✓', ++n, name);
 
 // 1) 처음엔 비어 있어요
 let r = await rpc('cheer_state');
-assert.deepEqual(r, { likes: 0, commentCount: 0, comments: [] }); ok('빈 목록 조회');
+assert.deepEqual(r, { likes: 0, commentCount: 0, comments: [], scoreLikes: 0, scoreComments: 0, round: 0 }); ok('빈 목록 조회');
 
 // 2) 응원 남기기 → 바로 목록에 (글 정리: 빈칸 · 보이지 않는 글자)
 const id1 = randomUUID();
@@ -86,5 +87,23 @@ r = await rpc('cheer_import', { p_comments: [{ id: randomUUID(), t: '좋은 응�
 await db.query("insert into public.cheer_comments (id, body, ip_hash) values (gen_random_uuid(), 'ㅅㅂ 예전 글', 'seed')");
 r = await rpc('cheer_state'); assert.ok(!r.comments.some((c) => /ㅅㅂ|씨발/.test(c.t))); ok('옛 응원 옮기기 · 목록에서도 욕설은 빠짐');
 await assert.rejects(db.transaction(async (tx) => { await tx.exec('set local role anon'); await tx.query("select public.cheer__bad('x')"); }), /permission denied/, '비속어 도우미');
+
+// 13) 온도 점수 = 리셋 전에는 전체 · 리셋(score_since)하면 그 뒤에 저장된 것만 — 데이터 · 목록은 그대로 · 좋아요는 다시 5번
+const pre = await rpc('cheer_state');
+assert.equal(pre.round, 0); assert.equal(pre.scoreLikes, pre.likes); assert.equal(pre.scoreComments, pre.commentCount); ok('리셋 전: 점수 = 전체 수');
+await db.query('update public.cheer_config set score_since = clock_timestamp() where id = 1');
+r = await rpc('cheer_state');
+assert.equal(r.scoreLikes, 0); assert.equal(r.scoreComments, 0); assert.ok(r.round > 0);
+assert.equal(r.likes, pre.likes); assert.equal(r.commentCount, pre.commentCount); assert.deepEqual(r.comments, pre.comments); ok('리셋: 점수 0 · 데이터 · 목록은 그대로');
+for (let i = 1; i <= 5; i++) { r = await rpc('cheer_like', { p_who: me }, H('5.5.5.5')); assert.equal(r.error, undefined); assert.equal(r.mine, i); assert.equal(r.scoreLikes, i); }
+r = await rpc('cheer_like', { p_who: me }, H('5.5.5.5')); assert.equal(r.error, 'limit'); assert.equal(r.scoreLikes, 5); ok('리셋 뒤 좋아요 다시 5번까지 · 점수에 들어감');
+r = await rpc('cheer_comment', { p_id: randomUUID(), p_body: '다시 시작해요' }, H('11.0.0.1')); assert.equal(r.created, true); assert.equal(r.scoreComments, 1);
+r = await rpc('cheer_comment', { p_id: randomUUID(), p_body: '씨발' }, H('11.0.0.2')); assert.equal(r.error, 'bad');
+const hid = randomUUID(); await rpc('cheer_comment', { p_id: hid, p_body: '숨길 응원' }, H('11.0.0.3'));
+await db.query('update public.cheer_comments set hidden = true where id = $1', [hid]);
+r = await rpc('cheer_state'); assert.equal(r.scoreComments, 1); ok('리셋 뒤 응원: 저장된 것만 · 욕설 · 숨긴 것은 점수에서 빠짐');
+const round = r.round;
+await db.exec(await readFile(new URL('../schema.sql', import.meta.url), 'utf8'));
+r = await rpc('cheer_state'); assert.equal(r.round, round); assert.equal(r.scoreLikes, 5); ok('schema.sql 을 다시 Run 해도 리셋되지 않음');
 
 console.log(`\n모두 통과 (${n}개)`);

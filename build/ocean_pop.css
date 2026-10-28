@@ -46,15 +46,7 @@ html.ocp-lock{overflow:hidden; scrollbar-gutter:stable}
 .chr-temp__k{flex-basis:100%; font-size:.78rem; font-weight:800; color:#C85A28}
 .chr-temp__v{font-size:2.4rem; font-weight:900; line-height:1; letter-spacing:-.03em; color:#E24A6A; font-variant-numeric:tabular-nums}
 .chr-temp__goal{font-size:.9rem; font-weight:700; color:#8A7F7A}
-.chr-temp__up{position:absolute; right:16px; top:12px; font-size:.95rem; font-weight:900; color:#E24A6A; opacity:0; pointer-events:none}
-.chr-temp__up.is-on{animation:chrUp 1s ease-out}
-@keyframes chrUp{0%{opacity:0; transform:translateY(8px)} 20%{opacity:1} 100%{opacity:0; transform:translateY(-14px)}}
 .ocp.is-goal .chr-temp{background:#FFEDEF; border-color:#F4B8C4}
-.chr-stat{display:flex; flex-wrap:wrap; gap:6px 14px; margin:10px 2px 0; font-size:.82rem; font-weight:700; color:#4B5A58}
-.chr-stat span{display:inline-flex; align-items:center; gap:5px}
-.chr-stat svg{width:15px; height:15px}
-.chr-stat__l svg{color:#E24A6A} .chr-stat__c svg{color:#3C7FE0}
-.chr-stat b{color:#1F4A48}
 /* 좋아요 · 응원의 한 마디 */
 .chr-acts{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:14px}
 .chr-btn{display:inline-flex; align-items:center; justify-content:center; gap:7px; min-height:50px; padding:6px 12px; border-radius:14px; font:inherit; font-weight:800; font-size:.95rem; line-height:1.25; word-break:keep-all; cursor:pointer;
@@ -121,7 +113,7 @@ html.ocp-lock{overflow:hidden; scrollbar-gutter:stable}
   .chr-btn{min-height:48px; font-size:.9rem}
   .ocp__x{top:10px; right:10px; width:38px; height:38px}
 }
-@media (prefers-reduced-motion:reduce){ .ocp__dim,.ocp__box,.chr-merc{transition:none} .chr-temp__up.is-on,.chr-btn--like.is-pop svg{animation:none}
+@media (prefers-reduced-motion:reduce){ .ocp__dim,.ocp__box,.chr-merc{transition:none} .chr-btn--like.is-pop svg{animation:none}
   .chr-hearts i{animation:chrHeartStill .9s ease-out var(--d,0ms) forwards} }
 @keyframes chrHeartStill{0%{opacity:0; transform:translate(calc(var(--x) * .4), -34px) scale(var(--s))} 25%{opacity:1} 100%{opacity:0; transform:translate(calc(var(--x) * .4), -34px) scale(var(--s))}}
 </style>

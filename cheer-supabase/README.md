@@ -49,6 +49,13 @@
 - 응원 숨기기: `update cheer_comments set hidden = true where body like '%숨길 말%';`
 - 다시 보이기: `... set hidden = false ...` · 지우기: `delete from cheer_comments where id = '…';`
 - 표 보기: 왼쪽 **Table Editor** → `cheer_comments` (관리자 화면에서는 잠금과 상관없이 보여요)
+- 온도 점수: 좋아요 1점 · 응원 3점 · 500점 = 100℃ (웹진 `clean_data.js` 의 `likePoint` · `commentPoint` · `goalScore`).
+  점수는 `cheer_config.score_since` 시각 뒤에 저장된 것만 세요 (비어 있으면 처음부터 다). 한 사람당 좋아요 5번도 이 시각부터 다시 세요.
+- 온도 리셋 (36.5℃ 부터 다시) — 셋 중 하나만 Run:
+  - 남기고 점수만 0부터: `update cheer_config set score_since = now() where id = 1;` (응원 목록은 그대로 보여요)
+  - 날짜 기준으로 새로 세기: `update cheer_config set score_since = '2026-10-29 00:00+09' where id = 1;`
+  - 모두 지우고 새로 (되돌릴 수 없어요): `delete from cheer_likes; delete from cheer_comments; update cheer_config set score_since = now() where id = 1;`
+  - 앞의 두 가지는 `update cheer_config set score_since = null where id = 1;` 로 되돌릴 수 있어요.
 - 무료 요금제는 1주일 동안 아무 요청이 없으면 프로젝트가 잠들어요. 대시보드에서 **Restore** 를 누르면 그대로 돌아와요.
 
 ## 내 컴퓨터에서 시험
