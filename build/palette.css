@@ -40,4 +40,5 @@
 .gfab__bubble::after{border-top-color:var(--cream)}
 /* 맨 아래 */
 .foot{background:#287F7B}
+.foot__big{color:#fff}   /* 큰 'badang sorang' 글씨 — 배경과 같은 청록(--sea)이면 안 보여서 하얀색으로 */
 </style>
