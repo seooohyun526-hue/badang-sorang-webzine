@@ -5222,11 +5222,14 @@ var SUB = (function () {
       likeBtn.classList.remove('is-pop'); void likeBtn.offsetWidth; likeBtn.classList.add('is-pop'); hearts(); say('');
       if (n >= likeMax) { addExtra(); draw(d, likeStep); return; }     // 5번 넘음: 서버에 안 보내고 화면에만 +1 (하트 · '+℃' 는 그대로)
       setMyLikes(n + 1);
-      if (!shared) { d.likes += 1; save(d); draw(d, likeStep); return; }
+      if (!shared) { d.likes += 1; save(d); draw(d, likeStep);
+        try { (window.dataLayer = window.dataLayer || []).push({ event: 'like_save' }); } catch (e) {}   // GTM 좋아요 수 세기 — 이 브라우저에 실제로 저장된 1~5번째만 (개인정보 없음)
+        return; }
       // 공용: 눌렀다는 느낌은 바로(먼저 +1), 저장소 답을 받으면 모두의 숫자로 맞춰요 (빨리 여러 번 눌러도 하나씩 다 세요)
       cur = { likes: d.likes + 1, comments: d.comments, commentCount: d.commentCount }; draw(cur, likeStep);
       api('POST', { type: 'like' }).then(function (res) {
         var s = cur || d;
+        if (res.status === 200 && !res.data.error) try { (window.dataLayer = window.dataLayer || []).push({ event: 'like_save' }); } catch (e) {}   // GTM 좋아요 수 세기 — 서버에 실제로 저장됐을 때만 (limit · 429 · 400 · 서버 오류는 안 보내요 · 개인정보 없음)
         if (res.status === 200 || ((res.status === 400 || res.status === 429) && res.data.error)) {
           var x = fromServer(res.data);
           cur = { likes: Math.max(x.likes, res.data.error ? 0 : s.likes), comments: x.comments, commentCount: x.commentCount };   // 답이 늦게 온 순서로 숫자가 줄어 보이지 않게
