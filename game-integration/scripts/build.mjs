@@ -24,7 +24,8 @@ let html = await readFile(root + 'source/frontend/index.html', 'utf8');
 // (e.g. the GitHub Pages preview .../badang-sorang-webzine/game/), use the folder the page was opened from.
 const baseFix = "<script>(function(){var p=location.pathname,d=/\\/$/.test(p)?p:/\\/game$/.test(p)?p+'/':p.replace(/[^\\/]*$/,'');if(d!=='" + basePath + "')document.querySelector('base').setAttribute('href',d);})();</script>";
 html = html.replace('<head>', '<head><base href="' + basePath + '">' + baseFix + '\n<!-- WEBZINE_ANALYTICS_HEAD: insert the webzine tag here in host mode. -->\n<script src="integration-config.js"></script><script src="integration-bootstrap.js?v=' + scriptVersion + '"></script><script defer src="game-analytics.js"></script><link rel="stylesheet" href="language.css"><script src="translations.js"></script><script src="language.js"></script>\n');
-html = html.replace('</head>', '<link rel="stylesheet" href="event.css"><script type="module" src="event.js?v=' + scriptVersion + '"></script></head>');
+html = html.replace('</head>', '<link rel="stylesheet" href="event.css"><script type="module" src="event.js?v=' + scriptVersion + '"></script>' +
+  '<link rel="stylesheet" href="stories.css?v=' + scriptVersion + '"><script defer src="stories.js?v=' + scriptVersion + '"></script></head>');   // end-screen HTML button to the webzine's #stories (2026-10-28)
 html = html.replace('<script src="online.js"></script>', '<script src="online.js?v=' + scriptVersion + '"></script>');
 html = html.replace('window.unityInstance=instance;', 'window.unityInstance=instance;window.dispatchEvent(new Event("ocean-unity-ready"));');
 if (analytics.mode === 'gtm' && /^GTM-[A-Z0-9]+$/.test(analytics.gtmContainerId || '')) html = html.replace('<body>', '<body><noscript><iframe src="https://www.googletagmanager.com/ns.html?id=' + analytics.gtmContainerId + '" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>');
