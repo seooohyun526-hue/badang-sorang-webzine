@@ -3931,8 +3931,12 @@ var SUB = (function () {
     var c = it.color || ['#7fd6cf', '#14a3a0'];
 
     // 영상: 파일 · 유튜브 · 비메오 (없으면 자리표시)
-    var src = it.video, v = null, m;
-    if (src && typeof src === 'object') src = src[(window.BSI18N && BSI18N.lang) || 'ko'] || src.ko;   // 언어마다 다른 영상
+    var src = it.video, v = null, m, vlang = 'ko';
+    if (src && typeof src === 'object') {   // 언어마다 다른 영상 (없는 언어는 한국어 영상)
+      vlang = (window.BSI18N && BSI18N.lang) || 'ko';
+      if (!src[vlang]) vlang = 'ko';
+      src = src[vlang];
+    }
     if (has(src)) {
       m = String(src).match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?(?:.*&)?v=|embed\/|shorts\/|live\/))([\w-]{11})/);
       if (m) v = { k: 'youtube', id: m[1] };
@@ -3988,7 +3992,7 @@ var SUB = (function () {
     });
     document.title = it.label + ' · ' + it.name + ' — ' + SITE.name;
 
-    var cover = $('.vframe__cover', root);
+    var cover = $('.vframe__cover', root), stopTrack = function () {};
     if (cover) cover.addEventListener('click', function () {
       var fr = cover.parentNode, video = $('video', fr);
       if (video) {
@@ -3996,13 +4000,71 @@ var SUB = (function () {
         var p = video.play(); if (p && p.catch) p.catch(function () {});
         video.addEventListener('error', function () { fr.innerHTML = '<div class="vframe__empty"><p>영상 파일을 찾을 수 없어요</p><small>' + esc(src) + ' 경로를 확인해 주세요</small></div>'; });
       } else {
-        var url = cover.getAttribute('data-k') === 'youtube'
-          ? 'https://www.youtube-nocookie.com/embed/' + cover.getAttribute('data-id') + '?autoplay=1&rel=0&playsinline=1'
+        var yt = cover.getAttribute('data-k') === 'youtube';
+        var url = yt   // enablejsapi · origin: 재생 상태를 읽는 유튜브 IFrame API 용
+          ? 'https://www.youtube-nocookie.com/embed/' + cover.getAttribute('data-id') + '?autoplay=1&rel=0&playsinline=1&enablejsapi=1' +
+            (/^https?:$/.test(location.protocol) ? '&origin=' + encodeURIComponent(location.origin) : '')
           : 'https://player.vimeo.com/video/' + cover.getAttribute('data-id') + '?autoplay=1';
         fr.innerHTML = '<iframe src="' + url + '" title="' + esc(it.name) + ' 인터뷰 영상" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>';
+        if (yt) stopTrack = trackYT($('iframe', fr), String(it.id), vlang);
       }
     });
-    return stop;
+    return function () { stopTrack(); stop(); };
+  }
+
+  /* ---------- GTM 영상 시청 신호 (유튜브만) ----------
+     · video_start: 플레이어가 실제로 재생을 시작한 첫 순간 (자동재생이 막혀 멈춰 있으면 안 보내요)
+     · video_progress: 재생 30초 · 영상 길이의 10 · 25 · 50 · 75 · 90% 지점 (video_percent "30s" · "10" …)
+     · 영상을 열 때마다 지점마다 한 번씩만 — 앞뒤로 돌려 다시 봐도 또 보내지 않아요
+     · 해녀 번호 · 영상 언어 · 지점만 보내요 (개인정보 없음) */
+  var YT_POINTS = ['30s', '10', '25', '50', '75', '90'], ytWait = null;
+  function ytApi(cb) {
+    if (window.YT && YT.Player) return cb();
+    if (!ytWait) {
+      ytWait = [];
+      var prev = window.onYouTubeIframeAPIReady;
+      window.onYouTubeIframeAPIReady = function () {
+        if (prev) try { prev(); } catch (e) {}
+        var q = ytWait; ytWait = []; q.forEach(function (f) { f(); });
+      };
+      var s = document.createElement('script'); s.src = 'https://www.youtube.com/iframe_api'; s.async = true;
+      document.head.appendChild(s);
+    }
+    ytWait.push(cb);
+  }
+  function trackYT(frame, hid, lang) {
+    var sent = {}, timer = null, dead = false, player = null;
+    function push(o) { try { (window.dataLayer = window.dataLayer || []).push(o); } catch (e) {} }
+    function check() {
+      var t, d;
+      try { t = player.getCurrentTime(); d = player.getDuration(); } catch (e) { return; }
+      if (!(t > 0)) return;
+      YT_POINTS.forEach(function (p) {
+        if (sent[p] || !(p === '30s' ? t >= 30 : d > 0 && t >= d * p / 100)) return;
+        sent[p] = 1;
+        push({ event: 'video_progress', haenyeo_id: hid, video_lang: lang, video_percent: p });
+      });
+    }
+    function onState(st) {
+      if (dead) return;
+      if (st === 1) {   // 재생 중
+        if (!sent.start) { sent.start = 1; push({ event: 'video_start', haenyeo_id: hid, video_lang: lang }); }
+        if (!timer) timer = setInterval(check, 500);
+      } else {
+        if (timer) { clearInterval(timer); timer = null; }
+        if (sent.start) check();   // 멈춤 · 끝 · 넘기기 때 지난 지점까지
+      }
+    }
+    ytApi(function () {
+      if (dead || !frame.isConnected) return;
+      try {
+        player = new YT.Player(frame, { events: {
+          onReady: function () { try { onState(player.getPlayerState()); } catch (e) {} },   // API 가 늦게 붙어도 이미 재생 중이면 세요
+          onStateChange: function (e) { onState(e.data); }
+        } });
+      } catch (e) {}
+    });
+    return function () { dead = true; if (timer) { clearInterval(timer); timer = null; } };
   }
 
   /* ---------- 게임 상세: 게임 화면을 크게 ---------- */
