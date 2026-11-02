@@ -29,7 +29,7 @@ root.insertAdjacentHTML('beforeend',`
 </dialog>
 <dialog id="event-policy" aria-labelledby="policy-heading"><header><h2 id="policy-heading">개인정보 안내</h2><button type="button" id="policy-close">닫기</button></header><div id="policy-body"></div><button type="button" id="policy-back">응모 화면으로 돌아가기</button></dialog>`);
 const $=id=>document.getElementById(id),panel=$('event-panel'),policy=$('event-policy');
-let status=null,busy=false,ticket=0,currentRunId='';
+let status=null,busy=false,ticket=0,currentRunId='',currentPhase='title';
 const retention=`미당첨자의 응모 정보는 추첨 확정 시, 당첨자의 응모 정보는 체험권 전달·수령 확인이 끝나면 지체 없이 삭제합니다. 연락 및 지급 처리가 남아 있더라도 2026년 11월 22일까지만 보관하고 다음 날 삭제 작업으로 제거합니다. 이메일과 응모 기록의 연결·중복 확인값·동의 기록을 함께 삭제합니다. 일반 게임 랭킹은 별도로 유지됩니다.`;
 const policies={
  collection:`<h3>운영자 및 문의</h3><p>바당소랑 · 인스타그램 @badang_sorang DM<br>열람·정정·삭제·동의 철회 요청도 같은 문의처로 접수합니다. 신청자 확인 후 처리합니다.</p>
@@ -93,13 +93,21 @@ $('event-form').onsubmit=async e=>{
 };
 window.addEventListener('ocean-run-started',e=>{currentRunId=e.detail.runId;});
 window.addEventListener('ocean-game',e=>{
+ if(['title','end','prepare','begin'].includes(e.detail.phase))currentPhase=e.detail.phase;
  if(['title','end'].includes(e.detail.phase)){$('event-open').hidden=false;}
- if(e.detail.phase==='end')autoShow();
+ if(e.detail.phase==='end'){
+  // A new guest run needs its nickname and score saved before an application is possible.
+  const naming=['naming','saving'].includes(root.dataset.recordFlow);
+  $('event-open').hidden=naming;if(!naming)autoShow();
+ }
  if(['prepare','begin'].includes(e.detail.phase)){$('event-open').hidden=true;close();}
 });
-window.addEventListener('ocean-record-saved',()=>{
- // Saving may finish after the user closes the popup. Never reopen it here.
+window.addEventListener('ocean-record-flow',e=>{
+ if(currentPhase==='end')$('event-open').hidden=['naming','saving'].includes(e.detail.state);
+});
+window.addEventListener('ocean-record-saved',e=>{
  if(panel.open)refresh();
+ else if(e.detail?.promptEvent&&currentPhase==='end'&&e.detail.runId===currentRunId)autoShow();
 });
 // The Unity title event can precede this module on a cached load.
 if(document.getElementById('rank-open')?.hidden===false){$('event-open').hidden=false;}
