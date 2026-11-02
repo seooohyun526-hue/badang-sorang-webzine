@@ -1,0 +1,1 @@
+window.oceanBuild={"loaderUrl":"Build/Web.loader.js?v=674d628b53665623","dataUrl":"Build/Web.data.unityweb?v=d78f05fd6b66c326","frameworkUrl":"Build/Web.framework.js.unityweb?v=98768080dbb31e5e","codeUrl":"Build/Web.wasm.unityweb?v=7ff58ef048c8ce7a","version":"0b1c9f88ba64f42f"};

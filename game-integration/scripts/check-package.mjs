@@ -25,6 +25,17 @@ for (const name of ['online.js', 'event.js']) { const text = await readFile(publ
 const html = await readFile(publicRoot + 'index.html', 'utf8');
 if (externalGameUrl) { if (!html.includes('location.replace(' + JSON.stringify(externalGameUrl) + ')')) throw Error('Missing forward to ' + externalGameUrl); }
 else if (!html.includes('<base href="' + basePath + '">')) throw Error('Missing base href');
+if (!externalGameUrl) {
+  // The Unity build set must match build-manifest.js: every URL carries the first 16 hex characters of its file's SHA-256.
+  const buildManifest = JSON.parse((await readFile(publicRoot + 'build-manifest.js', 'utf8')).match(/^window\.oceanBuild=(\{.*\});\s*$/)[1]);
+  for (const key of ['loaderUrl', 'dataUrl', 'frameworkUrl', 'codeUrl']) {
+    const [file, version] = buildManifest[key].split('?v=');
+    if (createHash('sha256').update(await readFile(publicRoot + file)).digest('hex').slice(0, 16) !== version) throw Error('Build file does not match build-manifest.js: ' + file);
+    if (!html.includes('href="' + buildManifest[key] + '"')) throw Error('Missing preload: ' + file);
+  }
+  if (html.includes('createUnityInstance(') || !html.includes('game-loader.js?v=') || !html.includes('build-manifest.js?v=')) throw Error('index.html must load Unity through game-loader.js');
+  if (!html.includes('GTM-M2LF732B')) throw Error('Webzine GTM container missing');
+}
 if (/G-QS2FVTG7C1|GTM-MHKZ67TD|vercel-analytics|google-analytics\.js/.test(html)) throw Error('Old analytics was not removed');
 await writeFile(root + 'MANIFEST.json', JSON.stringify({ format: 1, createdAt: new Date().toISOString(), files: manifest }, null, 2));
 console.log('PASS: nested game path, 4 Unity build files, no root API calls, no old analytics injection, no private/cache files. ' + manifest.length + ' files.');

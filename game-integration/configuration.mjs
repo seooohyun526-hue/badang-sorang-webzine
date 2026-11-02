@@ -10,9 +10,9 @@ export const gameDir = fileURLToPath(new URL('../site/game/', import.meta.url));
 // with a signed player token (integration/integration-bootstrap.js · fetchApi). The Vercel server allows exactly https://lxwebzine.hankyung.com,
 // so the Hankyung server needs no PHP, Node or proxy (2026-10-26 direct-API patch; replaces the PHP/auto adapter, which Hankyung could not run).
 export const apiMode = 'direct';
-// Cache version added to the game scripts (integration-bootstrap.js · online.js · event.js · stories.css · stories.js).
-// 20261028-event2: prize copy (top 10 → 2 draw), event_save on a saved entry, end-screen 'go to haenyeo stories' button (haenyeo-event-update-2026-10-28).
-export const scriptVersion = '20261028-event2';
+// Cache version added to the game scripts (integration-bootstrap.js · language.js · online.css · online.js · event.js · game-loader.js · build-manifest.js · stories.css · stories.js).
+// 20261102-start1: automatic first start, nickname after the run, event prompt after the save, new Unity build set (haenyeo-quick-start-2026-11-02).
+export const scriptVersion = '20261102-start1';
 // Where /game/ sends players instead of running the game here.
 //  '' — play the game here (the webzine's /game/)
 //  a URL — game/index.html becomes a short page that forwards to that game. The Unity files stay in place, so switching back is this one line.

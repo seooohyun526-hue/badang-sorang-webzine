@@ -23,11 +23,16 @@ let html = await readFile(root + 'source/frontend/index.html', 'utf8');
 // The base stays basePath on the webzine. When the same files are opened from another folder
 // (e.g. the GitHub Pages preview .../badang-sorang-webzine/game/), use the folder the page was opened from.
 const baseFix = "<script>(function(){var p=location.pathname,d=/\\/$/.test(p)?p:/\\/game$/.test(p)?p+'/':p.replace(/[^\\/]*$/,'');if(d!=='" + basePath + "')document.querySelector('base').setAttribute('href',d);})();</script>";
-html = html.replace('<head>', '<head><base href="' + basePath + '">' + baseFix + '\n<!-- WEBZINE_ANALYTICS_HEAD: insert the webzine tag here in host mode. -->\n<script src="integration-config.js"></script><script src="integration-bootstrap.js?v=' + scriptVersion + '"></script><script defer src="game-analytics.js"></script><link rel="stylesheet" href="language.css"><script src="translations.js"></script><script src="language.js"></script>\n');
+html = html.replace('<head>', '<head><base href="' + basePath + '">' + baseFix + '\n<!-- WEBZINE_ANALYTICS_HEAD: insert the webzine tag here in host mode. -->\n<script src="integration-config.js"></script><script src="integration-bootstrap.js?v=' + scriptVersion + '"></script><script defer src="game-analytics.js"></script><link rel="stylesheet" href="language.css"><script src="translations.js"></script><script src="language.js?v=' + scriptVersion + '"></script>\n');
 html = html.replace('</head>', '<link rel="stylesheet" href="event.css"><script type="module" src="event.js?v=' + scriptVersion + '"></script>' +
   '<link rel="stylesheet" href="stories.css?v=' + scriptVersion + '"><script defer src="stories.js?v=' + scriptVersion + '"></script></head>');   // end-screen HTML button to the webzine's #stories (2026-10-28)
 html = html.replace('<script src="online.js"></script>', '<script src="online.js?v=' + scriptVersion + '"></script>');
-html = html.replace('window.unityInstance=instance;', 'window.unityInstance=instance;window.dispatchEvent(new Event("ocean-unity-ready"));');
+html = html.replace('<script src="game-loader.js"></script>', '<script src="game-loader.js?v=' + scriptVersion + '"></script>');
+html = html.replace('<link rel="stylesheet" href="online.css">', '<link rel="stylesheet" href="online.css?v=' + scriptVersion + '">');
+// Unity build set (2026-11-02 quick start): site/game/Build + StreamingAssets stay in the game folder; web/build-manifest.js names their content-hashed URLs.
+const buildManifest = JSON.parse((await readFile(root + 'source/frontend/web/build-manifest.js', 'utf8')).match(/^window\.oceanBuild=(\{.*\});\s*$/)[1]);
+const preloads = ['loaderUrl', 'dataUrl', 'frameworkUrl', 'codeUrl'].map(key => '<link rel="preload" href="' + buildManifest[key] + '" as="' + (key === 'loaderUrl' ? 'script' : 'fetch') + '"' + (key === 'loaderUrl' ? '' : ' crossorigin="anonymous"') + '>').join('\n');
+html = html.replace('</head>', preloads + '\n<script src="build-manifest.js?v=' + scriptVersion + '"></script>\n</head>');
 if (analytics.mode === 'gtm' && /^GTM-[A-Z0-9]+$/.test(analytics.gtmContainerId || '')) html = html.replace('<body>', '<body><noscript><iframe src="https://www.googletagmanager.com/ns.html?id=' + analytics.gtmContainerId + '" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>');
 if (externalGameUrl) {
   // Forwarding page: keeps the page's description · canonical · og, then sends players to the external game.

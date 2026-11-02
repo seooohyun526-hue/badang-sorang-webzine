@@ -36,3 +36,6 @@ cheer-supabase/node_modules/
 웹진메인_이미지/
 team6_웹진메인_이미지.zip
 team6_site_배포본_*.zip
+
+# 한경 서버 담당자에게 전달하는 폴더 (site/ 사본 · 전달문)
+한경서버_전달_*/

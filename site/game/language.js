@@ -37,7 +37,7 @@
   }
  }
  function apply(){
-  document.documentElement.lang=language;document.title=language==='en'?'Haenyeo Ocean Path':'해녀의 바당길 · 온라인 해양 정화 | 바당소랑';
+  document.documentElement.lang=language;document.title=language==='en'?'Haenyeo Ocean Path':'해녀의 바당길 · 온라인 해양 정화';
   window.oceanLanguage=language;update(document.body);
   document.querySelector('#language-choice').value=language;
   sendLanguage();
@@ -46,28 +46,18 @@
  function init(){
   const root=document.getElementById('game');root.dataset.view='loading';
   root.insertAdjacentHTML('beforeend',`<div id="language-menu"><label for="language-choice">Language / 언어</label><select id="language-choice" aria-label="Language / 언어"><option value="ko">한국어</option><option value="en">English</option></select></div>
-<dialog id="language-welcome" aria-labelledby="welcome-title" aria-describedby="welcome-intro">
- <div class="welcome-mark" aria-hidden="true">≈</div><p class="welcome-brand">HAENYEO / OCEAN PATH</p>
- <h2 id="welcome-title">Choose your language<span>언어를 선택해 주세요</span></h2>
- <p id="welcome-intro">A pixel adventure under the sea.<br><span>해녀와 함께 떠나는 픽셀 바닷속 모험</span></p>
- <div class="welcome-options"><button type="button" data-language="en"><b>English</b><span>Play in English <i aria-hidden="true">→</i></span></button><button type="button" data-language="ko"><b>한국어</b><span>한국어로 플레이 <i aria-hidden="true">→</i></span></button></div>
- <p class="welcome-tip">Tap to step forward. Swipe to change direction.<br><span>탭해서 전진 · 밀어서 방향 이동</span></p>
-</dialog>`);
-  const welcome=document.getElementById('language-welcome');
-  function choose(value){language=value;try{localStorage.setItem('ocean.language',language);localStorage.setItem('ocean.languageConfirmed.v1','true');}catch{}apply();welcome.close();document.querySelector('canvas')?.focus();}
+`);
+  function choose(value){language=value;try{localStorage.setItem('ocean.language',language);}catch{}apply();document.querySelector('canvas')?.focus();}
   document.getElementById('language-choice').onchange=e=>choose(e.target.value);
-  for(const button of welcome.querySelectorAll('[data-language]'))button.onclick=()=>choose(button.dataset.language);
-  welcome.addEventListener('cancel',e=>e.preventDefault());
   const observer=new MutationObserver(()=>update(document.body));observer.observe(document.body,{childList:true,subtree:true,characterData:true});apply();
   window.addEventListener('ocean-unity-ready',sendLanguage);
   window.addEventListener('ocean-game',e=>{
    if(e.detail.phase==='title'){unityReady=true;sendLanguage();}
    const views={title:'title',end:'ended',begin:'playing',prepare:'preparing'};
    const view=e.detail.phase.startsWith('view-')?e.detail.phase.slice(5):views[e.detail.phase];
-   if(view){root.dataset.view=view;document.getElementById('language-menu').hidden=!['title','ended'].includes(view);}
+   if(view){root.dataset.view=view;document.getElementById('language-menu').hidden=!['title','ended','loading'].includes(view);}
   });
-  let confirmed=false;try{confirmed=localStorage.getItem('ocean.languageConfirmed.v1')==='true';}catch{}
-  if(!confirmed)welcome.showModal();
+  // Use the remembered/browser language without a blocking first-visit dialog.
  }
  document.readyState==='loading'?document.addEventListener('DOMContentLoaded',init):init();
 })();
