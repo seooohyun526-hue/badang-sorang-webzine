@@ -12,7 +12,7 @@ export const gameDir = fileURLToPath(new URL('../site/game/', import.meta.url));
 export const apiMode = 'direct';
 // Cache version added to the game scripts (integration-bootstrap.js · language.js · online.css · online.js · event.js · game-loader.js · build-manifest.js · stories.css · stories.js).
 // 20261102-start1: automatic first start, nickname after the run, event prompt after the save, new Unity build set (haenyeo-quick-start-2026-11-02).
-export const scriptVersion = '20261102-start1';
+export const scriptVersion = '20261103-audio1';
 // Where /game/ sends players instead of running the game here.
 //  '' — play the game here (the webzine's /game/)
 //  a URL — game/index.html becomes a short page that forwards to that game. The Unity files stay in place, so switching back is this one line.
