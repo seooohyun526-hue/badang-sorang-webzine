@@ -2446,17 +2446,17 @@ var STORIES = {
 };
 var INTERVIEWS = [
   {
-    id: "1",
+    id: "3",
     label: "이야기 하나",
-    name: "김은영 해녀",              // 이름 또는 공개 가능한 호칭
-    title: "",                         // 한 줄 소개 (예: "○○마을 해녀") — 확인된 내용만
-    theme: "해녀의 하루",              // 이 이야기의 주제 (일상 · 자부심 · 바다에 대한 애정 · 다음 세대)
-    quote: "",                         // 인터뷰 핵심 문장 (실제로 하신 말만)
-    photo: "../media/interview-1.webp",   // 대표 사진 (영상 썸네일 · 없으면 일러스트가 보여요)
-    video: { ko: "https://youtu.be/TauVz5ffGdA", en: "https://youtu.be/V7IdoN8KFrM", ja: "https://youtu.be/KfN84UjbtoM" },   // 인터뷰 영상 — 언어마다 (한국어 · 영어 · 일본어)
-    poster: "",                        // 영상 재생 전 사진 (비우면 대표 사진)
-    credit: "",                        // 인터뷰 정보 — 예: "인터뷰 2026년 ○월 ○일 · ○○ · 진행 ○○○ · 촬영 ○○○" (확인된 것만, 비우면 안 보여요)
-    color: ["#7fd6cf", "#14a3a0"]     // 사진이 없을 때 카드 바탕색
+    name: "카일리 해녀",
+    title: "",
+    theme: "바다에 대한 애정",
+    quote: "",
+    photo: "",                         // (사진이 생기면 media/ 에 넣고 경로를 적어요)
+    video: { ko: "https://youtu.be/86cBfvBSpAs", en: "https://youtu.be/8mvgTVBzoJI", ja: "https://youtu.be/UgB5MLUGhVY" },
+    poster: "",
+    credit: "",
+    color: ["#9fcbf2", "#2b7fd4"]
   },
   {
     id: "2",
@@ -2472,17 +2472,17 @@ var INTERVIEWS = [
     color: ["#ffc59f", "#ff7a50"]
   },
   {
-    id: "3",
+    id: "1",
     label: "이야기 셋",
-    name: "카일리 해녀",
-    title: "",
-    theme: "바다에 대한 애정",
-    quote: "",
-    photo: "",                         // (사진이 생기면 media/ 에 넣고 경로를 적어요)
-    video: { ko: "https://youtu.be/86cBfvBSpAs", en: "https://youtu.be/8mvgTVBzoJI", ja: "https://youtu.be/UgB5MLUGhVY" },
-    poster: "",
-    credit: "",
-    color: ["#9fcbf2", "#2b7fd4"]
+    name: "김은영 해녀",              // 이름 또는 공개 가능한 호칭
+    title: "",                         // 한 줄 소개 (예: "○○마을 해녀") — 확인된 내용만
+    theme: "해녀의 하루",              // 이 이야기의 주제 (일상 · 자부심 · 바다에 대한 애정 · 다음 세대)
+    quote: "",                         // 인터뷰 핵심 문장 (실제로 하신 말만)
+    photo: "../media/interview-1.webp",   // 대표 사진 (영상 썸네일 · 없으면 일러스트가 보여요)
+    video: { ko: "https://youtu.be/TauVz5ffGdA", en: "https://youtu.be/V7IdoN8KFrM", ja: "https://youtu.be/KfN84UjbtoM" },   // 인터뷰 영상 — 언어마다 (한국어 · 영어 · 일본어)
+    poster: "",                        // 영상 재생 전 사진 (비우면 대표 사진)
+    credit: "",                        // 인터뷰 정보 — 예: "인터뷰 2026년 ○월 ○일 · ○○ · 진행 ○○○ · 촬영 ○○○" (확인된 것만, 비우면 안 보여요)
+    color: ["#7fd6cf", "#14a3a0"]     // 사진이 없을 때 카드 바탕색
   },
   {
     id: "4",
@@ -3599,9 +3599,9 @@ SEA.items[3].photos[0][2] = "../media/asset-1d483336.webp";
 GAME.shot = "../media/game-shot-aeed82df.webp";
 window.CLEAN_ART = {"gaet-before": "../media/gaet-before-8873b37e.webp", "gaet-after": "../media/gaet-after-e07c03ab.webp", "rest-before": "../media/rest-before-059ab0c0.webp", "rest-after": "../media/rest-after-e364d237.webp", "net-before": "../media/net-before-906008a1.webp", "net-after": "../media/net-after-04b23520.webp"};
 /* 인터뷰 카드 썸네일 (../media/interview-1~4.webp 를 이 파일 안에 담음) */
-INTERVIEWS[0].photo = "../media/interviews-0-photo-19a029c7.webp";
+INTERVIEWS[0].photo = "../media/interviews-0-photo-3e59eae3.webp";
 INTERVIEWS[1].photo = "../media/interviews-1-photo-70d1b2ae.webp";
-INTERVIEWS[2].photo = "../media/interviews-2-photo-3e59eae3.webp";
+INTERVIEWS[2].photo = "../media/interviews-2-photo-19a029c7.webp";
 INTERVIEWS[3].photo = "../media/interviews-3-photo-543564a6.webp";
 /* 오른쪽 미니 팝업 캐릭터 (../media/float-game.webp · float-support.webp 를 이 파일 안에 담음) */
 MEDIA.floatGame = "../media/floatgame-13f0603a.webp";
@@ -4558,7 +4558,7 @@ var SUB = (function () {
       var q = has(it.quote)
         ? '<p class="st-quote">“' + esc(it.quote) + '”</p>'
         : (guides ? '<p class="st-quote is-ph">인터뷰 핵심 문장이 들어갈 자리예요</p>' : '');   // 공개판: 핵심 문장이 없으면 아무것도 안 보여요
-      return '<article class="st-card" data-i="' + i + '">' +
+      return '<article class="st-card" data-i="' + (it.id - 1) + '">' +
         '<button class="st-frame st-frame--interview-' + esc(it.id) + '" data-interview="' + esc(it.id) + '" type="button" data-open="' + i + '" style="--c1:' + c[0] + ';--c2:' + c[1] + '" aria-label="' + esc(it.label + ' · ' + it.name + ' 인터뷰 영상 보기') + '">' +
           '<span class="st-media st-media--interview-' + esc(it.id) + '" data-photo="' + esc(it.photo || '') + '"></span>' + WAVES +   // 인터뷰마다 다른 이름 (언어가 바뀌어도 같아요 · GTM 클릭 집계용)
           '<span class="st-ph">' + ART.char({ shadow: false, pose: i % 2 ? 'dive' : 'hug' }) + '</span>' +
@@ -6060,7 +6060,7 @@ var SUB = (function () {
 </script>
 <noscript><article class="seo-summary" lang="ja">
 <p>海とともに生きてきた人たち。私たちがまだ知らなかった海女の物語</p><p>2025年、2,371人。1970年より83%減りました。</p>
-<h2>海女の物語</h2><h3>海で出会った人たち</h3><ul><li>海女 キム・ウニョンさん</li><li>海女 チョ・ウンビョルさん</li><li>海女 カイリーさん</li><li>元・海女学校講師 チェ・ミョンスさん &amp; 海女 パク・シネさん</li></ul>
+<h2>海女の物語</h2><h3>海で出会った人たち</h3><ul><li>海女 カイリーさん</li><li>海女 チョ・ウンビョルさん</li><li>海女 キム・ウニョンさん</li><li>元・海女学校講師 チェ・ミョンスさん &amp; 海女 パク・シネさん</li></ul>
 <p>物語は今も記録を続けています次は海女になって海の中の道を進むミニゲームへ続きます。</p>
 <h2>ユネスコ人類の無形文化遺産</h2>
 <p>海のごみを拾い上げ、海の森を育ててきた手。世代を超えて受け継がれてきた、思いやりと連帯の共同体。海女がいなくなるということは、海をもっとも長く守ってきた担い手がいなくなるということです。Badang Sorangは消えつつある海女文化を受け継ぎ、彼女たちが培ってきたやり方で海を守り、青く豊かに育てていきます。</p>

@@ -577,18 +577,18 @@ if os.environ.get('BS_OCEAN') == 'v2':
     ocss = open(sp + '/clean.css', encoding='utf-8').read().strip()
     one('</style>' + nl + '<script>document.documentElement', '</style>' + nl + N(ocss) + nl + '<script>document.documentElement')
 
-# 17) 인터뷰 카드 썸네일 (build/interview-1~4.webp · 2026-10-27 영상 장면 4장으로 바꿈) · 이름 (1번 김은영 해녀 · 2번 조은별 해녀 · 3번 카일리 해녀 · 4번 전 해녀 학교 강사 최명수 & 박신혜 해녀) — 사진은 이 파일 안에 담아 둬요
+# 17) 인터뷰 카드 썸네일 (build/interview-1~4.webp · 2026-10-27 영상 장면 4장으로 바꿈) · 이름 (1번 카일리 해녀 · 2번 조은별 해녀 · 3번 김은영 해녀 · 4번 전 해녀 학교 강사 최명수 & 박신혜 해녀) — 사진은 이 파일 안에 담아 둬요
 if True:
     import base64 as _b64i
     one('    name: "○○○ 해녀",                 // 이름 또는 공개 가능한 호칭\n    title: "",                         // 한 줄 소개 (예: "○○마을 해녀") — 확인된 내용만\n    theme: "해녀의 하루",'.replace('\n', nl),
         '    name: "김은영 해녀",              // 이름 또는 공개 가능한 호칭\n    title: "",                         // 한 줄 소개 (예: "○○마을 해녀") — 확인된 내용만\n    theme: "해녀의 하루",'.replace('\n', nl))
     one('    photo: "images/interview-1.jpg",   // 대표 사진 (없으면 일러스트가 보여요)', '    photo: "media/interview-1.webp",   // 대표 사진 (영상 썸네일 · 없으면 일러스트가 보여요)')
     one('    label: "이야기 둘",' + nl + '    name: "○○○ 해녀",', '    label: "이야기 둘",' + nl + '    name: "조은별 해녀",')
-    # 3번 카일리 해녀 · 4번 전 해녀 학교 강사 최명수 & 박신혜 해녀 (2026-10-23 사용자가 알려 줌)
-    one('    label: "이야기 셋",' + nl + '    name: "○○○ 해녀",', '    label: "이야기 셋",' + nl + '    name: "카일리 해녀",')
+    # 1번 카일리 해녀 · 4번 전 해녀 학교 강사 최명수 & 박신혜 해녀 (2026-10-23 사용자가 알려 줌)
+    one('    label: "이야기 하나",' + nl + '    name: "○○○ 해녀",', '    label: "이야기 하나",' + nl + '    name: "카일리 해녀",')
     one('    label: "이야기 넷",' + nl + '    name: "○○○ 선생님",', '    label: "이야기 넷",' + nl + '    name: "전 해녀 학교 강사 최명수 & 박신혜 해녀",')
     one('    photo: "images/interview-2.jpg",', '    photo: "media/interview-2.webp",')
-    emb = ''.join('INTERVIEWS[%d].photo = "data:image/webp;base64,%s";' % (k, _b64i.b64encode(open(sp + '/interview-%d.webp' % (k + 1), 'rb').read()).decode()) + nl for k in (0, 1, 2, 3))
+    emb = ''.join('INTERVIEWS[%d].photo = "data:image/webp;base64,%s";' % (k, _b64i.b64encode(open(sp + '/interview-%d.webp' % n, 'rb').read()).decode()) + nl for k, n in enumerate((3, 2, 1, 4)))   # 사진 번호는 해녀 id — 보여 주는 순서는 카일리 · 조은별 · 김은영 · 최명수 & 박신혜 (2026-11-02)
     one('MEDIA.gameHead = "data:', '/* 인터뷰 카드 썸네일 (media/interview-1~4.webp 를 이 파일 안에 담음) */' + nl + emb + 'MEDIA.gameHead = "data:')
 
 # 19) 바당소랑 칸(#about) 아래쪽 '우리가 해녀를 만나는 이유' → '같이 잇다, 가치를 잇다' (사용자가 준 문구 그대로)
@@ -1015,7 +1015,7 @@ else:
         _ldt = '<script type="application/ld+json">' + _js.dumps(_ld, ensure_ascii=False).replace('</', '<\\/') + '</script>'
         _p = _p.replace('<link rel="canonical" href="%s%s">' % (_SITE, _sub), _ldt + nl + '<link rel="canonical" href="%s%s">' % (_SITE, _sub), 1)
         _stat = _w('{y}년, {v}명. {y0}년보다 {p}% 줄었습니다.').replace('{y0}', '1970').replace('{y}', '2025').replace('{v}', '2,371').replace('{p}', '83')
-        _names_ul = '<ul>%s</ul>' % ''.join('<li>%s</li>' % _x(n) for n in ('김은영 해녀', '조은별 해녀', '카일리 해녀', '전 해녀 학교 강사 최명수 & 박신혜 해녀'))
+        _names_ul = '<ul>%s</ul>' % ''.join('<li>%s</li>' % _x(n) for n in ('카일리 해녀', '조은별 해녀', '김은영 해녀', '전 해녀 학교 강사 최명수 & 박신혜 해녀'))
         _P = lambda *ts: '<p>%s</p>' % _sp.join(_x(t) for t in ts)
         _L = lambda *ts: '<ul>%s</ul>' % ''.join('<li>%s</li>' % _x(t) for t in ts)
         _D = lambda *pairs: '<ul>%s</ul>' % ''.join('<li><b>%s</b> — %s %s</li>' % (_x(a), _x(b), _x(c)) for a, b, c in pairs)
