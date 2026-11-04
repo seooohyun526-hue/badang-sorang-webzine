@@ -1,0 +1,82 @@
+<style id="interview-qa-style">
+/* =========================================================
+   ★ 인터뷰 문답 (간결한 문답) — 영상 위 (빌드 30단계 · 동작은 build/interview_qa.js)
+   · 웹진의 글꼴(--serif · --sans) · 색(--deep · --ink · --coral · --sea)을 그대로 써요
+   · 질문은 얇은 선으로 나누고 오른쪽에 + / − · 답은 옅은 연두색 바탕
+   · 휴대폰 먼저: 320px 에서도 넘치지 않게 · 답 글자 16px 이상 · 질문 버튼 높이 44px 이상
+   ========================================================= */
+.iqa{
+  width:min(100%,860px); margin:0 auto clamp(18px,3vh,28px); text-align:left;
+  border-radius:var(--r,22px); background:rgba(255,253,249,.97); color:var(--ink);
+  box-shadow:0 30px 60px -34px rgba(6,44,53,.55); overflow:hidden;
+}
+.iqa__lead{padding:clamp(20px,3.4vw,34px) clamp(18px,3.6vw,40px) clamp(18px,2.6vw,26px); text-align:center; border-bottom:1px solid rgba(18,52,60,.12)}
+.iqa__who{display:inline-block; margin:0; padding:5px 12px; border-radius:999px; background:var(--sea-xl,#d6f2ee); color:var(--deep); font-size:.84rem; font-weight:700; line-height:1.45; word-break:keep-all}
+.iqa__intro{max-width:640px; margin:14px auto 0; font-family:var(--serif); font-size:clamp(1.02rem,1.6vw,1.14rem); line-height:1.75; color:var(--ink); word-break:keep-all; overflow-wrap:anywhere; text-wrap:pretty}
+.iqa__intro p{margin:0}
+.iqa__intro p+p{margin-top:.6em}   /* 문단 사이 한숨 */
+/* 왼쪽 캐릭터 스티커 · 오른쪽 글 (2026-11-04) — 글은 왼쪽 정렬로 문단마다 읽히게 */
+.iqa__lead.has-sticker{display:grid; grid-template-columns:clamp(120px,19vw,176px) minmax(0,1fr); align-items:center; gap:clamp(20px,3.4vw,40px); text-align:left}
+.iqa__sticker{display:block; width:100%; height:auto; max-height:230px; object-fit:contain; transform:rotate(-4deg); filter:drop-shadow(0 12px 14px rgba(6,44,53,.2))}
+.has-sticker .iqa__intro{max-width:34em; margin:12px 0 0}
+.has-sticker .iqa__jump{margin-top:18px}
+@media (max-width:560px){   /* 휴대폰: 스티커 옆에 인물 소개, 그 아래로 도입문 · 바로 가기 */
+  .iqa__lead.has-sticker{grid-template-columns:clamp(78px,24vw,104px) minmax(0,1fr); grid-template-areas:"st who" "intro intro" "jump jump"; gap:12px 14px}
+  .iqa__leadtext{display:contents}
+  .has-sticker .iqa__sticker{grid-area:st; max-height:130px}
+  .has-sticker .iqa__who{grid-area:who; justify-self:start; align-self:center}
+  .has-sticker .iqa__intro{grid-area:intro; margin:4px 0 0}
+  .has-sticker .iqa__jump{grid-area:jump; justify-self:start; margin-top:6px}
+}
+.iqa__jump{
+  display:inline-flex; align-items:center; gap:6px; min-height:44px; margin-top:14px; padding:8px 18px;
+  border-radius:999px; background:transparent; color:var(--coral-d,#e55c33); font-size:.95rem; font-weight:700;
+  box-shadow:inset 0 0 0 1.5px currentColor; transition:background .25s,color .25s;
+}
+.iqa__box{padding:clamp(20px,3.2vw,32px) clamp(18px,3.6vw,40px) clamp(14px,2.4vw,24px)}
+.iqa__title{margin:0; font-family:var(--serif); font-size:clamp(1.22rem,2.3vw,1.6rem); line-height:1.35; letter-spacing:-.02em; color:var(--deep); word-break:keep-all; overflow-wrap:anywhere}
+.iqa__note{margin:6px 0 0; color:var(--muted,#5b7378); font-size:.85rem; line-height:1.6; word-break:keep-all}
+.iqa__list{margin-top:16px; border-top:1px solid rgba(18,52,60,.22)}
+.iqa__item{border-bottom:1px solid rgba(18,52,60,.14)}
+.iqa__h{margin:0; font:inherit}
+.iqa__q{
+  display:flex; align-items:center; gap:14px; width:100%; min-height:56px; padding:14px 2px;
+  background:none; color:var(--ink); text-align:left; cursor:pointer; border-radius:8px;
+  font-size:clamp(1rem,1.7vw,1.08rem); font-weight:700; line-height:1.5;
+}
+.iqa__qtext{flex:1; min-width:0; word-break:keep-all; overflow-wrap:anywhere}
+@media (hover:hover){   /* 마우스가 있을 때만 (휴대폰에서 누른 뒤 밑줄이 남지 않게) */
+  .iqa__q:hover .iqa__qtext{color:var(--deep); text-decoration:underline; text-underline-offset:4px; text-decoration-color:rgba(18,52,60,.3)}
+  .iqa__jump:hover{background:var(--coral,#ff7a50); color:#fff}
+  .iqa__seek:hover{background:#dfeecd}
+}
+.iqa__q:focus-visible,.iqa__jump:focus-visible,.iqa__seek:focus-visible{outline:3px solid var(--coral,#ff7a50); outline-offset:3px}
+/* + / − */
+.iqa__sign{position:relative; flex:none; width:28px; height:28px; border-radius:50%; box-shadow:inset 0 0 0 1px rgba(18,52,60,.25); color:var(--deep); transition:background .25s,box-shadow .25s}
+.iqa__sign::before,.iqa__sign::after{content:''; position:absolute; left:50%; top:50%; width:12px; height:2px; margin:-1px 0 0 -6px; border-radius:2px; background:currentColor; transition:transform .25s var(--ease,ease)}
+.iqa__sign::after{transform:rotate(90deg)}
+.iqa__item.is-open .iqa__sign{background:var(--deep); color:#fff; box-shadow:none}
+.iqa__item.is-open .iqa__sign::after{transform:rotate(90deg) scaleX(0)}
+.iqa__item.is-open .iqa__qtext{color:var(--deep)}
+/* 답: 옅은 연두색 바탕 · 넉넉한 여백 · 잘리지 않게 높이는 내용대로 */
+.iqa__a{margin:0 0 16px; padding:clamp(18px,2.6vw,24px) clamp(18px,2.8vw,28px); border-radius:14px; background:#eef6e2; animation:iqaIn .3s var(--ease,ease)}
+.iqa__a[hidden]{display:none}
+.iqa__by{margin:0 0 8px; color:#4f7a2c; font-size:.86rem; font-weight:700}
+.iqa__text{margin:0; font-size:max(16px,1.03rem); line-height:1.85; color:var(--ink); word-break:keep-all; overflow-wrap:anywhere}
+/* 단어 단위 줄바꿈(keep-all)은 한국어에만 — 일본어는 글자 사이에서 자연스럽게 · 영어는 단어 사이에서 */
+.iqa:not([lang="ko"]) *{word-break:normal}
+.iqa[lang="ja"] *{line-break:strict}
+.iqa__seek{
+  display:inline-flex; align-items:center; gap:6px; min-height:44px; margin-top:12px; padding:8px 14px;
+  border-radius:999px; background:#fff; color:var(--deep); font-size:.88rem; font-weight:700;
+  box-shadow:inset 0 0 0 1px rgba(79,122,44,.35); transition:background .25s;
+}
+.iqa__seek span{color:var(--coral-d,#e55c33); font-size:.8em}
+@keyframes iqaIn{from{opacity:0}to{opacity:1}}
+@media (max-width:480px){
+  .iqa{border-radius:18px}
+  .iqa__q{gap:10px}
+  .iqa__a{padding:16px}
+}
+@media (prefers-reduced-motion:reduce){.iqa__a{animation:none}.iqa__sign,.iqa__sign::before,.iqa__sign::after{transition:none}}
+</style>

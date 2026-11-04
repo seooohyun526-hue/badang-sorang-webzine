@@ -1669,11 +1669,16 @@ var SUB = (function () {
     }
     vh += '</div>';
 
+    // 인터뷰 문답 (영상 위) — 공통 컴포넌트 InterviewQA (build/interview_qa.js) · 내용 INTERVIEW_QA (build/interview_qa_data.js)
+    var pageLang = (window.BSI18N && BSI18N.lang) || 'ko';
+    var qh = window.InterviewQA ? InterviewQA.html(it, pageLang, v) : '';
+
     root.insertAdjacentHTML('beforeend', bar +
       '<main class="sp">' +
         '<section class="sp-top">' +
           '<p class="kicker">' + esc(STORIES.kicker) + ' · ' + esc(it.label) + '</p>' +
           '<h2 class="sp-title">' + esc(it.name) + '의 이야기</h2>' +
+          qh +
           vh +
           // (영상 아래 주제 태그 칸은 2026-10-27 사용자 요청으로 뺐어요 — INTERVIEWS 의 theme 은 그대로 남겨 둬요)
           (has(it.credit) ? '<p class="sp-meta sp-credit">' + esc(it.credit) + '</p>' : '') +   // 인터뷰 정보 (날짜 · 장소 · 진행 · 촬영) — 비어 있으면 안 보여요
@@ -1704,24 +1709,32 @@ var SUB = (function () {
     });
     document.title = it.label + ' · ' + it.name + ' — ' + SITE.name;
 
-    var cover = $('.vframe__cover', root), stopTrack = function () {};
-    if (cover) cover.addEventListener('click', function () {
-      var fr = cover.parentNode, video = $('video', fr);
+    var cover = $('.vframe__cover', root), stopTrack = function () {}, vfr = $('.vframe', root), fileErr = false;
+    // 영상 재생 — start: 몇 초부터 (인터뷰 문답의 '영상에서 보기'), 없으면 처음부터
+    function playVideo(start) {
+      var fr = vfr, video = $('video', fr), cv = $('.vframe__cover', fr);
       if (video) {
-        video.controls = true; cover.remove();
+        video.controls = true; if (cv) cv.remove();
+        if (start >= 0) try { video.currentTime = start; } catch (e) {}
         var p = video.play(); if (p && p.catch) p.catch(function () {});
-        video.addEventListener('error', function () { fr.innerHTML = '<div class="vframe__empty"><p>영상 파일을 찾을 수 없어요</p><small>' + esc(src) + ' 경로를 확인해 주세요</small></div>'; });
-      } else {
-        var yt = cover.getAttribute('data-k') === 'youtube';
+        if (!fileErr) { fileErr = true; video.addEventListener('error', function () { fr.innerHTML = '<div class="vframe__empty"><p>영상 파일을 찾을 수 없어요</p><small>' + esc(src) + ' 경로를 확인해 주세요</small></div>'; }); }
+      } else if (v && v.k !== 'file') {
+        var yt = v.k === 'youtube';
         var url = yt   // enablejsapi · origin: 재생 상태를 읽는 유튜브 IFrame API 용
-          ? 'https://www.youtube-nocookie.com/embed/' + cover.getAttribute('data-id') + '?autoplay=1&rel=0&playsinline=1&enablejsapi=1' +
+          ? 'https://www.youtube-nocookie.com/embed/' + v.id + '?autoplay=1&rel=0&playsinline=1&enablejsapi=1' +
+            (start > 0 ? '&start=' + Math.floor(start) : '') +
             (/^https?:$/.test(location.protocol) ? '&origin=' + encodeURIComponent(location.origin) : '')
-          : 'https://player.vimeo.com/video/' + cover.getAttribute('data-id') + '?autoplay=1';
+          : 'https://player.vimeo.com/video/' + v.id + '?autoplay=1';
+        stopTrack();
         fr.innerHTML = '<iframe src="' + url + '" title="' + esc(it.name) + ' 인터뷰 영상" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>';
-        if (yt) stopTrack = trackYT($('iframe', fr), String(it.id), vlang);
+        stopTrack = yt ? trackYT($('iframe', fr), String(it.id), vlang) : function () {};
       }
-    });
-    return function () { stopTrack(); stop(); };
+    }
+    if (cover) cover.addEventListener('click', function () { playVideo(-1); });
+
+    // 인터뷰 문답: 한 번에 하나만 열기 · 전체 영상으로 바로 가기 · 영상의 그 부분부터 보기
+    var stopQA = window.InterviewQA ? InterviewQA.mount(root, it, pageLang, { play: playVideo, frame: vfr }) : function () {};
+    return function () { stopQA(); stopTrack(); stop(); };
   }
 
   /* ---------- GTM 영상 시청 신호 (유튜브만) ----------

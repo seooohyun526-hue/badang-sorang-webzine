@@ -743,6 +743,24 @@ if True:
 if True:
     one('</head>', N(open(sp + '/card_colors.css', encoding='utf-8').read()) + '</head>')
 
+# 33) 인터뷰 문답 (간결한 문답) — 모든 인터뷰 상세 화면의 영상 위 (2026-11-04)
+#     내용 build/interview_qa_data.js (INTERVIEW_QA · 인터뷰 id 마다 한 · 영 · 일) · 공통 동작 build/interview_qa.js · 모양 build/interview_qa.css
+#     상세 화면(base_loader.html 의 story)이 InterviewQA.html · mount 를 불러요 — 이 단계가 없으면 문답 없이 예전 화면 그대로
+#     왼쪽 캐릭터 스티커: build/interview_qa_sticker_<id>.webp → INTERVIEW_QA_STICKER (사이트로 내보낼 때는 media/ 파일로 따로 빠져요)
+if True:
+    import base64 as _b64q
+    from PIL import Image as _ImgQ
+    _stk = []
+    for _iid in ('1', '2', '3', '4'):
+        _pq = sp + '/interview_qa_sticker_%s.webp' % _iid
+        if os.path.exists(_pq):
+            _wq, _hq = _ImgQ.open(_pq).size
+            _stk.append('"%s": { src: "data:image/webp;base64,%s", w: %d, h: %d }' % (_iid, _b64q.b64encode(open(_pq, 'rb').read()).decode(), _wq, _hq))
+    one('var ABOUT = {', 'var INTERVIEW_QA_STICKER = {' + ', '.join(_stk) + '};' + nl + 'var ABOUT = {')
+    one('var ABOUT = {', N(open(sp + '/interview_qa_data.js', encoding='utf-8').read() + '\n' +
+                          open(sp + '/interview_qa.js', encoding='utf-8').read() + '\n') + 'var ABOUT = {')
+    one('</head>', N(open(sp + '/interview_qa.css', encoding='utf-8').read()) + '</head>')
+
 # 29) 응원 공용 저장소(Supabase)를 빌드할 때 넣기: BS_SUPABASE_URL=https://….supabase.co BS_SUPABASE_KEY=<anon 공개 키>
 #     (비우면 clean_data.js 의 CLEAN.cheer.supabase 그대로)
 if os.environ.get('BS_SUPABASE_URL') and os.environ.get('BS_SUPABASE_KEY'):
